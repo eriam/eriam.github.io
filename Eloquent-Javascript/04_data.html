@@ -1,0 +1,793 @@
+<!doctype html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Structures de données : Objets et tableaux :: Eloquent JavaScript</title>
+  <link rel=stylesheet href="js/node_modules/codemirror/lib/codemirror.css">
+  <script src="js/acorn_codemirror.js"></script>
+  <link rel=stylesheet href="css/ejs.css">
+  <script src="js/sandbox.js"></script>
+  <script src="js/ejs.js"></script><script>var chapNum = 4;var sandboxLoadFiles = ["code/journal.js","code/chapter/04_data.js"];</script></head>
+
+<article>
+<nav><a href="03_functions.html" title="previous chapter">◀</a> <a href="index.html" title="cover">◆</a> <a href="05_higher_order.html" title="next chapter">▶</a></nav>
+
+<h1><span class=chap_num>Chapitre 4</span>Structures de données : Objets et tableaux</h1>
+
+<blockquote>
+
+<p><a class="p_ident" id="p_RLQ/p7Ce3i" href="#p_RLQ/p7Ce3i" tabindex="-1" role="presentation"></a>A deux reprises, on m’a demandé, “Priez, Mr. Babbage, si vous mettez dans la machine des chiffres erronés, est-ce que les bonnes réponses en sortiront ? [...] Je ne suis pas capable d’appréhender correctement le genre d’idées confuses qui pourrait provoquer une telle question.</p>
+
+<footer>Charles Babbage, <cite>Passages from the Life of a Philosopher (1864)</cite></footer>
+
+</blockquote><figure class="chapter framed"><img src="img/chapter_picture_4.jpg" alt="Picture of a weresquirrel"></figure>
+
+<p><a class="p_ident" id="p_fA1y4Wno5+" href="#p_fA1y4Wno5+" tabindex="-1" role="presentation"></a>Les nombres, les booléens et les chaînes de caractères sont les atomes à partir desquels les structures de données sont construites. Cependant de nombreux types d’informations nécessitent plus d’un atomes. Les <em>Objets</em> permettent de regrouper des valeurs - y compris d’autres objets - pour construire des structures plus complexes.</p>
+
+<p><a class="p_ident" id="p_5m0qMlByxN" href="#p_5m0qMlByxN" tabindex="-1" role="presentation"></a>Les programmes que nous avons construits jusqu’à présent étaient limités par le fait qu’ils n’opéraient que sur des types de données simples. Ce chapitre va introduire les structures de données de base. À la fin de ce chapitre, vous en saurez suffisamment pour commencer à écrire des programmes utiles.</p>
+
+<p><a class="p_ident" id="p_kG+PACYXSc" href="#p_kG+PACYXSc" tabindex="-1" role="presentation"></a>Le chapitre traitera d’un exemple de programmation plus ou moins réaliste, en introduisant les concepts tels qu’ils s’appliquent au problème à résoudre. Le code de l’exemple s’appuiera souvent sur les fonctions et les liaisons qui ont été introduites plus tôt dans le texte.</p>
+
+<h2><a class="h_ident" id="h_HGN0dFZq0o" href="#h_HGN0dFZq0o" tabindex="-1" role="presentation"></a>L’Écureuil-garou</h2>
+
+<p><a class="p_ident" id="p_uYYiAh1xUN" href="#p_uYYiAh1xUN" tabindex="-1" role="presentation"></a>De temps en temps, généralement entre 20 et 22 heures, Jacques se retrouve transformé en un petit rongeur à fourrure avec une queue touffue.</p>
+
+<p><a class="p_ident" id="p_cY9MJswAqf" href="#p_cY9MJswAqf" tabindex="-1" role="presentation"></a>D’un côté, Jacques est assez content de ne pas avoir la classique lycanthropie. Se transformer en écureuil cause moins de problèmes que que de se transformer en loup. Au lieu d’avoir à s’inquiéter de manger accidentellement le voisin (<em>ça</em> serait gênant), il s’inquiète d’être mangé par le chat du voisin. Après deux occasions où il s’est réveillé sur une branche très fine de la couronne d’un chêne, nu et désorienté, il a pris l’habitude de fermer à clé les portes et les fenêtres de sa chambre la nuit et à mettre quelques noix sur le sol pour s’occuper.</p>
+
+<p><a class="p_ident" id="p_hveQAAURML" href="#p_hveQAAURML" tabindex="-1" role="presentation"></a>Cela règle les problèmes du chat et de l’arbre. Mais Jacques préférerait se débarrasser complètement de son état. Les occurrences irrégulières de la transformation lui font penser qu’elles pourraient être déclenchées par quelque chose. Pendant un temps, il a cru que cela se produisait uniquement les jours où il avait été près de chênes. Mais éviter les chênes n’a pas arrêté le problème.</p>
+
+<p><a class="p_ident" id="p_NoSwuskd7b" href="#p_NoSwuskd7b" tabindex="-1" role="presentation"></a>Passant à une approche plus scientifique, Jacques a commencé à tenir un journal quotidien de tout ce qu’il fait dans une journée donnée et de savoir s’il a changé de forme. Avec ces données, il espère affiner les conditions qui déclenchent les transformations.</p>
+
+<p><a class="p_ident" id="p_3bZ7kF3U9h" href="#p_3bZ7kF3U9h" tabindex="-1" role="presentation"></a>La première chose dont il a besoin est une structure de données pour stocker ces informations.</p>
+
+<h2><a class="h_ident" id="h_Io/cwlK04S" href="#h_Io/cwlK04S" tabindex="-1" role="presentation"></a>Jeu de données</h2>
+
+<p><a class="p_ident" id="p_+RTVRTaIE/" href="#p_+RTVRTaIE/" tabindex="-1" role="presentation"></a>Pour travailler avec un morceau de données numériques, nous devons d’abord trouver un moyen de le représenter dans la mémoire de notre machine. Disons, par exemple, que nous voulons représenter une collection des nombres 2, 3, 5, 7, et 11.</p>
+
+<p><a class="p_ident" id="p_zEKMiHbLlA" href="#p_zEKMiHbLlA" tabindex="-1" role="presentation"></a>Nous pourrions être créatifs avec les chaînes de caractères après tout, les chaînes de caractères peuvent avoir n’importe quelle longueur, donc nous pouvons y mettre beaucoup de données et utiliser <code>&quot;2 3 5 7 11&quot;</code> comme représentation. Mais cela n’est pas très pratique. Il faudrait en quelque sorte extraire les chiffres et les reconvertir en nombres pour y accéder.</p>
+
+<p><a class="p_ident" id="p_OHs4QzwBak" href="#p_OHs4QzwBak" tabindex="-1" role="presentation"></a>Heureusement, JavaScript fournit un type de données spécifique pour le stockage de séquences de valeurs. Il s’agit d’un <em>tableau</em> qui s’écrit comme une liste de valeurs entre crochets séparées par des virgules.</p>
+
+<pre class="snippet cm-s-default" data-language="javascript" ><a class="c_ident" id="c_AuniHogxSK" href="#c_AuniHogxSK" tabindex="-1" role="presentation"></a><span class="cm-keyword">let</span> <span class="cm-def">listeDeNombres</span> <span class="cm-operator">=</span> [<span class="cm-number">2</span>, <span class="cm-number">3</span>, <span class="cm-number">5</span>, <span class="cm-number">7</span>, <span class="cm-number">11</span>];
+<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">listeDeNombres</span>[<span class="cm-number">2</span>]);
+<span class="cm-comment">// → 5</span>
+<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">listeDeNombres</span>[<span class="cm-number">0</span>]);
+<span class="cm-comment">// → 2</span>
+<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">listeDeNombres</span>[<span class="cm-number">2</span> <span class="cm-operator">-</span> <span class="cm-number">1</span>]);
+<span class="cm-comment">// → 3</span></pre>
+
+<p><a class="p_ident" id="p_f/hFjdvstO" href="#p_f/hFjdvstO" tabindex="-1" role="presentation"></a>La notation pour accéder aux éléments d’un tableau utilise également des crochets. Une paire de crochets immédiatement après une expression avec une autre expression à l’intérieur, cherchera l’élément dans l’expression de gauche qui correspond à l’index_ donné par l’expression entre crochets.</p>
+
+<p id="array_indexing"><a class="p_ident" id="p_OL0yIcPMyV" href="#p_OL0yIcPMyV" tabindex="-1" role="presentation"></a>Le premier indice d’un tableau est zéro, pas un. Donc le premier élément est récupéré avec <code>listeDeNombres[0]</code>. Le comptage basé sur zéro a une longue longue tradition dans la technologie et, d’une certaine manière, est très logique, mais il faut s’y habituer. Considérez l’index comme le nombre d’éléments éléments à sauter, en comptant depuis le début du tableau.</p>
+
+<h2 id="properties"><a class="h_ident" id="h_1D899N0dke" href="#h_1D899N0dke" tabindex="-1" role="presentation"></a>Propriétés</h2>
+
+<p><a class="p_ident" id="p_Y21/AXK4u5" href="#p_Y21/AXK4u5" tabindex="-1" role="presentation"></a>Nous avons déjà vu quelques expressions suspectes comme <code>maChaine.length</code>. (pour obtenir la longueur d’une chaîne) et <code>Math.max</code> (la fonction maximum) dans les chapitres précédents. Ces expressions accèdent à une <em>propriété</em> d’une certaine valeur. Dans le premier cas, on accède à la propriété <code>length</code> (longueur) de la valeur de <code>maChaine</code>. Dans le second, nous accédons à la propriété nommée <code>max</code> dans l’objet <code>Math</code> (qui est une collection de constantes et de fonctions mathématiques).</p>
+
+<p><a class="p_ident" id="p_PVYws7cjKe" href="#p_PVYws7cjKe" tabindex="-1" role="presentation"></a>Presque toutes les valeurs JavaScript ont des propriétés. Les exceptions sont <code>null</code> et <code>undefined</code>. Si vous essayez d’accéder à une propriété sur l’une de ces non-valeurs, vous obtenez une erreur.</p>
+
+<pre class="snippet cm-s-default" data-language="javascript" ><a class="c_ident" id="c_FNR95AymUx" href="#c_FNR95AymUx" tabindex="-1" role="presentation"></a><span class="cm-atom">null</span>.<span class="cm-property">length</span>;
+<span class="cm-comment">// → TypeError: null has no properties</span></pre>
+
+<p><a class="p_ident" id="p_RVTObLAimo" href="#p_RVTObLAimo" tabindex="-1" role="presentation"></a>Les deux principales façons d’accéder aux propriétés en JavaScript sont le point et les crochets. Les expressions <code>valeur.x</code> et <code>valeur[x]</code> permettent d’accéder à une propriété de <code>valeur</code>, mais pas nécessairement à la même propriété. La différence réside dans la façon dont <code>x</code> est interprété. Lorsqu’on utilise un point, le mot après le point est le nom littéral de la propriété. Si vous utilisez des crochets, l’expression entre les crochets est évaluée pour obtenir le nom de la propriété. Alors que <code>valeur.x</code> récupère la propriété de <code>valeur</code> nommée “x”, <code>valeur[x]</code> essaie d’évaluer l’expression <code>x</code> et utilise le résultat, converti en chaîne, comme nom de propriété.</p>
+
+<p><a class="p_ident" id="p_PfnVTC5ztR" href="#p_PfnVTC5ztR" tabindex="-1" role="presentation"></a>Ainsi, si vous savez que la propriété qui vous intéresse s’appelle <em>color</em>, vous dites <code>valeur.color</code>. Si vous voulez extraire la propriété nommée par la valeur contenue dans la liaison <code>i</code>, vous dites <code>valeur[i]</code>. Les noms de propriétés sont des chaînes de caractères. Ils peuvent être n’importe quelle chaîne, mais la notation par points ne fonctionne qu’avec des noms qui ressemblent à des noms de liaisons valides. Ainsi, si vous voulez accéder à une propriété nommée <em>2</em> ou <em>Jean Dupont</em>, vous devez utiliser des crochets : <code>valeur[2]</code> ou <code>valeur[&quot;Jean Dupont&quot;]</code>.</p>
+
+<p><a class="p_ident" id="p_89DZtOj6mO" href="#p_89DZtOj6mO" tabindex="-1" role="presentation"></a>Les éléments d’un tableau sont stockés comme les propriétés du tableau, en utilisant des nombres comme noms de propriétés. Comme vous ne pouvez pas utiliser la notation par points avec des nombres et que vous souhaitez généralement utiliser une liaison qui contient l’index, vous devez de toute façon utiliser la notation entre crochets pour les atteindre.</p>
+
+<p><a class="p_ident" id="p_acQCOktYCy" href="#p_acQCOktYCy" tabindex="-1" role="presentation"></a>La propriété <code>length</code> d’un tableau nous indique combien d’éléments il possède. Ce nom de propriété est un nom de liaison valide, et nous connaissons son nom à l’avance. Ainsi, pour trouver la longueur d’un tableau, on écrit généralement <code>tableau.length</code> car c’est plus facile à écrire que <code>tableau[&quot;length&quot;]</code>.</p>
+
+<h2 id="methods"><a class="h_ident" id="h_PFOLVFlZfk" href="#h_PFOLVFlZfk" tabindex="-1" role="presentation"></a>Méthodes</h2>
+
+<p><a class="p_ident" id="p_hkpxPV8N7U" href="#p_hkpxPV8N7U" tabindex="-1" role="presentation"></a>Les valeurs des chaînes et des tableaux contiennent, en plus de la propriété <code>length</code>. un certain nombre de propriétés qui contiennent des valeurs de fonction.</p>
+
+<pre class="snippet cm-s-default" data-language="javascript" ><a class="c_ident" id="c_prRDc5amqh" href="#c_prRDc5amqh" tabindex="-1" role="presentation"></a><span class="cm-keyword">let</span> <span class="cm-def">doh</span> <span class="cm-operator">=</span> <span class="cm-string">&quot;Doh&quot;</span>;
+<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-keyword">typeof</span> <span class="cm-variable">doh</span>.<span class="cm-property">toUpperCase</span>);
+<span class="cm-comment">// → function</span>
+<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">doh</span>.<span class="cm-property">toUpperCase</span>());
+<span class="cm-comment">// → DOH</span></pre>
+
+<p><a class="p_ident" id="p_ZN4KHsS0uU" href="#p_ZN4KHsS0uU" tabindex="-1" role="presentation"></a>Chaque chaîne a une propriété <code>toUpperCase</code>. Lorsqu’elle est appelée, elle renvoie une copie de la chaîne dans laquelle toutes les lettres ont été converties en majuscules. Il existe aussi la propriété <code>toLowerCase</code>, qui va dans le sens inverse.</p>
+
+<p><a class="p_ident" id="p_f5sw3MJlcY" href="#p_f5sw3MJlcY" tabindex="-1" role="presentation"></a>Il est intéressant de noter que, bien que l’appel à <code>toUpperCase</code> ne passe aucun arguments, la fonction a en quelque sorte accès à la chaîne de caractères “Doh”, la valeur dont nous avons appelé la propriété. La façon dont cela fonctionne est décrite dans le <a href="06_object.html#obj_methods">Chapitre 6</a>.</p>
+
+<p><a class="p_ident" id="p_USovYZXdi9" href="#p_USovYZXdi9" tabindex="-1" role="presentation"></a>Les propriétés qui contiennent des fonctions sont généralement appelées <em>méthodes</em> de la valeur à laquelle elles appartiennent, comme dans “<code>toUpperCase</code> est une méthode d’une chaîne de caractères”.</p>
+
+<p id="array_methods"><a class="p_ident" id="p_ZyC3N6tER7" href="#p_ZyC3N6tER7" tabindex="-1" role="presentation"></a>Cet exemple illustre deux méthodes que vous pouvez utiliser pour manipuler des tableaux :</p>
+
+<pre class="snippet cm-s-default" data-language="javascript" ><a class="c_ident" id="c_RiFZUNk6gr" href="#c_RiFZUNk6gr" tabindex="-1" role="presentation"></a><span class="cm-keyword">let</span> <span class="cm-def">sequence</span> <span class="cm-operator">=</span> [<span class="cm-number">1</span>, <span class="cm-number">2</span>, <span class="cm-number">3</span>];
+<span class="cm-variable">sequence</span>.<span class="cm-property">push</span>(<span class="cm-number">4</span>);
+<span class="cm-variable">sequence</span>.<span class="cm-property">push</span>(<span class="cm-number">5</span>);
+<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">sequence</span>);
+<span class="cm-comment">// → [1, 2, 3, 4, 5]</span>
+<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">sequence</span>.<span class="cm-property">pop</span>());
+<span class="cm-comment">// → 5</span>
+<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">sequence</span>);
+<span class="cm-comment">// → [1, 2, 3, 4]</span></pre>
+
+<p><a class="p_ident" id="p_sW93UJhZyZ" href="#p_sW93UJhZyZ" tabindex="-1" role="presentation"></a>La méthode <code>push</code> ajoute des valeurs à la fin d’un tableau, et la méthode <code>pop</code> fait le contraire, en retirant la dernière valeur du tableau et la retourne.</p>
+
+<p><a class="p_ident" id="p_erm5UKJHHn" href="#p_erm5UKJHHn" tabindex="-1" role="presentation"></a>Ces noms un peu ridicules sont les termes traditionnels pour les opérations sur une <em>pile</em>. Une pile, dans la programmation, est une structure de données qui vous permet d’y insérer des valeurs et de les ressortir dans l’ordre inverse, de sorte que ce qui a été ajouté en dernier est retiré en premier. Elles sont courantes en programmation - vous vous souvenez peut-être de la fonction pile d’appel du <a href="03_functions.html#stack">chapitre précédent</a>, qui est un exemple de la même idée.</p>
+
+<h2><a class="h_ident" id="h_OzpfW5b565" href="#h_OzpfW5b565" tabindex="-1" role="presentation"></a>Objets</h2>
+
+<p><a class="p_ident" id="p_FDb2GzVbIn" href="#p_FDb2GzVbIn" tabindex="-1" role="presentation"></a>Retour à l’écureuilgarou. Un ensemble d’entrées de journal quotidien peut être représenté comme un tableau. Mais les entrées ne consistent pas seulement en un nombre ou une chaîne de caractères, chaque entrée doit contenir une liste d’activités et une valeur booléenne indiquant si Jacques s’est transformé en écureuil ou non. Dans l’idéal, nous aimerions regrouper ces valeurs en une seule valeur unique, puis placer ces valeurs groupées dans un tableau d’entrées de journal.</p>
+
+<p><a class="p_ident" id="p_CfU4z3+3Ht" href="#p_CfU4z3+3Ht" tabindex="-1" role="presentation"></a>Les valeurs du type <em>objet</em> sont des collections arbitraires de propriétés. L’une des façons de créer un objet est d’utiliser les accolades comme une expression.</p>
+
+<pre class="snippet cm-s-default" data-language="javascript" ><a class="c_ident" id="c_AOLeAYWBVg" href="#c_AOLeAYWBVg" tabindex="-1" role="presentation"></a><span class="cm-keyword">let</span> <span class="cm-def">jour1</span> <span class="cm-operator">=</span> {
+  <span class="cm-property">ecureuil</span>: <span class="cm-atom">false</span>,
+  <span class="cm-property">evenements</span>: [<span class="cm-string">&quot;travail&quot;</span>, <span class="cm-string">&quot;touché arbre&quot;</span>, <span class="cm-string">&quot;pizza&quot;</span>, <span class="cm-string">&quot;jogging&quot;</span>]
+};
+<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">jour1</span>.<span class="cm-property">ecureuil</span>);
+<span class="cm-comment">// → false</span>
+<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">jour1</span>.<span class="cm-property">loup</span>);
+<span class="cm-comment">// → undefined</span>
+<span class="cm-variable">jour1</span>.<span class="cm-property">loup</span> <span class="cm-operator">=</span> <span class="cm-atom">false</span>;
+<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">jour1</span>.<span class="cm-property">loup</span>);
+<span class="cm-comment">// → false</span></pre>
+
+<p><a class="p_ident" id="p_PaHCjyS7gS" href="#p_PaHCjyS7gS" tabindex="-1" role="presentation"></a>À l’intérieur des accolades, on trouve une liste de propriétés séparées par des virgules. Chaque propriété a un nom suivi de deux points et d’une valeur. Lorsqu’un objet est écrit sur plusieurs lignes, l’indentation comme dans l’exemple aide à la lisibilité. Les propriétés dont le nom n’est pas un nom de liaison valide doivent être entouré d’accolades.</p>
+
+<pre class="snippet cm-s-default" data-language="javascript" ><a class="c_ident" id="c_6YDK3UKydn" href="#c_6YDK3UKydn" tabindex="-1" role="presentation"></a><span class="cm-keyword">let</span> <span class="cm-def">descriptions</span> <span class="cm-operator">=</span> {
+  <span class="cm-property">travail</span>: <span class="cm-string">&quot;Je suis allé au travail&quot;</span>,
+  <span class="cm-string cm-property">&quot;touché arbre&quot;</span>: <span class="cm-string">&quot;J'ai touché un arbre&quot;</span>
+};</pre>
+
+<p><a class="p_ident" id="p_kcVejBjoPF" href="#p_kcVejBjoPF" tabindex="-1" role="presentation"></a>Cela signifie que les accolades ont <em>deux</em> significations en JavaScript. Sur au début d’une déclaration, elles commencent un bloc de déclarations. Sur toute autre position, elles décrivent un objet. Heureusement, il est rarement utile de commencer une instruction par un objet entre accolades, l’ambiguïté entre ces deux éléments n’est pas un problème majeur.</p>
+
+<p><a class="p_ident" id="p_ME0xYqPgp/" href="#p_ME0xYqPgp/" tabindex="-1" role="presentation"></a>La lecture d’une propriété qui n’existe pas vous donnera la valeur <code>undefined</code>.</p>
+
+<p><a class="p_ident" id="p_IGkBa5UC2L" href="#p_IGkBa5UC2L" tabindex="-1" role="presentation"></a>Il est possible d’attribuer une valeur à une expression de propriété à l’aide de l’opérateur <code>=</code>. Cela va remplacer la valeur de la propriété si elle existait déjà ou créera une nouvelle propriété sur l’objet si elle n’existait pas.</p>
+
+<p><a class="p_ident" id="p_0zNlHVMB82" href="#p_0zNlHVMB82" tabindex="-1" role="presentation"></a>Pour revenir brièvement à notre modèle tentaculaire de liaisons de propriété les liaisons sont similaires. Elles <em>s’emparent</em> des valeurs, mais d’autres liaisons et propriétés peuvent s’accrocher à ces mêmes valeurs. Vous pouvez considérer les objets comme des pieuvres avec un nombre quelconque de tentacules, chacune d’entre elles ayant un nom tatoué dessus.</p>
+
+<p><a class="p_ident" id="p_hm/PTAq0+L" href="#p_hm/PTAq0+L" tabindex="-1" role="presentation"></a>L’opérateur <code>delete</code> coupe un tentacule d’une telle pieuvre. Il s’agit un opérateur unaire qui, lorsqu’il est appliqué à une propriété de l’objet, supprimera la propriété en question de l’objet. Ce n’est pas une chose courante à faire, mais c’est possible.</p>
+
+<pre class="snippet cm-s-default" data-language="javascript" ><a class="c_ident" id="c_dpIJgwspuf" href="#c_dpIJgwspuf" tabindex="-1" role="presentation"></a><span class="cm-keyword">let</span> <span class="cm-def">unObjet</span> <span class="cm-operator">=</span> {<span class="cm-property">gauche</span>: <span class="cm-number">1</span>, <span class="cm-property">droite</span>: <span class="cm-number">2</span>};
+<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">unObjet</span>.<span class="cm-property">left</span>);
+<span class="cm-comment">// → 1</span>
+<span class="cm-keyword">delete</span> <span class="cm-variable">unObjet</span>.<span class="cm-property">gauche</span>;
+<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">unObjet</span>.<span class="cm-property">gauche</span>);
+<span class="cm-comment">// → undefined</span>
+<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-string">&quot;gauche&quot;</span> <span class="cm-keyword">in</span> <span class="cm-variable">unObjet</span>);
+<span class="cm-comment">// → false</span>
+<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-string">&quot;droite&quot;</span> <span class="cm-keyword">in</span> <span class="cm-variable">unObjet</span>);
+<span class="cm-comment">// → true</span></pre>
+
+<p><a class="p_ident" id="p_jj7/5voNsA" href="#p_jj7/5voNsA" tabindex="-1" role="presentation"></a>L’opérateur binaire <code>in</code>, lorsqu’il est appliqué à une chaîne de caractères et à un objet, vous indique si cet objet possède une propriété portant ce nom. La différence entre mettre une propriété à <code>undefined</code> et la supprimer réellement est que, dans le premier cas, l’objet <em>a toujours</em> la propriété (elle n’a simplement pas de valeur très intéressante), alors que dans le second cas la propriété n’est plus présente et <code>in</code> retournera <code>false</code>.</p>
+
+<p><a class="p_ident" id="p_X/ExvLJVVk" href="#p_X/ExvLJVVk" tabindex="-1" role="presentation"></a>Pour connaître les propriétés d’un objet, vous pouvez utiliser la fonction fonction <code>Objet.keys</code>. Vous lui donnez un objet, et elle retourne un tableau de chaînes de caractères - les noms des propriétés de l’objet.</p>
+
+<pre class="snippet cm-s-default" data-language="javascript" ><a class="c_ident" id="c_WILjBFvBJz" href="#c_WILjBFvBJz" tabindex="-1" role="presentation"></a><span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">Objet</span>.<span class="cm-property">keys</span>({<span class="cm-property">x</span>: <span class="cm-number">0</span>, <span class="cm-property">y</span>: <span class="cm-number">0</span>, <span class="cm-property">z</span>: <span class="cm-number">2</span>}));
+<span class="cm-comment">// → [&quot;x&quot;, &quot;y&quot;, &quot;z&quot;]</span></pre>
+
+<p><a class="p_ident" id="p_MwoAL9WtYV" href="#p_MwoAL9WtYV" tabindex="-1" role="presentation"></a>Il existe une fonction <code>Object.assign</code> qui copie toutes les propriétés d’un objet dans un autre objet.</p>
+
+<pre class="snippet cm-s-default" data-language="javascript" ><a class="c_ident" id="c_pd8EAc6BLv" href="#c_pd8EAc6BLv" tabindex="-1" role="presentation"></a><span class="cm-keyword">let</span> <span class="cm-def">objetA</span> <span class="cm-operator">=</span> {<span class="cm-property">a</span>: <span class="cm-number">1</span>, <span class="cm-property">b</span>: <span class="cm-number">2</span>};
+<span class="cm-variable">Object</span>.<span class="cm-property">assign</span>(<span class="cm-variable">objetA</span>, {<span class="cm-property">b</span>: <span class="cm-number">3</span>, <span class="cm-property">c</span>: <span class="cm-number">4</span>});
+<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">objetA</span>);
+<span class="cm-comment">// → {a: 1, b: 3, c: 4}</span></pre>
+
+<p><a class="p_ident" id="p_29bt2yasM4" href="#p_29bt2yasM4" tabindex="-1" role="presentation"></a>Les tableaux ne sont donc qu’un type d’objet spécialisé dans le stockage de séquences de choses. Si vous évaluez <code>typeof []</code>, cela donne <code>&quot;object&quot;</code>. Vous pouvez les voir comme des pieuvres longues et plates avec tous leurs tentacules en une rangée bien ordonnée, étiquetés avec des nombres.</p>
+
+<p><a class="p_ident" id="p_hw1HQyY3BS" href="#p_hw1HQyY3BS" tabindex="-1" role="presentation"></a>Nous allons représenter le journal que Jacques tient comme un tableau d’objets.</p>
+
+<pre class="snippet cm-s-default" data-language="javascript" ><a class="c_ident" id="c_Lbtmclmi9g" href="#c_Lbtmclmi9g" tabindex="-1" role="presentation"></a><span class="cm-keyword">let</span> <span class="cm-def">journal</span> <span class="cm-operator">=</span> [
+  {<span class="cm-property">evenements</span>: [<span class="cm-string">&quot;travail&quot;</span>, <span class="cm-string">&quot;touché arbre&quot;</span>, <span class="cm-string">&quot;pizza&quot;</span>,
+            <span class="cm-string">&quot;jogging&quot;</span>, <span class="cm-string">&quot;television&quot;</span>],
+   <span class="cm-property">ecureuil</span>: <span class="cm-atom">false</span>},
+  {<span class="cm-property">evenements</span>: [<span class="cm-string">&quot;travail&quot;</span>, <span class="cm-string">&quot;glace&quot;</span>, <span class="cm-string">&quot;chou-fleur&quot;</span>,
+            <span class="cm-string">&quot;lasagne&quot;</span>, <span class="cm-string">&quot;touché arbre&quot;</span>, <span class="cm-string">&quot;brossé dents&quot;</span>],
+   <span class="cm-property">ecureuil</span>: <span class="cm-atom">false</span>},
+  {<span class="cm-property">evenements</span>: [<span class="cm-string">&quot;weekend&quot;</span>, <span class="cm-string">&quot;vélo&quot;</span>, <span class="cm-string">&quot;pause&quot;</span>, <span class="cm-string">&quot;cacahuètes&quot;</span>,
+            <span class="cm-string">&quot;bière&quot;</span>],
+   <span class="cm-property">ecureuil</span>: <span class="cm-atom">true</span>},
+  <span class="cm-comment">/* et ainsi de suite... */</span>
+];</pre>
+
+<h2><a class="h_ident" id="h_945xU/gm9p" href="#h_945xU/gm9p" tabindex="-1" role="presentation"></a>Mutabilité</h2>
+
+<p><a class="p_ident" id="p_Ogrlh24U2o" href="#p_Ogrlh24U2o" tabindex="-1" role="presentation"></a>Nous allons passer à la programmation proprement dite <em>bientôt</em>. D’abord, il y a encore un peu de théorie à comprendre.</p>
+
+<p><a class="p_ident" id="p_k+S5ewtg7g" href="#p_k+S5ewtg7g" tabindex="-1" role="presentation"></a>Nous avons vu que les valeurs des objets peuvent être modifiées. Les types de valeurs discutés dans les chapitres précédents, comme les nombres, les chaînes de caractères et les booléens, sont toutes <em>immuables</em> - il est impossible de modifier les valeurs de ces types. Vous pouvez les combiner et dériver de nouvelles valeurs à partir d’elles, mais lorsque vous prenez une valeur de chaîne de caractères spécifique, cette valeur ne peut être modifiée. Le texte qu’elle contient ne peut pas être modifié. Si vous avez une chaîne de caractères qui contient &quot; chat &quot;, il n’est pas possible pour un autre code de modifier un caractère de votre chaîne pour qu’elle s’écrive “rat”.</p>
+
+<p><a class="p_ident" id="p_obvQEw6/fN" href="#p_obvQEw6/fN" tabindex="-1" role="presentation"></a>Les objets fonctionnent différemment. Vous <em>pouvez</em> modifier leurs propriétés, ce qui fait qu’une même valeur d’objet peut avoir un contenu différent à différents moments.</p>
+
+<p><a class="p_ident" id="p_V7hW3h58oO" href="#p_V7hW3h58oO" tabindex="-1" role="presentation"></a>Lorsque nous avons deux nombres, 120 et 120, nous pouvons les considérer comme précisément le même nombre, qu’ils se réfèrent ou non aux mêmes bits physiques. Avec les objets, il y a une différence entre avoir deux références au même objet et le fait d’avoir deux objets différents qui contiennent les mêmes propriétés. Considérons le code suivant :</p>
+
+<pre class="snippet cm-s-default" data-language="javascript" ><a class="c_ident" id="c_t7fnfW2u6B" href="#c_t7fnfW2u6B" tabindex="-1" role="presentation"></a><span class="cm-keyword">let</span> <span class="cm-def">objet1</span> <span class="cm-operator">=</span> {<span class="cm-property">value</span>: <span class="cm-number">10</span>};
+<span class="cm-keyword">let</span> <span class="cm-def">objet2</span> <span class="cm-operator">=</span> <span class="cm-variable">objet1</span>;
+<span class="cm-keyword">let</span> <span class="cm-def">objet3</span> <span class="cm-operator">=</span> {<span class="cm-property">value</span>: <span class="cm-number">10</span>};
+
+<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">objet1</span> <span class="cm-operator">==</span> <span class="cm-variable">objet2</span>);
+<span class="cm-comment">// → true</span>
+<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">objet1</span> <span class="cm-operator">==</span> <span class="cm-variable">objec3</span>);
+<span class="cm-comment">// → false</span>
+
+<span class="cm-variable">objet1</span>.<span class="cm-property">value</span> <span class="cm-operator">=</span> <span class="cm-number">15</span>;
+<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">objet2</span>.<span class="cm-property">value</span>);
+<span class="cm-comment">// → 15</span>
+<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">objet3</span>.<span class="cm-property">value</span>);
+<span class="cm-comment">// → 10</span></pre>
+
+<p><a class="p_ident" id="p_WJsCnqpmLJ" href="#p_WJsCnqpmLJ" tabindex="-1" role="presentation"></a>Les liaisons <code>objet1</code> et <code>objet2</code> saisissent le <em>même</em> objet, c’est pourquoi changer <code>objet1</code> change aussi la valeur de <code>objet2</code>. On dit qu’ils ont la même <em>identité</em>. La liaison <code>objet3</code> pointe vers un objet différent, qui contient initialement les mêmes propriétés que <code>objet1</code> mais qui vit une vie séparée.</p>
+
+<p><a class="p_ident" id="p_vYoPw44+9Q" href="#p_vYoPw44+9Q" tabindex="-1" role="presentation"></a>Les liaisons peuvent également être modifiables ou constantes, mais ceci est distinct de la façon dont leurs valeurs se comportent. Même si les valeurs numériques ne changent pas, vous pouvez utiliser une liaison <code>let</code> pour suivre l’évolution d’un nombre en modifiant la valeur sur laquelle pointe la liaison. De même, bien qu’une liaison <code>const</code> d’un objet ne peut pas être modifié et continuera à pointer sur le même objet, le <em>contenu</em> de cet objet peut changer.</p>
+
+<pre class="snippet cm-s-default" data-language="javascript" ><a class="c_ident" id="c_58Y+zCJK2n" href="#c_58Y+zCJK2n" tabindex="-1" role="presentation"></a><span class="cm-keyword">const</span> <span class="cm-def">score</span> <span class="cm-operator">=</span> {<span class="cm-property">visiteurs</span>: <span class="cm-number">0</span>, <span class="cm-property">domicile</span>: <span class="cm-number">0</span>};
+<span class="cm-comment">// C'est correct</span>
+<span class="cm-variable">score</span>.<span class="cm-property">visiteurs</span> <span class="cm-operator">=</span> <span class="cm-number">1</span>;
+<span class="cm-comment">// Cela n'est pas correct</span>
+<span class="cm-variable">score</span> <span class="cm-operator">=</span> {<span class="cm-property">visitors</span>: <span class="cm-number">1</span>, <span class="cm-property">home</span>: <span class="cm-number">1</span>};</pre>
+
+<p><a class="p_ident" id="p_REWtEzLDq9" href="#p_REWtEzLDq9" tabindex="-1" role="presentation"></a>Lorsque vous comparez des objets avec l’opérateur <code>==</code> de JavaScript, il compare par identité : il ne produira <code>vrai</code> que si les deux objets sont précisément la même valeur. La comparaison d’objets différents renverra <code>false</code>, même s’ils ont des propriétés identiques. Il n’existe pas d’opération de comparaison “profonde” en JavaScript, qui compare les objets par leur contenu, mais il est possible de l’écrire soi-même (ce qui est l’un des objectifs de l’exercice) <a href="04_data.html#exercise_deep_compare">exercices</a> à la fin de ce chapitre).</p>
+
+<h2><a class="h_ident" id="h_A79Upqej3O" href="#h_A79Upqej3O" tabindex="-1" role="presentation"></a>Le journal de bord du lycanthrope</h2>
+
+<p><a class="p_ident" id="p_33/srauTg7" href="#p_33/srauTg7" tabindex="-1" role="presentation"></a>Donc, Jacques démarre son interpréteur JavaScript et met en place l’environnement dont il a besoin pour tenir son journal.</p>
+
+<pre class="snippet cm-s-default" data-language="javascript" ><a class="c_ident" id="c_n9L9V+jp6U" href="#c_n9L9V+jp6U" tabindex="-1" role="presentation"></a><span class="cm-keyword">let</span> <span class="cm-def">journal</span> <span class="cm-operator">=</span> [];
+
+<span class="cm-keyword">function</span> <span class="cm-def">ajouteEntree</span>(<span class="cm-def">evenements</span>, <span class="cm-def">ecureuil</span>) {
+  <span class="cm-variable">journal</span>.<span class="cm-property">push</span>({<span class="cm-property">evenements</span>, <span class="cm-property">ecureuil</span>});
+}</pre>
+
+<p><a class="p_ident" id="p_sdLUcVDYDc" href="#p_sdLUcVDYDc" tabindex="-1" role="presentation"></a>Notez que l’objet ajouté au journal a un aspect un peu bizarre. Au lieu de de déclarer des propriétés comme <code>events : events</code>, il donne juste un nom de propriété. C’est un raccourci qui signifie la même chose : si un nom de propriété dans la notation en accolade n’est pas suivi d’une valeur la valeur est prise dans la liaison portant le même nom.</p>
+
+<p><a class="p_ident" id="p_5wJTpHTH2H" href="#p_5wJTpHTH2H" tabindex="-1" role="presentation"></a>Ainsi, tous les soirs à 22 heures, ou parfois le lendemain matin, après avoir descendu de l’étagère supérieure de son bureau, Jacques enregistre la journée.</p>
+
+<pre class="snippet cm-s-default" data-language="javascript" ><a class="c_ident" id="c_xQyCzlKO9v" href="#c_xQyCzlKO9v" tabindex="-1" role="presentation"></a><span class="cm-variable">ajouteEntree</span>([<span class="cm-string">&quot;travail&quot;</span>, <span class="cm-string">&quot;touché arbre&quot;</span>, <span class="cm-string">&quot;pizza&quot;</span>, <span class="cm-string">&quot;jogging&quot;</span>,
+          <span class="cm-string">&quot;television&quot;</span>], <span class="cm-atom">false</span>);
+<span class="cm-variable">ajouteEntree</span>([<span class="cm-string">&quot;travail&quot;</span>, <span class="cm-string">&quot;glace&quot;</span>, <span class="cm-string">&quot;chou-fleur&quot;</span>, <span class="cm-string">&quot;lasagne&quot;</span>,
+          <span class="cm-string">&quot;touché arbre&quot;</span>, <span class="cm-string">&quot;brossé dents&quot;</span>], <span class="cm-atom">false</span>);
+<span class="cm-variable">ajouteEntree</span>([<span class="cm-string">&quot;weekend&quot;</span>, <span class="cm-string">&quot;vélo&quot;</span>, <span class="cm-string">&quot;pause&quot;</span>, <span class="cm-string">&quot;cacahuètes&quot;</span>,
+          <span class="cm-string">&quot;bière&quot;</span>], <span class="cm-atom">true</span>);</pre>
+
+<p><a class="p_ident" id="p_XxmXMk7P/a" href="#p_XxmXMk7P/a" tabindex="-1" role="presentation"></a>Une fois qu’il aura assez de points de données, il a l’intention d’utiliser les statistiques pour trouver lesquels de ces événements peuvent être liés aux écureuils.</p>
+
+<p><a class="p_ident" id="p_AP60MMRuJG" href="#p_AP60MMRuJG" tabindex="-1" role="presentation"></a>La <em>corrélation</em> est une mesure de dépendance entre les variables statistiques. Une variable statistique n’est pas tout à fait la même chose qu’une variable de programmation. En statistiques, vous disposez généralement d’un ensemble de mesures, les individus, et chaque variable est mesurée pour chaque individu. La corrélation entre les variables est généralement exprimée sous la forme d’une valeur allant de -1 à 1. Une corrélation nulle signifie que les variables ne sont pas liées. Une corrélation de 1 indique que les deux variables sont parfaitement liées : si vous en connaissez une, vous connaissez aussi l’autre. Une corrélation négative de 1 négative signifie également que les variables sont parfaitement liées, mais qu’elles sont opposées: quand l’une est vraie, l’autre est fausse.</p>
+
+<p><a class="p_ident" id="p_3g85sHDYwp" href="#p_3g85sHDYwp" tabindex="-1" role="presentation"></a>Pour calculer la mesure de la corrélation entre deux variables booléennes, on peut utiliser le “coefficient phi” (<em>ϕ</em>). Il s’agit d’une formule dont est un tableau de fréquence contenant le nombre de fois que les différentes combinaisons différentes des variables ont été observées. La sortie de la formule est un nombre compris entre -1 et 1 qui décrit la corrélation.</p>
+
+<p><a class="p_ident" id="p_mBkC6iGiDL" href="#p_mBkC6iGiDL" tabindex="-1" role="presentation"></a>Nous pourrions prendre l’événement consistant à manger de la pizza et le placer dans une table de fréquence comme celui-ci, où chaque chiffre indique le nombre de fois que cette combinaison est apparue dans nos mesures :</p><figure><img src="img/pizza-squirrel.svg" alt="Eating pizza versus turning into a squirrel"></figure>
+
+<p><a class="p_ident" id="p_oNO12XkG5J" href="#p_oNO12XkG5J" tabindex="-1" role="presentation"></a>Si nous appelons cette table <em>n</em>, nous pouvons calculer <em>ϕ</em> à l’aide de la formule suivante :</p><div>
+<table style="border-collapse: collapse; margin-left: 1em;"><tr>
+  <td style="vertical-align: middle"><em>ϕ</em> =</td>
+  <td style="padding-left: .5em">
+    <div style="border-bottom: 1px solid black; padding: 0 7px;"><em>n</em><sub>11</sub><em>n</em><sub>00</sub> −
+      <em>n</em><sub>10</sub><em>n</em><sub>01</sub></div>
+    <div style="padding: 0 7px;">√<span style="border-top: 1px solid black; position: relative; top: 2px;">
+      <span style="position: relative; top: -4px"><em>n</em><sub>1•</sub><em>n</em><sub>0•</sub><em>n</em><sub>•1</sub><em>n</em><sub>•0</sub></span>
+    </span></div>
+  </td>
+</tr></table>
+</div>
+
+
+<p><a class="p_ident" id="p_vgbtavZy9W" href="#p_vgbtavZy9W" tabindex="-1" role="presentation"></a>(Si à ce stade, vous posez le livre pour vous concentrer sur un terrible terrible flashback du cours de maths de seconde - attendez ! Je n’ai pas l’intention de vous torturer avec des pages interminables de notations cryptiques - il s’agit juste de cette formule pour le moment. Et même avec celle-ci, tout ce que nous faisons est de la transformer en JavaScript).</p>
+
+<p><a class="p_ident" id="p_b5Nf/Pt7fk" href="#p_b5Nf/Pt7fk" tabindex="-1" role="presentation"></a>La notation <em>n</em><sub>01</sub> indique le nombre de mesures pour lesquelles la première variable (écrasement) est est fausse (0) et la deuxième variable (pizza) est vraie (1). Dans le tableau de la pizza la valeur <em>n</em><sub>01</sub> est 9.</p>
+
+<p><a class="p_ident" id="p_jTPUCRdRYu" href="#p_jTPUCRdRYu" tabindex="-1" role="presentation"></a>La valeur <em>n</em><sub>1-</sub> désigne la somme de toutes les mesures où la première variable est vraie, soit 5 dans le tableau de l’exemple. De même, <em>n</em><sub>•0</sub> fait référence à la somme des mesures où la deuxième variable est fausse.</p>
+
+<p><a class="p_ident" id="p_IQkS9/gCnH" href="#p_IQkS9/gCnH" tabindex="-1" role="presentation"></a>Ainsi, pour la table de pizza, la partie au-dessus de la ligne de division (le dividende) serait 1×76-4×9 = 40, et la partie en dessous (le diviseur) serait la racine carrée de 5×85×10×80, ou √340000. Cela donne un résultat de <em>ϕ</em> ≈ 0,069, ce qui est minuscule. Manger pizza ne semble pas avoir d’influence influence sur les transformations.</p>
+
+<h2><a class="h_ident" id="h_CZNDC4MKrg" href="#h_CZNDC4MKrg" tabindex="-1" role="presentation"></a>Calculer la corrélation</h2>
+
+<p><a class="p_ident" id="p_5/VWJ2zfIP" href="#p_5/VWJ2zfIP" tabindex="-1" role="presentation"></a>Nous pouvons représenter un <em>tableau</em> deux par deux en JavaScript avec un tableau à quatre éléments (<code>[76, 9, 4, 1]</code>). Nous pouvons également utiliser d’autres représentations, telles qu’un tableau contenant deux tableaux à deux éléments (<code>[[76, 9], [4, 1]]</code>) ou un objet avec des noms de propriétés comme <code>&quot;11&quot;</code> et <code>&quot;01&quot;</code>, mais le tableau plat est simple et permet de raccourcir agréablement les expressions qui accèdent au tableau sont courtes. Nous allons interpréter les indices du tableau comme deux-bit nombre binaires, où le chiffre le plus à gauche (le plus significatif) fait référence à la variable écureuil et le plus à droite (le moins significatif) fait référence à la variable de l’événement. Par exemple, le nombre binaire <code>10</code> fait référence au cas où Jacques s’est transformé en écureuil, mais l’événement (disons “pizza”) n’a pas eu lieu. Cela s’est produit quatre fois. Et comme le nombre binaire <code>10</code> est égal à 2 en notation décimale, nous allons stocker ce nombre à l’indice 2 du tableau.</p>
+
+<p id="phi_function"><a class="p_ident" id="p_7lmkByyLpf" href="#p_7lmkByyLpf" tabindex="-1" role="presentation"></a>Voici la fonction qui calcule le coefficient <em>ϕ</em> à partir d’un tel tableau. tableau :</p>
+
+<pre class="snippet cm-s-default" data-language="javascript" ><a class="c_ident" id="c_ZjXyHoba9U" href="#c_ZjXyHoba9U" tabindex="-1" role="presentation"></a><span class="cm-keyword">function</span> <span class="cm-def">phi</span>(<span class="cm-def">tableau</span>) {
+  <span class="cm-keyword">return</span> (<span class="cm-variable-2">tableau</span>[<span class="cm-number">3</span>] <span class="cm-operator">*</span> <span class="cm-variable-2">tableau</span>[<span class="cm-number">0</span>] <span class="cm-operator">-</span> <span class="cm-variable-2">tableau</span>[<span class="cm-number">2</span>] <span class="cm-operator">*</span> <span class="cm-variable-2">tableau</span>[<span class="cm-number">1</span>]) <span class="cm-operator">/</span>
+    <span class="cm-variable">Math</span>.<span class="cm-property">sqrt</span>((<span class="cm-variable-2">tableau</span>[<span class="cm-number">2</span>] <span class="cm-operator">+</span> <span class="cm-variable-2">tableau</span>[<span class="cm-number">3</span>]) <span class="cm-operator">*</span>
+              (<span class="cm-variable-2">tableau</span>[<span class="cm-number">0</span>] <span class="cm-operator">+</span> <span class="cm-variable-2">tableau</span>[<span class="cm-number">1</span>]) <span class="cm-operator">*</span>
+              (<span class="cm-variable-2">tableau</span>[<span class="cm-number">1</span>] <span class="cm-operator">+</span> <span class="cm-variable-2">tableau</span>[<span class="cm-number">3</span>]) <span class="cm-operator">*</span>
+              (<span class="cm-variable-2">tableau</span>[<span class="cm-number">0</span>] <span class="cm-operator">+</span> <span class="cm-variable-2">tableau</span>[<span class="cm-number">2</span>]));
+}
+
+<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">phi</span>([<span class="cm-number">76</span>, <span class="cm-number">9</span>, <span class="cm-number">4</span>, <span class="cm-number">1</span>]));
+<span class="cm-comment">// → 0.068599434</span></pre>
+
+<p><a class="p_ident" id="p_HZvFs9Ba76" href="#p_HZvFs9Ba76" tabindex="-1" role="presentation"></a>Il s’agit d’une traduction directe de la formule <em>ϕ</em> en JavaScript. <code>Math.sqrt</code> est la fonction racine carrée, telle que fournie par l’objet <code>Math</code> dans un environnement JavaScript standard. Nous devons ajouter deux champs de la table pour obtenir des champs comme n<sub>1•</sub> parce que les sommes des lignes ou des colonnes ne sont pas stockées directement dans notre structure de données.</p>
+
+<p><a class="p_ident" id="p_NLrr0BhcfA" href="#p_NLrr0BhcfA" tabindex="-1" role="presentation"></a>Jacques a tenu son journal pendant trois mois. Le jeu de données résultant est disponible dans le <a href="https://eloquentjavascript.net/code#4">coding sandbox</a> pour ce chapitre, où il est stocké dans la liaison <code>JOURNAL</code> et dans un fichier téléchargeable <a href="https://eloquentjavascript.net/code/journal.js">fichier</a>.</p>
+
+<p><a class="p_ident" id="p_NNjJW6RaXq" href="#p_NNjJW6RaXq" tabindex="-1" role="presentation"></a>Pour extraire une table deux par deux pour un événement spécifique du journal, nous devons boucler sur toutes les entrées et compter combien de fois l’événement se produit en relation avec les transformations de l’écureuil.</p>
+
+<pre class="snippet cm-s-default" data-language="javascript" ><a class="c_ident" id="c_N2EENNJqam" href="#c_N2EENNJqam" tabindex="-1" role="presentation"></a><span class="cm-keyword">function</span> <span class="cm-def">tableauPour</span>(<span class="cm-def">evenement</span>, <span class="cm-def">journal</span>) {
+  <span class="cm-keyword">let</span> <span class="cm-def">tableau</span> <span class="cm-operator">=</span> [<span class="cm-number">0</span>, <span class="cm-number">0</span>, <span class="cm-number">0</span>, <span class="cm-number">0</span>];
+  <span class="cm-keyword">for</span> (<span class="cm-keyword">let</span> <span class="cm-def">i</span> <span class="cm-operator">=</span> <span class="cm-number">0</span>; <span class="cm-variable-2">i</span> <span class="cm-operator">&lt;</span> <span class="cm-variable-2">journal</span>.<span class="cm-property">length</span>; <span class="cm-variable-2">i</span><span class="cm-operator">++</span>) {
+    <span class="cm-keyword">let</span> <span class="cm-def">entree</span> <span class="cm-operator">=</span> <span class="cm-variable-2">journal</span>[<span class="cm-variable-2">i</span>], <span class="cm-def">index</span> <span class="cm-operator">=</span> <span class="cm-number">0</span>;
+    <span class="cm-keyword">if</span> (<span class="cm-variable-2">entree</span>.<span class="cm-property">events</span>.<span class="cm-property">includes</span>(<span class="cm-variable-2">evenement</span>)) <span class="cm-variable-2">index</span> <span class="cm-operator">+=</span> <span class="cm-number">1</span>;
+    <span class="cm-keyword">if</span> (<span class="cm-variable-2">entree</span>.<span class="cm-property">ecureuil</span>) <span class="cm-variable-2">index</span> <span class="cm-operator">+=</span> <span class="cm-number">2</span>;
+    <span class="cm-variable-2">tableau</span>[<span class="cm-variable-2">index</span>] <span class="cm-operator">+=</span> <span class="cm-number">1</span>;
+  }
+  <span class="cm-keyword">return</span> <span class="cm-variable-2">tableau</span>;
+}
+
+<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">tableauPour</span>(<span class="cm-string">&quot;pizza&quot;</span>, <span class="cm-variable">JOURNAL</span>));
+<span class="cm-comment">// → [76, 9, 4, 1]</span></pre>
+
+<p><a class="p_ident" id="p_gE6vTygtlQ" href="#p_gE6vTygtlQ" tabindex="-1" role="presentation"></a>Les tableaux possèdent une méthode <code>includes</code> qui vérifie si une valeur donnée existe dans le tableau. La fonction utilise cette méthode pour déterminer si le nom de l’événement qui l’intéresse fait partie de la liste des événements pour un jour donné.</p>
+
+<p><a class="p_ident" id="p_01qgJpMTUJ" href="#p_01qgJpMTUJ" tabindex="-1" role="presentation"></a>Le corps de la boucle dans <code>tableauPour</code> détermine dans quelle case de la table chaque entrée du journal arrive, en vérifiant si l’entrée contient l’événement spécifique qui l’intéresse et si l’événement se produit en même temps qu’un incident d’écureuil. La boucle ajoute ensuite une entrée dans la bonne case dans le tableau.</p>
+
+<p><a class="p_ident" id="p_uwPY3YPCpx" href="#p_uwPY3YPCpx" tabindex="-1" role="presentation"></a>Nous avons maintenant les outils nécessaires pour calculer les corrélations individuelles. La seule étape restante est de trouver une corrélation pour chaque type d’événement enregistré et voir si quelque chose ressort.</p>
+
+<h2 id="for_of_loop"><a class="h_ident" id="h_DAg8O8FWxG" href="#h_DAg8O8FWxG" tabindex="-1" role="presentation"></a>Boucles de tableau</h2>
+
+<p><a class="p_ident" id="p_STUgmFmBGp" href="#p_STUgmFmBGp" tabindex="-1" role="presentation"></a>Dans la fonction <code>tableauPour</code>, il y a une boucle comme celle-ci :</p>
+
+<pre class="snippet cm-s-default" data-language="javascript" ><a class="c_ident" id="c_Kz338ggIYL" href="#c_Kz338ggIYL" tabindex="-1" role="presentation"></a><span class="cm-keyword">for</span> (<span class="cm-keyword">let</span> <span class="cm-def">i</span> <span class="cm-operator">=</span> <span class="cm-number">0</span>; <span class="cm-variable-2">i</span> <span class="cm-operator">&lt;</span> <span class="cm-variable">JOURNAL</span>.<span class="cm-property">length</span>; <span class="cm-variable-2">i</span><span class="cm-operator">++</span>) {
+  <span class="cm-keyword">let</span> <span class="cm-def">entree</span> <span class="cm-operator">=</span> <span class="cm-variable">JOURNAL</span>[<span class="cm-variable-2">i</span>];
+  <span class="cm-comment">// Do something with entry</span>
+}</pre>
+
+<p><a class="p_ident" id="p_r79S81LZLD" href="#p_r79S81LZLD" tabindex="-1" role="presentation"></a>Ce type de boucle est commun dans le JavaScript classique - passer sur des tableaux un élément à la fois est quelque chose qui revient souvent, et pour ce faire vous exécutez un compteur sur la longueur du tableau et choisissez chaque élément à tour de rôle.</p>
+
+<p><a class="p_ident" id="p_u/DkzNSt3i" href="#p_u/DkzNSt3i" tabindex="-1" role="presentation"></a>Il existe un moyen plus simple d’écrire de telles boucles en JavaScript moderne.</p>
+
+<pre class="snippet cm-s-default" data-language="javascript" ><a class="c_ident" id="c_eknkGAbt4O" href="#c_eknkGAbt4O" tabindex="-1" role="presentation"></a><span class="cm-keyword">for</span> (<span class="cm-keyword">let</span> <span class="cm-def">entree</span> <span class="cm-keyword">of</span> <span class="cm-variable">JOURNAL</span>) {
+  <span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-string-2">`${</span><span class="cm-variable-2">entree</span>.<span class="cm-property">events</span>.<span class="cm-property">length</span><span class="cm-string-2">}</span> <span class="cm-string-2">evenements.`</span>);
+}</pre>
+
+<p><a class="p_ident" id="p_SE5lXHp2ZG" href="#p_SE5lXHp2ZG" tabindex="-1" role="presentation"></a>Quand une boucle <code>for</code> ressemble à ça, avec le mot <code>of</code> après une définition de variable, elle va boucler sur les éléments de la valeur donnée après <code>of</code>. Cela fonctionne non seulement pour les tableaux, mais aussi pour les chaînes et certaines d’autres structures de données. Nous verrons <em>comment</em> cela fonctionne dans le <a href="06_object.html">Chapitre6</a>.</p>
+
+<h2 id="analysis"><a class="h_ident" id="h_cTV87urpTK" href="#h_cTV87urpTK" tabindex="-1" role="presentation"></a>L’analyse finale</h2>
+
+<p><a class="p_ident" id="p_BTTgupKVpj" href="#p_BTTgupKVpj" tabindex="-1" role="presentation"></a>Nous devons calculer une corrélation pour chaque type d’événement qui se produit dans l’ensemble des données. Pour ce faire, nous devons d’abord <em>trouver</em> chaque type d’événement.</p>
+
+<pre class="snippet cm-s-default" data-language="javascript" ><a class="c_ident" id="c_may2DjaUDB" href="#c_may2DjaUDB" tabindex="-1" role="presentation"></a><span class="cm-keyword">function</span> <span class="cm-def">evenementsJournal</span>(<span class="cm-def">journal</span>) {
+  <span class="cm-keyword">let</span> <span class="cm-def">evenements</span> <span class="cm-operator">=</span> [];
+  <span class="cm-keyword">for</span> (<span class="cm-keyword">let</span> <span class="cm-def">entree</span> <span class="cm-keyword">of</span> <span class="cm-variable-2">journal</span>) {
+    <span class="cm-keyword">for</span> (<span class="cm-keyword">let</span> <span class="cm-def">evenement</span> <span class="cm-keyword">of</span> <span class="cm-variable-2">entree</span>.<span class="cm-property">evenements</span>) {
+      <span class="cm-keyword">if</span> (<span class="cm-operator">!</span><span class="cm-variable-2">evenements</span>.<span class="cm-property">includes</span>(<span class="cm-variable-2">evenement</span>)) {
+        <span class="cm-variable-2">evenements</span>.<span class="cm-property">push</span>(<span class="cm-variable-2">evenement</span>);
+      }
+    }
+  }
+  <span class="cm-keyword">return</span> <span class="cm-variable-2">evenements</span>;
+}
+
+<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">evenementsJournal</span>(<span class="cm-variable">JOURNAL</span>));
+<span class="cm-comment">// → [&quot;carotte&quot;, &quot;exercice&quot;, &quot;weekend&quot;, &quot;pain&quot;, …]</span></pre>
+
+<p><a class="p_ident" id="p_ndwEsZFeTw" href="#p_ndwEsZFeTw" tabindex="-1" role="presentation"></a>En passant en revue tous les événements et en ajoutant ceux qui ne sont pas déjà dans le tableau <code>evenements</code>, la fonction collecte tous les types d’événements.</p>
+
+<p><a class="p_ident" id="p_H7PBD5WZtx" href="#p_H7PBD5WZtx" tabindex="-1" role="presentation"></a>Avec cela, nous pouvons voir toutes les corrélations.</p>
+
+<pre class="snippet cm-s-default" data-language="javascript" ><a class="c_ident" id="c_pE7B/aUVKm" href="#c_pE7B/aUVKm" tabindex="-1" role="presentation"></a><span class="cm-keyword">for</span> (<span class="cm-keyword">let</span> <span class="cm-def">evenement</span> <span class="cm-keyword">of</span> <span class="cm-variable">evenementsJournal</span>(<span class="cm-variable">JOURNAL</span>)) {
+  <span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable-2">evenement</span> <span class="cm-operator">+</span> <span class="cm-string">&quot;:&quot;</span>, <span class="cm-variable">phi</span>(<span class="cm-variable">tableauPour</span>(<span class="cm-variable-2">evenement</span>, <span class="cm-variable">JOURNAL</span>)));
+}
+<span class="cm-comment">// → carotte:   0.0140970969</span>
+<span class="cm-comment">// → exercice: 0.0685994341</span>
+<span class="cm-comment">// → weekend:  0.1371988681</span>
+<span class="cm-comment">// → pain:   -0.0757554019</span>
+<span class="cm-comment">// → gateau: -0.0648203724</span>
+<span class="cm-comment">// et ainsi de suite...</span></pre>
+
+<p><a class="p_ident" id="p_pzVG19A/Et" href="#p_pzVG19A/Et" tabindex="-1" role="presentation"></a>La plupart des corrélations semblent être proches de zéro. Manger des carottes, du pain, ou du gateau ne déclenche apparemment pas la lycanthropie de l’écureuil. Cela semble se produire un peu plus souvent le week-end. Filtrons les résultats pour ne montrer que les corrélations supérieures à 0,1 ou inférieures à -0,1.</p>
+
+<pre class="snippet cm-s-default" data-language="javascript" ><a class="c_ident" id="c_KFtze94UPl" href="#c_KFtze94UPl" tabindex="-1" role="presentation"></a><span class="cm-keyword">for</span> (<span class="cm-keyword">let</span> <span class="cm-def">evenement</span> <span class="cm-keyword">of</span> <span class="cm-variable">evenementsJournal</span>(<span class="cm-variable">JOURNAL</span>)) {
+  <span class="cm-keyword">let</span> <span class="cm-def">correlation</span> <span class="cm-operator">=</span> <span class="cm-variable">phi</span>(<span class="cm-variable">tableauPour</span>(<span class="cm-variable-2">evenement</span>, <span class="cm-variable">JOURNAL</span>));
+  <span class="cm-keyword">if</span> (<span class="cm-variable-2">correlation</span> <span class="cm-operator">&gt;</span> <span class="cm-number">0.1</span> <span class="cm-operator">||</span> <span class="cm-variable-2">correlation</span> <span class="cm-operator">&lt;</span> <span class="cm-operator">-</span><span class="cm-number">0.1</span>) {
+    <span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable-2">evenement</span> <span class="cm-operator">+</span> <span class="cm-string">&quot;:&quot;</span>, <span class="cm-variable-2">correlation</span>);
+  }
+}
+<span class="cm-comment">// → weekend:        0.1371988681</span>
+<span class="cm-comment">// → brossé dents:  -0.3805211953</span>
+<span class="cm-comment">// → bonbons:        0.1296407447</span>
+<span class="cm-comment">// → travail:       -0.1371988681</span>
+<span class="cm-comment">// → spaghetti:      0.2425356250</span>
+<span class="cm-comment">// → lire:           0.1106828054</span>
+<span class="cm-comment">// → cacahuètes:     0.5902679812</span></pre>
+
+<p><a class="p_ident" id="p_95JOYOleB6" href="#p_95JOYOleB6" tabindex="-1" role="presentation"></a>Aha ! Il y a deux facteurs avec une corrélation qui est clairement plus forte que les autres. Manger des cacahuètes a un fort effet positif sur la probabilité de se transformer en écureuil, tandis que se brosser les dents a un effet négatif significatif.</p>
+
+<p><a class="p_ident" id="p_B8b/sLA9GZ" href="#p_B8b/sLA9GZ" tabindex="-1" role="presentation"></a>Intéressant. Essayons quelque chose.</p>
+
+<pre class="snippet cm-s-default" data-language="javascript" ><a class="c_ident" id="c_81Fv9wUshO" href="#c_81Fv9wUshO" tabindex="-1" role="presentation"></a><span class="cm-keyword">for</span> (<span class="cm-keyword">let</span> <span class="cm-def">entree</span> <span class="cm-keyword">of</span> <span class="cm-variable">JOURNAL</span>) {
+  <span class="cm-keyword">if</span> (<span class="cm-variable-2">entree</span>.<span class="cm-property">events</span>.<span class="cm-property">includes</span>(<span class="cm-string">&quot;cacahuètes&quot;</span>) <span class="cm-operator">&amp;&amp;</span>
+     <span class="cm-operator">!</span><span class="cm-variable-2">entree</span>.<span class="cm-property">events</span>.<span class="cm-property">includes</span>(<span class="cm-string">&quot;brossé dents&quot;</span>)) {
+    <span class="cm-variable-2">entree</span>.<span class="cm-property">events</span>.<span class="cm-property">push</span>(<span class="cm-string">&quot;cacahuètes dents&quot;</span>);
+  }
+}
+<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">phi</span>(<span class="cm-variable">tableauPour</span>(<span class="cm-string">&quot;cacahuètes dents&quot;</span>, <span class="cm-variable">JOURNAL</span>)));
+<span class="cm-comment">// → 1</span></pre>
+
+<p><a class="p_ident" id="p_EULh2KkX9C" href="#p_EULh2KkX9C" tabindex="-1" role="presentation"></a>C’est un résultat important. Le phénomène se produit précisément lorsque Jacques mange des cacahuètes et ne se brosse pas les dents. Si seulement il n’était pas flemmard de l’hygiène dentaire, il n’aurait jamais remarqué son malheur.</p>
+
+<p><a class="p_ident" id="p_4JRl5KT39H" href="#p_4JRl5KT39H" tabindex="-1" role="presentation"></a>Sachant cela, Jacques arrête de manger des cacahuètes et constate que que ses transformations ne reviennent pas.</p>
+
+<p><a class="p_ident" id="p_nmDDVBTwde" href="#p_nmDDVBTwde" tabindex="-1" role="presentation"></a>Pendant quelques années, tout va bien pour Jacques. Mais à un moment donné, il perd son emploi. Parce qu’il vit dans un pays méchant où ne pas avoir de travail signifie ne pas avoir de services médicaux, il est obligé de prendre un emploi dans un cirque où il se produit sous le nom de <em>L’incroyable homme écureuil</em>, se bourrant la bouche de beurre de cacahuète avant chaque spectacle.</p>
+
+<p><a class="p_ident" id="p_AiHZKs2TGq" href="#p_AiHZKs2TGq" tabindex="-1" role="presentation"></a>Un jour, lassé de cette existence pitoyable, Jacques ne parvient pas à reprendre sa forme humaine saute par une fissure du chapiteau du cirque et et disparaît dans la forêt. On ne le reverra plus jamais.</p>
+
+<h2><a class="h_ident" id="h_Bd9Eu4qlv4" href="#h_Bd9Eu4qlv4" tabindex="-1" role="presentation"></a>Davantage de tableaulogie</h2>
+
+<p><a class="p_ident" id="p_OXVVqBKPTg" href="#p_OXVVqBKPTg" tabindex="-1" role="presentation"></a>Avant de terminer ce chapitre, je voudrais vous présenter quelques autres concepts liés aux objets. Je vais commencer par vous présenter quelques méthodes de tableau généralement utiles.</p>
+
+<p><a class="p_ident" id="p_WuPfhHVG81" href="#p_WuPfhHVG81" tabindex="-1" role="presentation"></a>Nous avons vu <code>push</code> et <code>pop</code>, qui ajoutent et suppriment des éléments à la à la fin d’un tableau, <a href="04_data.html#array_methods">plus tôt</a> dans ce chapitre. Les méthodes correspondantes pour ajouter et supprimer des éléments au début d’un tableau sont appelées <code>unshift</code> et <code>shift</code>.</p>
+
+<pre class="snippet cm-s-default" data-language="javascript" ><a class="c_ident" id="c_HCPBHQzOJL" href="#c_HCPBHQzOJL" tabindex="-1" role="presentation"></a><span class="cm-keyword">let</span> <span class="cm-def">listeDeTaches</span> <span class="cm-operator">=</span> [];
+<span class="cm-keyword">function</span> <span class="cm-def">memoriser</span>(<span class="cm-def">tache</span>) {
+  <span class="cm-variable">listeDeTaches</span>.<span class="cm-property">push</span>(<span class="cm-variable-2">tache</span>);
+}
+<span class="cm-keyword">function</span> <span class="cm-def">prendTache</span>() {
+  <span class="cm-keyword">return</span> <span class="cm-variable">listeDeTaches</span>.<span class="cm-property">shift</span>();
+}
+<span class="cm-keyword">function</span> <span class="cm-def">memoriserUrgence</span>(<span class="cm-def">tache</span>) {
+  <span class="cm-variable">listeDeTaches</span>.<span class="cm-property">unshift</span>(<span class="cm-variable-2">tache</span>);
+}</pre>
+
+<p><a class="p_ident" id="p_z63R+VNIr2" href="#p_z63R+VNIr2" tabindex="-1" role="presentation"></a>Ce programme gère une file d’attente de tâches. Vous ajoutez des tâches à la fin de la file d’attente en appelant <code>memoriser(&quot;courses&quot;)</code>, et lorsque vous êtes prêt à faire quelque chose, vous appelez <code>prendTache()</code> pour récupérer (et supprimer) l’élément de tête de la file d’attente. La fonction <code>memoriserUrgence</code> ajoute également une tâche mais l’ajoute à l’avant et non à l’arrière de la file d’attente.</p>
+
+<p><a class="p_ident" id="p_EYNBmRtJg+" href="#p_EYNBmRtJg+" tabindex="-1" role="presentation"></a>Pour rechercher une valeur spécifique, les tableaux fournissent une méthode <code>indexOf</code>. Cette méthode recherche dans le tableau du début à la fin et renvoie l’indice auquel la valeur demandée a été trouvée - ou -1 si elle n’a pas été trouvée. Pour effectuer une recherche à partir de la fin plutôt que du début, il existe une méthode similaire appelée <code>lastIndexOf</code>.</p>
+
+<pre class="snippet cm-s-default" data-language="javascript" ><a class="c_ident" id="c_N+G0EtTfto" href="#c_N+G0EtTfto" tabindex="-1" role="presentation"></a><span class="cm-variable">console</span>.<span class="cm-property">log</span>([<span class="cm-number">1</span>, <span class="cm-number">2</span>, <span class="cm-number">3</span>, <span class="cm-number">2</span>, <span class="cm-number">1</span>].<span class="cm-property">indexOf</span>(<span class="cm-number">2</span>));
+<span class="cm-comment">// → 1</span>
+<span class="cm-variable">console</span>.<span class="cm-property">log</span>([<span class="cm-number">1</span>, <span class="cm-number">2</span>, <span class="cm-number">3</span>, <span class="cm-number">2</span>, <span class="cm-number">1</span>].<span class="cm-property">lastIndexOf</span>(<span class="cm-number">2</span>));
+<span class="cm-comment">// → 3</span></pre>
+
+<p><a class="p_ident" id="p_S62eDMoHPq" href="#p_S62eDMoHPq" tabindex="-1" role="presentation"></a><code>indexOf</code> et <code>lastIndexOf</code> prennent toute deux un second argument facultatif qui indique où commencer la recherche.</p>
+
+<p><a class="p_ident" id="p_8VXqUM6KLX" href="#p_8VXqUM6KLX" tabindex="-1" role="presentation"></a>Une autre méthode de tableau fondamentale est <code>slice</code>, qui prend les indices de début et de fin et renvoie un tableau qui ne contient que les éléments situés entre eux. L’indice de début est inclusif, l’indice de fin est exclusif.</p>
+
+<pre class="snippet cm-s-default" data-language="javascript" ><a class="c_ident" id="c_zCBzPnMpIk" href="#c_zCBzPnMpIk" tabindex="-1" role="presentation"></a><span class="cm-variable">console</span>.<span class="cm-property">log</span>([<span class="cm-number">0</span>, <span class="cm-number">1</span>, <span class="cm-number">2</span>, <span class="cm-number">3</span>, <span class="cm-number">4</span>].<span class="cm-property">slice</span>(<span class="cm-number">2</span>, <span class="cm-number">4</span>));
+<span class="cm-comment">// → [2, 3]</span>
+<span class="cm-variable">console</span>.<span class="cm-property">log</span>([<span class="cm-number">0</span>, <span class="cm-number">1</span>, <span class="cm-number">2</span>, <span class="cm-number">3</span>, <span class="cm-number">4</span>].<span class="cm-property">slice</span>(<span class="cm-number">2</span>));
+<span class="cm-comment">// → [2, 3, 4]</span></pre>
+
+<p><a class="p_ident" id="p_ADV1cx/Tlb" href="#p_ADV1cx/Tlb" tabindex="-1" role="presentation"></a>Si l’indice de fin n’est pas donné, <code>slice</code> prendra tous les éléments qui se trouvent après l’index de début. Vous pouvez également omettre l’indice de début pour copier le tableau entier.</p>
+
+<p><a class="p_ident" id="p_mDjucN+rBR" href="#p_mDjucN+rBR" tabindex="-1" role="presentation"></a>La méthode <code>concat</code> peut être utilisée pour coller des tableaux ensemble pour créer un nouveau tableau, de la même manière que l’opérateur <code>+</code> le fait pour les chaînes de caractères.</p>
+
+<p><a class="p_ident" id="p_A9HLon6p0N" href="#p_A9HLon6p0N" tabindex="-1" role="presentation"></a>L’exemple suivant montre les méthodes <code>concat</code> et <code>slice</code> en action. Il prend un tableau et un index, et renvoie un nouveau tableau qui est une copie du tableau d’origine avec l’élément à l’indice donné supprimé.</p>
+
+<pre class="snippet cm-s-default" data-language="javascript" ><a class="c_ident" id="c_s85m2G8SK0" href="#c_s85m2G8SK0" tabindex="-1" role="presentation"></a><span class="cm-keyword">function</span> <span class="cm-def">retirer</span>(<span class="cm-def">tableau</span>, <span class="cm-def">index</span>) {
+  <span class="cm-keyword">return</span> <span class="cm-variable-2">tableau</span>.<span class="cm-property">slice</span>(<span class="cm-number">0</span>, <span class="cm-variable-2">index</span>)
+    .<span class="cm-property">concat</span>(<span class="cm-variable-2">tableau</span>.<span class="cm-property">slice</span>(<span class="cm-variable-2">index</span> <span class="cm-operator">+</span> <span class="cm-number">1</span>));
+}
+<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">retirer</span>([<span class="cm-string">&quot;a&quot;</span>, <span class="cm-string">&quot;b&quot;</span>, <span class="cm-string">&quot;c&quot;</span>, <span class="cm-string">&quot;d&quot;</span>, <span class="cm-string">&quot;e&quot;</span>], <span class="cm-number">2</span>));
+<span class="cm-comment">// → [&quot;a&quot;, &quot;b&quot;, &quot;d&quot;, &quot;e&quot;]</span></pre>
+
+<p><a class="p_ident" id="p_4eV6elRR8Y" href="#p_4eV6elRR8Y" tabindex="-1" role="presentation"></a>Si vous passez à <code>concat</code> un argument qui n’est pas un tableau, cette valeur sera ajoutée au nouveau tableau comme s’il s’agissait d’un tableau à un élément.</p>
+
+<h2><a class="h_ident" id="h_pZ+2WINo33" href="#h_pZ+2WINo33" tabindex="-1" role="presentation"></a>Les chaines et leurs propriétés</h2>
+
+<p><a class="p_ident" id="p_LsQrFzN7HN" href="#p_LsQrFzN7HN" tabindex="-1" role="presentation"></a>Nous pouvons lire des propriétés comme <code>length</code> et <code>toUpperCase</code> à partir de valeurs de chaînes de caractères. Mais si vous essayez d’ajouter une nouvelle propriété, elle ne s’ajoute pas.</p>
+
+<pre class="snippet cm-s-default" data-language="javascript" ><a class="c_ident" id="c_xvzL9wErq7" href="#c_xvzL9wErq7" tabindex="-1" role="presentation"></a><span class="cm-keyword">let</span> <span class="cm-def">kim</span> <span class="cm-operator">=</span> <span class="cm-string">&quot;Kim&quot;</span>;
+<span class="cm-variable">kim</span>.<span class="cm-property">age</span> <span class="cm-operator">=</span> <span class="cm-number">88</span>;
+<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">kim</span>.<span class="cm-property">age</span>);
+<span class="cm-comment">// → undefined</span></pre>
+
+<p><a class="p_ident" id="p_VYdMbaHibL" href="#p_VYdMbaHibL" tabindex="-1" role="presentation"></a>Les valeurs de type chaîne de caractères, nombre et booléen ne sont pas des objets, et bien que le langage ne se plaint pas si vous tentez de leur attribuer de nouvelles propriétés, il ne stocke pas réellement ces propriétés. Comme mentionné précédemment ces valeurs sont immuables et ne peuvent pas être modifiées.</p>
+
+<p><a class="p_ident" id="p_uBzkutkm7A" href="#p_uBzkutkm7A" tabindex="-1" role="presentation"></a>Mais ces types ont des propriétés intégrées. Chaque valeur de chaîne possède un nombre de méthodes. Certaines très utiles sont <code>slice</code> et <code>indexOf</code>, qui ressemblent aux méthodes de tableau du même nom.</p>
+
+<pre class="snippet cm-s-default" data-language="javascript" ><a class="c_ident" id="c_/Tmq1doYeG" href="#c_/Tmq1doYeG" tabindex="-1" role="presentation"></a><span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-string">&quot;coconuts&quot;</span>.<span class="cm-property">slice</span>(<span class="cm-number">4</span>, <span class="cm-number">7</span>));
+<span class="cm-comment">// → nut</span>
+<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-string">&quot;coconut&quot;</span>.<span class="cm-property">indexOf</span>(<span class="cm-string">&quot;u&quot;</span>));
+<span class="cm-comment">// → 5</span></pre>
+
+<p><a class="p_ident" id="p_NJwGOQRi03" href="#p_NJwGOQRi03" tabindex="-1" role="presentation"></a>Une des différences est que le <code>indexOf</code> d’une chaîne peut rechercher une chaîne contenant plus d’un caractère, alors que la méthode correspondante pour les tableaux ne recherche qu’un seul élément.</p>
+
+<pre class="snippet cm-s-default" data-language="javascript" ><a class="c_ident" id="c_xM5/GBnZVG" href="#c_xM5/GBnZVG" tabindex="-1" role="presentation"></a><span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-string">&quot;one two three&quot;</span>.<span class="cm-property">indexOf</span>(<span class="cm-string">&quot;ee&quot;</span>));
+<span class="cm-comment">// → 11</span></pre>
+
+<p><a class="p_ident" id="p_SFlMPA63u4" href="#p_SFlMPA63u4" tabindex="-1" role="presentation"></a>La méthode <code>trim</code> supprime les espaces (espaces, nouvelles lignes, tabulations et caractères similaires) au début et à la fin d’une chaîne.</p>
+
+<pre class="snippet cm-s-default" data-language="javascript" ><a class="c_ident" id="c_0AfLRWyjq0" href="#c_0AfLRWyjq0" tabindex="-1" role="presentation"></a><span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-string">&quot;  okay \n &quot;</span>.<span class="cm-property">trim</span>());
+<span class="cm-comment">// → okay</span></pre>
+
+<p><a class="p_ident" id="p_rCrZS9+5UC" href="#p_rCrZS9+5UC" tabindex="-1" role="presentation"></a>La fonction <code>zeroPad</code> du <a href="fonctions">chapitre précédent</a> existe aussi en tant que méthode. Elle s’appelle <code>padStart</code> et prend comme arguments la longueur souhaitée et le caractère de remplissage comme arguments.</p>
+
+<pre class="snippet cm-s-default" data-language="javascript" ><a class="c_ident" id="c_SJbD9MiYu+" href="#c_SJbD9MiYu+" tabindex="-1" role="presentation"></a><span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">String</span>(<span class="cm-number">6</span>).<span class="cm-property">padStart</span>(<span class="cm-number">3</span>, <span class="cm-string">&quot;0&quot;</span>));
+<span class="cm-comment">// → 006</span></pre>
+
+<p id="split"><a class="p_ident" id="p_43R5nm2J6q" href="#p_43R5nm2J6q" tabindex="-1" role="presentation"></a>Vous pouvez séparer une chaîne sur chaque occurrence d’une autre chaîne avec <code>split</code> et la joindre à nouveau avec <code>join</code>.</p>
+
+<pre class="snippet cm-s-default" data-language="javascript" ><a class="c_ident" id="c_RcO5QtAU5P" href="#c_RcO5QtAU5P" tabindex="-1" role="presentation"></a><span class="cm-keyword">let</span> <span class="cm-def">phrase</span> <span class="cm-operator">=</span> <span class="cm-string">&quot;Les messagers sagittaire piétinent&quot;</span>;
+<span class="cm-keyword">let</span> <span class="cm-def">mots</span> <span class="cm-operator">=</span> <span class="cm-variable">phrase</span>.<span class="cm-property">split</span>(<span class="cm-string">&quot; &quot;</span>);
+<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">mots</span>);
+<span class="cm-comment">// → [&quot;Les&quot;, &quot;messagers&quot;, &quot;sagittaire&quot;, &quot;piétinent&quot;]</span>
+<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">mots</span>.<span class="cm-property">join</span>(<span class="cm-string">&quot;. &quot;</span>));
+<span class="cm-comment">// → Les. messagers. sagittaire. piétinent</span></pre>
+
+<p><a class="p_ident" id="p_mrs2oYhXqo" href="#p_mrs2oYhXqo" tabindex="-1" role="presentation"></a>Une chaîne de caractères peut être répétée à l’aide de la méthode <code>repeat</code>, qui crée une nouvelle chaîne de caractères contenant plusieurs copies de la chaîne d’origine, collées entre ensemble.</p>
+
+<pre class="snippet cm-s-default" data-language="javascript" ><a class="c_ident" id="c_70WotkNADb" href="#c_70WotkNADb" tabindex="-1" role="presentation"></a><span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-string">&quot;LA&quot;</span>.<span class="cm-property">repeat</span>(<span class="cm-number">3</span>));
+<span class="cm-comment">// → LALALA</span></pre>
+
+<p><a class="p_ident" id="p_bczy6UtO59" href="#p_bczy6UtO59" tabindex="-1" role="presentation"></a>Nous avons déjà vu la propriété <code>length</code> du type string. Accéder à aux caractères individuels d’une chaîne de caractères ressemble à l’accès aux éléments d’un tableau (avec une mise en garde que nous aborderons dans le <a href="05_higher_order.html#code_units">chapitre 5</a>).</p>
+
+<pre class="snippet cm-s-default" data-language="javascript" ><a class="c_ident" id="c_dJwPWKiMkC" href="#c_dJwPWKiMkC" tabindex="-1" role="presentation"></a><span class="cm-keyword">let</span> <span class="cm-def">chaine</span> <span class="cm-operator">=</span> <span class="cm-string">&quot;abc&quot;</span>;
+<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">chaine</span>.<span class="cm-property">length</span>);
+<span class="cm-comment">// → 3</span>
+<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">chaine</span>[<span class="cm-number">1</span>]);
+<span class="cm-comment">// → b</span></pre>
+
+<h2 id="rest_parameters"><a class="h_ident" id="h_QQ3/rwtfJZ" href="#h_QQ3/rwtfJZ" tabindex="-1" role="presentation"></a>Paramètres restants</h2>
+
+<p><a class="p_ident" id="p_E42I1q5K9D" href="#p_E42I1q5K9D" tabindex="-1" role="presentation"></a>Il peut être utile pour une fonction d’accepter un nombre quelconque d’arguments. Par exemple, <code>Math.max</code> calcule le maximum de <em>tous</em> les arguments qui lui sont donnés.</p>
+
+<p><a class="p_ident" id="p_8z2KId2ncy" href="#p_8z2KId2ncy" tabindex="-1" role="presentation"></a>Pour écrire une telle fonction, il faut mettre trois points avant le dernier paramètrede la fonction, comme ceci :</p>
+
+<pre class="snippet cm-s-default" data-language="javascript" ><a class="c_ident" id="c_nqoA1fbZGn" href="#c_nqoA1fbZGn" tabindex="-1" role="presentation"></a><span class="cm-keyword">function</span> <span class="cm-def">max</span>(<span class="cm-meta">...</span><span class="cm-def">nombres</span>) {
+  <span class="cm-keyword">let</span> <span class="cm-def">resultat</span> <span class="cm-operator">=</span> <span class="cm-operator">-</span><span class="cm-atom">Infinity</span>;
+  <span class="cm-keyword">for</span> (<span class="cm-keyword">let</span> <span class="cm-def">nombre</span> <span class="cm-keyword">of</span> <span class="cm-variable-2">nombres</span>) {
+    <span class="cm-keyword">if</span> (<span class="cm-variable-2">nombre</span> <span class="cm-operator">&gt;</span> <span class="cm-variable-2">resultat</span>) <span class="cm-variable-2">resultat</span> <span class="cm-operator">=</span> <span class="cm-variable-2">nombre</span>;
+  }
+  <span class="cm-keyword">return</span> <span class="cm-variable-2">resultat</span>;
+}
+<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">max</span>(<span class="cm-number">4</span>, <span class="cm-number">1</span>, <span class="cm-number">9</span>, <span class="cm-operator">-</span><span class="cm-number">2</span>));
+<span class="cm-comment">// → 9</span></pre>
+
+<p><a class="p_ident" id="p_TvdhgqQ3NR" href="#p_TvdhgqQ3NR" tabindex="-1" role="presentation"></a>Lorsqu’une telle fonction est appelée, les <em>paramètres restants</em> sont liés à un tableau contenant tous les autres arguments. S’il y a d’autres paramètres avant lui, leurs valeurs ne font pas partie de ce tableau. Lorsque, comme dans <code>max</code>, ils sont les seuls paramètres, il contiendra tous les arguments.</p>
+
+<p><a class="p_ident" id="p_vCeXFwbYQX" href="#p_vCeXFwbYQX" tabindex="-1" role="presentation"></a>Vous pouvez utiliser une notation similaire à trois points pour <em>appeler</em> une fonction avec un tableau d’arguments.</p>
+
+<pre class="snippet cm-s-default" data-language="javascript" ><a class="c_ident" id="c_9978vmb3Z3" href="#c_9978vmb3Z3" tabindex="-1" role="presentation"></a><span class="cm-keyword">let</span> <span class="cm-def">nombres</span> <span class="cm-operator">=</span> [<span class="cm-number">5</span>, <span class="cm-number">1</span>, <span class="cm-number">7</span>];
+<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">max</span>(<span class="cm-meta">...</span><span class="cm-variable">nombres</span>));
+<span class="cm-comment">// → 7</span></pre>
+
+<p><a class="p_ident" id="p_aZTvcUPj4c" href="#p_aZTvcUPj4c" tabindex="-1" role="presentation"></a>Cela &quot;étends” le tableau dans l’appel de fonction, en passant ses éléments comme des arguments séparés. Il est possible d’inclure un tableau comme cela avec d’autres arguments, comme dans <code>max(9, .<wbr>.<wbr>.<wbr>nombres, 2)</code>.</p>
+
+<p><a class="p_ident" id="p_ABHSgLfQJa" href="#p_ABHSgLfQJa" tabindex="-1" role="presentation"></a>La notation des tableaux entre crochets permet de la même façon à l’opérateur triple point d’étendre un autre tableau dans le nouveau tableau.</p>
+
+<pre class="snippet cm-s-default" data-language="javascript" ><a class="c_ident" id="c_0kRW8INikg" href="#c_0kRW8INikg" tabindex="-1" role="presentation"></a><span class="cm-keyword">let</span> <span class="cm-def">mots</span> <span class="cm-operator">=</span> [<span class="cm-string">&quot;jamais&quot;</span>, <span class="cm-string">&quot;completement&quot;</span>];
+<span class="cm-variable">console</span>.<span class="cm-property">log</span>([<span class="cm-string">&quot;ne va&quot;</span>, <span class="cm-meta">...</span><span class="cm-variable">mots</span>, <span class="cm-string">&quot;comprendre&quot;</span>]);
+<span class="cm-comment">// → [&quot;ne va&quot;, &quot;jamais&quot;, &quot;completement&quot;, &quot;comprendre&quot;]</span></pre>
+
+<h2><a class="h_ident" id="h_B3k5Ve2BMd" href="#h_B3k5Ve2BMd" tabindex="-1" role="presentation"></a>L’objet Math</h2>
+
+<p><a class="p_ident" id="p_Usbr2cwBFB" href="#p_Usbr2cwBFB" tabindex="-1" role="presentation"></a>Comme nous l’avons vu, <code>Math</code> est un ensemble de fonctions utilitaires liées aux nombres, telles que <code>Math.max</code> (maximum), <code>Math.min</code> (minimum), et <code>Math.sqrt</code> (racine carrée).</p>
+
+<p id="namespace_pollution"><a class="p_ident" id="p_Mb3zgf9+rC" href="#p_Mb3zgf9+rC" tabindex="-1" role="presentation"></a>L’objet <code>Math</code> est utilisé comme un conteneur pour regrouper un ensemble de fonctionnalité. Il n’existe qu’un seul objet <code>Math</code>, et il n’est presque jamais utile en tant que valeur. Il fournit plutôt un <em>espace de noms</em> pour que toutes ces fonctions et valeurs n’aient pas à être des liaisons globales.</p>
+
+<p><a class="p_ident" id="p_oRZXghx1fN" href="#p_oRZXghx1fN" tabindex="-1" role="presentation"></a>Le fait d’avoir trop de liaisons globales “pollue” l’espace de noms. Plus le nombre de noms ont été pris, plus vous êtes susceptible d’écraser accidentellement la valeur d’une liaison existante. Par exemple, il n’est pas improbable de vouloir nommer quelque chose <code>max</code> dans l’un de vos programmes. Puisque la fonction intégrée <code>max</code> de JavaScript se trouve en sécurité dans l’objet l’objet <code>Math</code>, nous n’avons pas à nous soucier de l’écraser.</p>
+
+<p><a class="p_ident" id="p_fMFn60WW9M" href="#p_fMFn60WW9M" tabindex="-1" role="presentation"></a>De nombreuses langues vous arrêteront, ou du moins vous avertiront, lorsque vous definissez une liaison avec un nom qui est déjà pris. JavaScript vous avertira pour les liaisons que vous avez déclarées avec <code>let</code> ou <code>const</code> mais - paradoxalement - pas pour les liaisons standard ni pour les liaisons déclarées avec <code>var</code> ou <code>function</code>.</p>
+
+<p><a class="p_ident" id="p_u7K3vdrodZ" href="#p_u7K3vdrodZ" tabindex="-1" role="presentation"></a>Revenons à l’objet <code>Math</code>. Si vous avez besoin de faire de la trigonométrie, <code>Math</code> peut vous aider. Il contient les fonctions <code>cos</code> (cosinus), <code>sin</code> (sinus), et <code>tan</code>(tangente), ainsi que leurs fonctions inverses, <code>acos</code>, <code>asin</code>, et <code>atan</code>, respectivement. Le nombre π (pi) - ou du moins l’approximation la plus proche qui tient dans une fenêtre JavaScript <code>Math.PI</code>. Il existe une vieille tradition de programmation qui consiste à écrire les noms des valeurs constantes en majuscules.</p>
+
+<pre class="snippet cm-s-default" data-language="javascript" ><a class="c_ident" id="c_nAGC0wz1+/" href="#c_nAGC0wz1+/" tabindex="-1" role="presentation"></a><span class="cm-keyword">function</span> <span class="cm-def">pointAleatoireSurUnCercle</span>(<span class="cm-def">rayon</span>) {
+  <span class="cm-keyword">let</span> <span class="cm-def">angle</span> <span class="cm-operator">=</span> <span class="cm-variable">Math</span>.<span class="cm-property">random</span>() <span class="cm-operator">*</span> <span class="cm-number">2</span> <span class="cm-operator">*</span> <span class="cm-variable">Math</span>.<span class="cm-property">PI</span>;
+  <span class="cm-keyword">return</span> {<span class="cm-property">x</span>: <span class="cm-variable-2">rayon</span> <span class="cm-operator">*</span> <span class="cm-variable">Math</span>.<span class="cm-property">cos</span>(<span class="cm-variable-2">angle</span>),
+          <span class="cm-property">y</span>: <span class="cm-variable-2">rayon</span> <span class="cm-operator">*</span> <span class="cm-variable">Math</span>.<span class="cm-property">sin</span>(<span class="cm-variable-2">angle</span>)};
+}
+<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">pointAleatoireSurUnCercle</span>(<span class="cm-number">2</span>));
+<span class="cm-comment">// → {x: 0.3667, y: 1.966}</span></pre>
+
+<p><a class="p_ident" id="p_Gx29PrNrce" href="#p_Gx29PrNrce" tabindex="-1" role="presentation"></a>Si les sinus et les cosinus ne vous sont pas familiers, ne vous inquiétez pas. Lorsqu’ils sont utilisés dans ce livre, dans le <a href="14_dom.html#sin_cos">Chapitre 14</a>, je les expliquerai.</p>
+
+<p><a class="p_ident" id="p_DLCbjCHcxm" href="#p_DLCbjCHcxm" tabindex="-1" role="presentation"></a>L’exemple précédent utilisait <code>Math.random</code>. Il s’agit d’une fonction qui renvoie un nouveau nombre pseudo-aléatoire compris entre zéro (inclus) et un (exclus) à chaque fois que vous l’appelez.</p>
+
+<pre class="snippet cm-s-default" data-language="javascript" ><a class="c_ident" id="c_+gqW4B1qk1" href="#c_+gqW4B1qk1" tabindex="-1" role="presentation"></a><span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">Math</span>.<span class="cm-property">random</span>());
+<span class="cm-comment">// → 0.36993729369714856</span>
+<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">Math</span>.<span class="cm-property">random</span>());
+<span class="cm-comment">// → 0.727367032552138</span>
+<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">Math</span>.<span class="cm-property">random</span>());
+<span class="cm-comment">// → 0.40180766698904335</span></pre>
+
+<p><a class="p_ident" id="p_zDI2cPpQIl" href="#p_zDI2cPpQIl" tabindex="-1" role="presentation"></a>Bien que les ordinateurs soient des machines déterministes - ils réagissent toujours de la même manière si on leur donne la même entrée, il est possible de leur faire produire des nombres qui semblent aléatoires. Pour ce faire, la machine garde une valeur cachée, et à chaque fois que vous demandez un nouveau nombre aléatoire, elle effectue des calculs compliqués sur cette valeur cachée pour créer une nouvelle valeur. Ainsi, il peut produire des nombres toujours nouveaux et difficiles à prévoir d’une manière qui <em>semble</em> aléatoire.</p>
+
+<p><a class="p_ident" id="p_M76AiUOpEe" href="#p_M76AiUOpEe" tabindex="-1" role="presentation"></a>Si nous voulons un nombre aléatoire entier au lieu d’un nombre fractionnaire, nous pouvons utiliser <code>Math.floor</code> (qui arrondit à l’entier inférieur) sur le résultat de <code>Math.random</code>.</p>
+
+<pre class="snippet cm-s-default" data-language="javascript" ><a class="c_ident" id="c_LlfOX4tbSH" href="#c_LlfOX4tbSH" tabindex="-1" role="presentation"></a><span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">Math</span>.<span class="cm-property">floor</span>(<span class="cm-variable">Math</span>.<span class="cm-property">random</span>() <span class="cm-operator">*</span> <span class="cm-number">10</span>));
+<span class="cm-comment">// → 2</span></pre>
+
+<p><a class="p_ident" id="p_UN9qKCeBQ3" href="#p_UN9qKCeBQ3" tabindex="-1" role="presentation"></a>En multipliant le nombre aléatoire par 10, on obtient un nombre supérieur ou égal à 0 et inférieur à 10. Étant donné que <code>Math.floor</code> arrondit à l’inférieur, cette expression produira, avec autant de chance, n’importe quel nombre de 0 à 9.</p>
+
+<p><a class="p_ident" id="p_S5TC38jXfW" href="#p_S5TC38jXfW" tabindex="-1" role="presentation"></a>Il existe également les fonctions <code>Math.ceil</code> (pour “plafond”, qui arrondit au nombre entier supérieur), <code>Math.round</code> (au nombre entier le plus proche), et <code>Math.abs</code>, qui prend la valeur absolue d’un nombre, ce qui signifie qu’elle positive les valeurs négatives mais laisse les valeurs positives telles quelles.</p>
+
+<h2><a class="h_ident" id="h_cM0q6nZXVT" href="#h_cM0q6nZXVT" tabindex="-1" role="presentation"></a>Destructurer</h2>
+
+<p><a class="p_ident" id="p_u/yLuyUTKA" href="#p_u/yLuyUTKA" tabindex="-1" role="presentation"></a>Revenons un instant à la fonction <code>phi</code>.</p>
+
+<pre class="snippet cm-s-default" data-language="javascript" ><a class="c_ident" id="c_kX5pIafWBQ" href="#c_kX5pIafWBQ" tabindex="-1" role="presentation"></a><span class="cm-keyword">function</span> <span class="cm-def">phi</span>(<span class="cm-def">tableau</span>) {
+  <span class="cm-keyword">return</span> (<span class="cm-variable-2">tableau</span>[<span class="cm-number">3</span>] <span class="cm-operator">*</span> <span class="cm-variable-2">tableau</span>[<span class="cm-number">0</span>] <span class="cm-operator">-</span> <span class="cm-variable-2">tableau</span>[<span class="cm-number">2</span>] <span class="cm-operator">*</span> <span class="cm-variable-2">tableau</span>[<span class="cm-number">1</span>]) <span class="cm-operator">/</span>
+    <span class="cm-variable">Math</span>.<span class="cm-property">sqrt</span>((<span class="cm-variable-2">tableau</span>[<span class="cm-number">2</span>] <span class="cm-operator">+</span> <span class="cm-variable-2">tableau</span>[<span class="cm-number">3</span>]) <span class="cm-operator">*</span>
+              (<span class="cm-variable-2">tableau</span>[<span class="cm-number">0</span>] <span class="cm-operator">+</span> <span class="cm-variable-2">tableau</span>[<span class="cm-number">1</span>]) <span class="cm-operator">*</span>
+              (<span class="cm-variable-2">tableau</span>[<span class="cm-number">1</span>] <span class="cm-operator">+</span> <span class="cm-variable-2">tableau</span>[<span class="cm-number">3</span>]) <span class="cm-operator">*</span>
+              (<span class="cm-variable-2">tableau</span>[<span class="cm-number">0</span>] <span class="cm-operator">+</span> <span class="cm-variable-2">tableau</span>[<span class="cm-number">2</span>]));
+}</pre>
+
+<p><a class="p_ident" id="p_byHUF4d/Pv" href="#p_byHUF4d/Pv" tabindex="-1" role="presentation"></a>L’une des raisons pour lesquelles cette fonction est difficile à lire est que nous avons une liaison pointant vers notre tableau, mais nous préférerions de loin avoir des liaisons pour les <em>éléments</em> du tableau, c’est-à-dire <code>let n00 = tableau[0]</code> et ainsi de suite. Heureusement, il existe un moyen succinct de faire cela en JavaScript.</p>
+
+<pre class="snippet cm-s-default" data-language="javascript" ><a class="c_ident" id="c_z2cboTL/zX" href="#c_z2cboTL/zX" tabindex="-1" role="presentation"></a><span class="cm-keyword">function</span> <span class="cm-def">phi</span>([<span class="cm-def">n00</span>, <span class="cm-def">n01</span>, <span class="cm-def">n10</span>, <span class="cm-def">n11</span>]) {
+  <span class="cm-keyword">return</span> (<span class="cm-variable-2">n11</span> <span class="cm-operator">*</span> <span class="cm-variable-2">n00</span> <span class="cm-operator">-</span> <span class="cm-variable-2">n10</span> <span class="cm-operator">*</span> <span class="cm-variable-2">n01</span>) <span class="cm-operator">/</span>
+    <span class="cm-variable">Math</span>.<span class="cm-property">sqrt</span>((<span class="cm-variable-2">n10</span> <span class="cm-operator">+</span> <span class="cm-variable-2">n11</span>) <span class="cm-operator">*</span> (<span class="cm-variable-2">n00</span> <span class="cm-operator">+</span> <span class="cm-variable-2">n01</span>) <span class="cm-operator">*</span>
+              (<span class="cm-variable-2">n01</span> <span class="cm-operator">+</span> <span class="cm-variable-2">n11</span>) <span class="cm-operator">*</span> (<span class="cm-variable-2">n00</span> <span class="cm-operator">+</span> <span class="cm-variable-2">n10</span>));
+}</pre>
+
+<p><a class="p_ident" id="p_IPIrmLLp/6" href="#p_IPIrmLLp/6" tabindex="-1" role="presentation"></a>Cela fonctionne également pour les liaisons créées avec <code>let</code>, <code>var</code>, ou <code>const</code>. Si vous savez que la valeur que vous liez est un tableau, vous pouvez utiliser des crochets pour “regarder à l’intérieur” de la valeur et lier son contenu.</p>
+
+<p><a class="p_ident" id="p_xJn2r0QvX5" href="#p_xJn2r0QvX5" tabindex="-1" role="presentation"></a>Une astuce similaire fonctionne pour les objets, en utilisant des accolades au lieu des crochets.</p>
+
+<pre class="snippet cm-s-default" data-language="javascript" ><a class="c_ident" id="c_i8pt3HHrjY" href="#c_i8pt3HHrjY" tabindex="-1" role="presentation"></a><span class="cm-keyword">let</span> {<span class="cm-def">nom</span>} <span class="cm-operator">=</span> {<span class="cm-property">nom</span>: <span class="cm-string">&quot;Faraji&quot;</span>, <span class="cm-property">age</span>: <span class="cm-number">23</span>};
+<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">nom</span>);
+<span class="cm-comment">// → Faraji</span></pre>
+
+<p><a class="p_ident" id="p_FisLgytAs+" href="#p_FisLgytAs+" tabindex="-1" role="presentation"></a>Notez que si vous essayez de déstructurer <code>null</code> ou <code>undefined</code>, vous obtenez une erreur, tout comme si vous essayiez d’accéder directement à une propriété de ces valeurs.</p>
+
+<h2><a class="h_ident" id="h_AxpOdvCznQ" href="#h_AxpOdvCznQ" tabindex="-1" role="presentation"></a>JSON</h2>
+
+<p><a class="p_ident" id="p_U9DW863zGl" href="#p_U9DW863zGl" tabindex="-1" role="presentation"></a>Parce que les propriétés ne font que saisir leur valeur, au lieu de la contenir, les objets et les tableaux sont stockés dans la mémoire de l’ordinateur en tant que séquences de bits contenant les <em>adresses</em> - l’emplacement en mémoire - de leur contenu. Ainsi, un tableau avec un autre tableau à l’intérieur consiste en (au moins) une région de mémoire pour le tableau interne, et d’une autre pour le tableau externe, contenant (entre autres) un nombre binaire qui représente la position du tableau interne.</p>
+
+<p><a class="p_ident" id="p_H6qQkFDmj3" href="#p_H6qQkFDmj3" tabindex="-1" role="presentation"></a>Si vous souhaitez enregistrer des données dans un fichier pour les consulter ultérieurement ou les envoyer à un autre ordinateur sur le réseau, vous devez d’une manière ou d’une autre convertir ces enchevêtrements d’adresses mémoire en une description qui peut être stockée ou envoyée. Vous pourriez envoyer la totalité de la mémoire de votre ordinateur avec l’adresse de la valeur qui vous intéresse, je suppose, mais cela ne semble pas être la meilleure approche.</p>
+
+<p><a class="p_ident" id="p_CnSZpJlKzv" href="#p_CnSZpJlKzv" tabindex="-1" role="presentation"></a>Ce que nous pouvons faire, c’est <em>sérialiser</em> les données. Cela signifie qu’elles sont converties en une description plate. Un format de sérialisation populaire est appelé <em>JSON</em> (prononcez “Jason”), qui signifie JavaScript Object Notation. Il est largement utilisé comme format de stockage et de communication de données sur le Web, même dans des langages autres que JavaScript.</p>
+
+<p><a class="p_ident" id="p_zVMtOdOUcN" href="#p_zVMtOdOUcN" tabindex="-1" role="presentation"></a>JSON ressemble à la façon dont JavaScript écrit les tableaux et les objets, avec quelques restrictions. Tous les noms de propriétés doivent être entourés de guillemets doubles, et seules les expressions de données simples sont autorisées, pas d’appels de fonctions, de liaisons, ou quoi que ce soit qui implique des calcul. Les commentaires ne sont pas autorisés dans JSON.</p>
+
+<p><a class="p_ident" id="p_kU4JIiL1TS" href="#p_kU4JIiL1TS" tabindex="-1" role="presentation"></a>Une entrée de journal peut ressembler à ceci lorsqu’elle est représentée sous forme de données JSON :</p>
+
+<pre class="snippet cm-s-default" data-language="application/json" ><a class="c_ident" id="c_V37lFkhS4v" href="#c_V37lFkhS4v" tabindex="-1" role="presentation"></a>{
+  <span class="cm-string cm-property">&quot;ecureuil&quot;</span>: <span class="cm-atom">false</span>,
+  <span class="cm-string cm-property">&quot;evenements&quot;</span>: [<span class="cm-string">&quot;travail&quot;</span>, <span class="cm-string">&quot;touché arbre&quot;</span>, <span class="cm-string">&quot;pizza&quot;</span>, <span class="cm-string">&quot;jogging&quot;</span>]
+}</pre>
+
+<p><a class="p_ident" id="p_w2iKBZVQHZ" href="#p_w2iKBZVQHZ" tabindex="-1" role="presentation"></a>JavaScript nous donne les fonctions <code>JSON.stringify</code> et <code>JSON.parse</code> pour convertir les données depuis et vers ce format. La première prend une valeur JavaScript et renvoie une chaîne encodée en JSON. La seconde prend une telle chaîne et la convertit en la valeur qu’elle encode.</p>
+
+<pre class="snippet cm-s-default" data-language="javascript" ><a class="c_ident" id="c_xkSykeOe4H" href="#c_xkSykeOe4H" tabindex="-1" role="presentation"></a><span class="cm-keyword">let</span> <span class="cm-def">chaine</span> <span class="cm-operator">=</span> <span class="cm-variable">JSON</span>.<span class="cm-property">stringify</span>({<span class="cm-property">ecureuil</span>: <span class="cm-atom">false</span>,
+                             <span class="cm-property">evenement</span>: [<span class="cm-string">&quot;weekend&quot;</span>]});
+<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">chaine</span>);
+<span class="cm-comment">// → {&quot;ecureuil&quot;:false,&quot;evenement&quot;:[&quot;weekend&quot;]}</span>
+<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">JSON</span>.<span class="cm-property">parse</span>(<span class="cm-variable">chaine</span>).<span class="cm-property">evenement</span>);
+<span class="cm-comment">// → [&quot;weekend&quot;]</span></pre>
+
+<h2><a class="h_ident" id="h_n7WJY8ZtsM" href="#h_n7WJY8ZtsM" tabindex="-1" role="presentation"></a>Résumé</h2>
+
+<p><a class="p_ident" id="p_uXQueTry72" href="#p_uXQueTry72" tabindex="-1" role="presentation"></a>Les objets et les tableaux (qui sont un type spécifique d’objet) fournissent des moyens de regrouper plusieurs valeurs en une seule. D’un point de vue conceptuel, cela permet de mettre un tas d’objets connexes dans un sac et de se promener avec le sac, au lieu d’enrouler nos bras autour de choses individuelles et d’essayer de s’y accrocher séparément.</p>
+
+<p><a class="p_ident" id="p_fHV/kp/oaP" href="#p_fHV/kp/oaP" tabindex="-1" role="presentation"></a>La plupart des valeurs en JavaScript ont des propriétés, les exceptions étant <code>null</code> et <code>undefined</code>. On accède aux propriétés en utilisant <code>valeur.prop</code> ou <code>valeur[&quot;prop&quot;]</code>. Les objets ont tendance à utiliser des noms pour leurs propriétés et stockent plus ou moins un ensemble fixe d’entre elles. Les tableaux, par contre, contiennent généralement des quantités variables de valeurs conceptuellement identiques et utilisent des nombres (en commençant par 0) comme noms de leurs propriétés.</p>
+
+<p><a class="p_ident" id="p_g9AX1sttJg" href="#p_g9AX1sttJg" tabindex="-1" role="presentation"></a>Il y a des propriétés nommées dans les tableaux, telles que <code>length</code> et un certain nombre de méthodes. Les méthodes sont des fonctions qui vivent dans les propriétés et (généralement) agissent sur la valeur dont elles sont une propriété.</p>
+
+<p><a class="p_ident" id="p_P3jgivGkCt" href="#p_P3jgivGkCt" tabindex="-1" role="presentation"></a>Vous pouvez itérer sur des tableaux en utilisant un type spécial de boucle <code>for</code> - <code>for (let élément du tableau)</code>.</p>
+
+<h2><a class="h_ident" id="h_VYnnS71Z0U" href="#h_VYnnS71Z0U" tabindex="-1" role="presentation"></a>Exercices</h2>
+
+<h3><a class="i_ident" id="i_lgPxiwIXPw" href="#i_lgPxiwIXPw" tabindex="-1" role="presentation"></a>La somme d’une série</h3>
+
+<p><a class="p_ident" id="p_g/BlZhMfTp" href="#p_g/BlZhMfTp" tabindex="-1" role="presentation"></a>L’<a href="00_intro.html">introduction</a> de ce livre faisait allusion à ce qui suit comme une comme une bonne façon de calculer la somme d’une série de nombres :</p>
+
+<pre class="snippet cm-s-default" data-language="javascript" ><a class="c_ident" id="c_Gzp/S8q69/" href="#c_Gzp/S8q69/" tabindex="-1" role="presentation"></a><span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">sum</span>(<span class="cm-variable">serie</span>(<span class="cm-number">1</span>, <span class="cm-number">10</span>)));</pre>
+
+<p><a class="p_ident" id="p_eMJYxiPVIY" href="#p_eMJYxiPVIY" tabindex="-1" role="presentation"></a>Ecrivez une fonction <code>serie</code> qui prend deux arguments, <code>début</code> et <code>fin</code>, et retourne un tableau contenant tous les nombres de <code>début</code> jusqu’à (et incluant) <code>fin</code>.</p>
+
+<p><a class="p_ident" id="p_kErAYJ5gsx" href="#p_kErAYJ5gsx" tabindex="-1" role="presentation"></a>Ensuite, écrivez une fonction <code>somme</code> qui prend un tableau de nombres et renvoie la somme de ces nombres. Exécutez le programme d’exemple et voyez s’il renvoie effectivement 55.</p>
+
+<p><a class="p_ident" id="p_RqjNDWuFnd" href="#p_RqjNDWuFnd" tabindex="-1" role="presentation"></a>En guise de devoir bonus, modifiez votre fonction <code>serie</code> pour qu’elle prenne un troisième argument facultatif qui indique la valeur du pas utilisée lors de l’exécution de la fonction et de la construction du tableau. Si aucun pas n’est donné, les éléments sont incrémentés par incréments de un, ce qui correspond à l’ancien comportement. L’appel de la fonction <code>serie(1, 10, 2)</code> devrait retourner <code>[1, 3, 5, 7, 9]</code>. Assurez-vous qu’elle fonctionne également avec des valeurs de pas négatives, de sorte que <code>serie(5, 2, -1)</code> produise <code>[5, 4, 3, 2]</code>.</p>
+
+<pre class="snippet cm-s-default" data-language="javascript" ><a class="c_ident" id="c_jo6zhMaBCE" href="#c_jo6zhMaBCE" tabindex="-1" role="presentation"></a><span class="cm-comment">// Votre code ici.</span>
+
+<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">serie</span>(<span class="cm-number">1</span>, <span class="cm-number">10</span>));
+<span class="cm-comment">// → [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]</span>
+<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">serie</span>(<span class="cm-number">5</span>, <span class="cm-number">2</span>, <span class="cm-operator">-</span><span class="cm-number">1</span>));
+<span class="cm-comment">// → [5, 4, 3, 2]</span>
+<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">somme</span>(<span class="cm-variable">serie</span>(<span class="cm-number">1</span>, <span class="cm-number">10</span>)));
+<span class="cm-comment">// → 55</span></pre>
+
+<div class="solution"><div class="solution-text">
+
+<p><a class="p_ident" id="p_MOwSOh5LXI" href="#p_MOwSOh5LXI" tabindex="-1" role="presentation"></a>La construction d’un tableau se fait le plus facilement en initialisant d’abord une liaison à <code>[]</code> (un tableau frais et vide) et en appelant de façon répétée sa méthode <code>push</code> pour ajouter une valeur. N’oubliez pas de retourner le tableau à la fin de la fonction.</p>
+
+<p><a class="p_ident" id="p_INY5pM77O1" href="#p_INY5pM77O1" tabindex="-1" role="presentation"></a>Comme la limite de fin est inclusive, vous devrez utiliser l’opérateur <code>&lt;=</code> plutôt que <code>&lt;</code> pour vérifier la fin de votre boucle.</p>
+
+<p><a class="p_ident" id="p_C7PtWYkUNz" href="#p_C7PtWYkUNz" tabindex="-1" role="presentation"></a>Le paramètre step peut être un paramètre optionnel qui prend la valeur par défaut (en utilisant l’opérateur <code>=</code>) à 1.</p>
+
+<p><a class="p_ident" id="p_nc3cnn6k+r" href="#p_nc3cnn6k+r" tabindex="-1" role="presentation"></a>La meilleure façon de faire en sorte que <code>serie</code> comprenne des valeurs de pas négatives est probablement d’écrire deux boucles séparées - une pour compter vers le haut et une autre pour compter vers le bas parce que la comparaison qui vérifie que la boucle est terminée doit être doit être <code>&gt;=</code> plutôt que <code>&lt;=</code> lors du décompte.</p>
+
+<p><a class="p_ident" id="p_Feaq4/rwKh" href="#p_Feaq4/rwKh" tabindex="-1" role="presentation"></a>Il peut également être intéressant d’utiliser un pas par défaut différent, à savoir -1, lorsque la fin de l’intervalle est plus petite que le début. De cette façon, <code>serie(5, 2)</code> renvoie quelque chose de significatif, plutôt que de rester coincé dans une boucle infinie. Il est possible de faire référence à des paramètres dans la valeur par défaut d’un paramètre.</p>
+
+</div></div>
+
+<h3><a class="i_ident" id="i_GBcfNhBrI0" href="#i_GBcfNhBrI0" tabindex="-1" role="presentation"></a>Inverser un tableau</h3>
+
+<p><a class="p_ident" id="p_4nOXRHvafa" href="#p_4nOXRHvafa" tabindex="-1" role="presentation"></a>Les tableaux ont une méthode <code>reverse</code> qui modifie le tableau en inversant l’ordre d’apparition de ses éléments. Pour cet exercice, écrivez deux fonctions, <code>inverseTableau</code> et <code>inverseTableauEnPlace</code>. La première, <code>inverseTableau</code>, prend un tableau comme argument et produit un <em>nouveau</em> tableau qui contient les mêmes éléments dans l’ordre inverse. La seconde, <code>inverseTableauEnPlace</code>, fait ce que la méthode <code>reverse</code> fait : elle <em>modifie</em> le tableau donné en argument en inversant ses éléments. Ni l’une ni l’autre ne peut utiliser la méthode standard <code>reverse</code>.</p>
+
+<p><a class="p_ident" id="p_6LlJo4rpBD" href="#p_6LlJo4rpBD" tabindex="-1" role="presentation"></a>En repensant aux notes sur les effets de bord et les fonctions pures dans le <a href="03_functions.html#pure">chapitre précédent</a>, quelle variante devrait selon vous être être utile dans plus de situations ? Laquelle fonctionne le plus rapidement ?</p>
+
+<pre class="snippet cm-s-default" data-language="javascript" ><a class="c_ident" id="c_blFZu+xc7T" href="#c_blFZu+xc7T" tabindex="-1" role="presentation"></a><span class="cm-comment">// Votre code ici.</span>
+
+<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">inverseTableau</span>([<span class="cm-string">&quot;A&quot;</span>, <span class="cm-string">&quot;B&quot;</span>, <span class="cm-string">&quot;C&quot;</span>]));
+<span class="cm-comment">// → [&quot;C&quot;, &quot;B&quot;, &quot;A&quot;];</span>
+<span class="cm-keyword">let</span> <span class="cm-def">tableau</span> <span class="cm-operator">=</span> [<span class="cm-number">1</span>, <span class="cm-number">2</span>, <span class="cm-number">3</span>, <span class="cm-number">4</span>, <span class="cm-number">5</span>];
+<span class="cm-variable">inverseTableauEnPlace</span>(<span class="cm-variable">tableau</span>);
+<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">tableau</span>);
+<span class="cm-comment">// → [5, 4, 3, 2, 1]</span></pre>
+
+<div class="solution"><div class="solution-text">
+
+<p><a class="p_ident" id="p_GaAvSoz5oK" href="#p_GaAvSoz5oK" tabindex="-1" role="presentation"></a>Il y a deux façons évidentes d’implémenter <code>inverseTableau</code>. La première consiste à parcourir le tableau d’entrée d’avant en arrière et d’utiliser la méthode <code>unshift</code> sur le nouveau tableau pour insérer chaque élément à son début. La seconde est de boucler sur le tableau d’entrée en arrière et d’utiliser la méthode <code>push</code>. L’itération sur un tableau à l’envers nécessite une spécification <code>for</code>, comme <code>(let i = array.<wbr>length - 1 ; i &gt;= 0 ; i--)</code>.</p>
+
+<p><a class="p_ident" id="p_/3fmWNY99n" href="#p_/3fmWNY99n" tabindex="-1" role="presentation"></a>Inverser le réseau en place est plus difficile. Vous devez faire attention à ne pas écraser des éléments dont vous aurez besoin plus tard. L’utilisation de <code>inverseTableau</code> ou copier l’ensemble du tableau (<code>array.slice(0)</code> est une bonne manière de copier un tableau) fonctionne mais c’est de la triche.</p>
+
+<p><a class="p_ident" id="p_Q+fJ5B0uL9" href="#p_Q+fJ5B0uL9" tabindex="-1" role="presentation"></a>L’astuce consiste à <em>échanger</em> le premier et le dernier élément, puis le second et l’avant-dernier, et ainsi de suite. Vous pouvez le faire en bouclant sur la moitié de la longueur du tableau (utilisez <code>Math.floor</code> pour arrondir à l’inférieur - vous n’avez pas besoin de toucher l’élément central d’un tableau avec un nombre impair d’éléments) et en échangeant l’élément à la position <code>i</code> avec celui à la position <code>array.<wbr>length - 1 - i</code>. Vous pouvez utiliser une liaison locale pour conserver brièvement l’un des éléments, remplacer cet élément par son image miroir, puis placer la valeur de la liaison locale à l’emplacement où se trouvait l’image miroir.</p>
+
+</div></div>
+
+<h3 id="list"><a class="i_ident" id="i_nSTX34CM1M" href="#i_nSTX34CM1M" tabindex="-1" role="presentation"></a>A list</h3>
+
+<p><a class="p_ident" id="p_cuPbMlTfHe" href="#p_cuPbMlTfHe" tabindex="-1" role="presentation"></a>Les objets, en tant que blobs génériques de valeurs, peuvent être utilisés pour construire toutes sortes de structures de données. Une structure de données commune est la <em>liste</em> (à ne pas confondre avec le tableau). Une liste est un ensemble imbriqué d’objets, le premier objet faisant référence au second, le second au premier objet contenant une référence au second, le second au troisième, et ainsi de suite.</p>
+
+<pre class="snippet cm-s-default" data-language="javascript" ><a class="c_ident" id="c_IygMmRW7BD" href="#c_IygMmRW7BD" tabindex="-1" role="presentation"></a><span class="cm-keyword">let</span> <span class="cm-def">liste</span> <span class="cm-operator">=</span> {
+  <span class="cm-property">valeur</span>: <span class="cm-number">1</span>,
+  <span class="cm-property">reste</span>: {
+    <span class="cm-property">valeur</span>: <span class="cm-number">2</span>,
+    <span class="cm-property">reste</span>: {
+      <span class="cm-property">valeur</span>: <span class="cm-number">3</span>,
+      <span class="cm-property">reste</span>: <span class="cm-atom">null</span>
+    }
+  }
+};</pre>
+
+<p><a class="p_ident" id="p_Z4Hr3Kza34" href="#p_Z4Hr3Kza34" tabindex="-1" role="presentation"></a>Les objets résultants forment une chaîne, comme ceci :</p><figure><img src="img/linked-list.svg" alt="A linked list"></figure>
+
+<p><a class="p_ident" id="p_io2xYPGMmr" href="#p_io2xYPGMmr" tabindex="-1" role="presentation"></a>Ce qui est bien avec les listes, c’est qu’elles peuvent partager des parties de leur structure. Par exemple, si je crée deux nouvelles valeurs <code>{valeur : 0, reste : liste}</code> et <code>{valeur : -1, reste : liste}</code> (avec <code>list</code> faisant référence à la liaison définie précédemment), ce sont toutes deux des listes indépendantes, mais elles partagent la structure qui constitue leurs trois derniers éléments. La liste originale est toujours une liste valide à trois éléments.</p>
+
+<p><a class="p_ident" id="p_z10gij9U52" href="#p_z10gij9U52" tabindex="-1" role="presentation"></a>Ecrivez une fonction <code>tableauVersListe</code> qui construit une structure de liste telle que celle montrée lorsqu’on lui donne <code>[1, 2, 3]</code> comme argument. Ecrivez aussi une fonction <code>listeVersTableau</code> qui produit un tableau à partir d’une liste. Ensuite, ajoutez une fonction d’aide <code>prepend</code>, qui prend un élément et une liste et crée une nouvelle liste en ajoutant l’élément au début de la liste d’entrée, et <code>nieme</code>, qui prend une liste et un nombre et retourne l’élément qui se trouve à la position donnée dans la liste (zéro faisant référence au premier élément) ou <code>undefined</code> si cet élément n’existe pas.</p>
+
+<p><a class="p_ident" id="p_Q1WEdnZnQU" href="#p_Q1WEdnZnQU" tabindex="-1" role="presentation"></a>Si vous ne l’avez pas encore fait, écrivez aussi une version récursive de <code>nieme</code>.</p>
+
+<pre class="snippet cm-s-default" data-language="javascript" ><a class="c_ident" id="c_jY1M+Hc0fT" href="#c_jY1M+Hc0fT" tabindex="-1" role="presentation"></a><span class="cm-comment">// Votre code ici.</span>
+
+<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">tableauVersListe</span>([<span class="cm-number">10</span>, <span class="cm-number">20</span>]));
+<span class="cm-comment">// → {value: 10, rest: {value: 20, rest: null}}</span>
+<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">listeVersTableau</span>(<span class="cm-variable">arrayToList</span>([<span class="cm-number">10</span>, <span class="cm-number">20</span>, <span class="cm-number">30</span>])));
+<span class="cm-comment">// → [10, 20, 30]</span>
+<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">prepend</span>(<span class="cm-number">10</span>, <span class="cm-variable">prepend</span>(<span class="cm-number">20</span>, <span class="cm-atom">null</span>)));
+<span class="cm-comment">// → {value: 10, rest: {value: 20, rest: null}}</span>
+<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">nieme</span>(<span class="cm-variable">tableauVersListe</span>([<span class="cm-number">10</span>, <span class="cm-number">20</span>, <span class="cm-number">30</span>]), <span class="cm-number">1</span>));
+<span class="cm-comment">// → 20</span></pre>
+
+<div class="solution"><div class="solution-text">
+
+<p><a class="p_ident" id="p_pCoSXLAUCD" href="#p_pCoSXLAUCD" tabindex="-1" role="presentation"></a>La construction d’une liste est plus facile lorsqu’elle est faite d’arrière en avant. Ainsi, <code>tableauVersListe</code> pourrait itérer sur le tableau à l’envers (voir l’exercice précédent) et, pour chaque élément, ajouter un objet à la liste. Vous pouvez utiliser une liaison locale pour contenir la partie de la liste qui a été construite jusqu’ici et utiliser une affectation comme <code>liste = {valeur : X, reste : liste}</code> pour ajouter un élément.</p>
+
+<p><a class="p_ident" id="p_fQSTTdT3FZ" href="#p_fQSTTdT3FZ" tabindex="-1" role="presentation"></a>Pour parcourir une liste (dans <code>listeVersTableau</code> et <code>nieme</code>), une spécification de boucle <code>for</code> comme celle-ci peut être utilisée :</p>
+
+<pre class="snippet cm-s-default" data-language="javascript" ><a class="c_ident" id="c_zqV1fj8UYp" href="#c_zqV1fj8UYp" tabindex="-1" role="presentation"></a><span class="cm-keyword">for</span> (<span class="cm-keyword">let</span> <span class="cm-def">noeud</span> <span class="cm-operator">=</span> <span class="cm-variable">liste</span>; <span class="cm-variable-2">noeud</span>; <span class="cm-variable-2">noeud</span> <span class="cm-operator">=</span> <span class="cm-variable-2">noeud</span>.<span class="cm-property">reste</span>) {}</pre>
+
+<p><a class="p_ident" id="p_ZzXjQlpkqU" href="#p_ZzXjQlpkqU" tabindex="-1" role="presentation"></a>Vous voyez comment ça marche ? À chaque itération de la boucle, <code>noeud</code> pointe vers la sous-liste courante, et le corps peut lire sa propriété <code>valeur</code> pour pour obtenir l’élément courant. A la fin d’une itération, <code>noeud</code> passe à la sous-liste suivante. Lorsque cette dernière est nulle, nous avons atteint la fin de la liste, et la boucle est terminée.</p>
+
+<p><a class="p_ident" id="p_SYpWH9GGeN" href="#p_SYpWH9GGeN" tabindex="-1" role="presentation"></a>La version récursive de <code>nieme</code> va, de la même manière, regarder une partie de plus en plus petite de la “queue” de la liste et en même temps compter vers le bas pour alors renvoyer la propriété <code>valeur</code> du noeud qu’il regarde. Pour obtenir le zeroieme d’une liste, il suffit de prendre la propriété <code>valeur</code> de son noeud de tête. Pour obtenir l’élément <em>N</em> + 1, vous prenez le <em>N</em> ième élément de la liste qui se trouve dans la propriété <code>rest</code> de cette liste.</p>
+
+</div></div>
+
+<h3 id="exercise_deep_compare"><a class="i_ident" id="i_mv4k0n4G6f" href="#i_mv4k0n4G6f" tabindex="-1" role="presentation"></a>Comparaison profonde</h3>
+
+<p><a class="p_ident" id="p_Z16T/MrsdJ" href="#p_Z16T/MrsdJ" tabindex="-1" role="presentation"></a>L’opérateur <code>==</code> compare les objets par identité. Mais parfois, vous préférer comparer les valeurs de leurs propriétés réelles.</p>
+
+<p><a class="p_ident" id="p_HdG2C8+SDJ" href="#p_HdG2C8+SDJ" tabindex="-1" role="presentation"></a>Ecrivez une fonction <code>profondementEgal</code> qui prend deux valeurs et retourne vrai seulement s’il s’agit de la même valeur ou d’objets ayant les mêmes propriétés, et dans ce cas si les valeurs des propriétés sont égales lorsqu’elles sont comparées avec un appel récursif à <code>profondementEgal</code>.</p>
+
+<p><a class="p_ident" id="p_ViNiotUhBl" href="#p_ViNiotUhBl" tabindex="-1" role="presentation"></a>Pour savoir si les valeurs doivent être comparées directement (utilisez l’opérateur <code>===</code>) ou si leurs propriétés doivent être comparées, vous pouvez utiliser l’opérateur <code>typeof</code>. S’il produit <code>&quot;object&quot;</code> pour les deux valeurs, vous devez effectuer une comparaison approfondie. Mais vous devez tenir compte d’une exception stupide: à cause d’un accident historique, <code>typeof null</code> produit aussi “object”.</p>
+
+<p><a class="p_ident" id="p_b4beEYlnHF" href="#p_b4beEYlnHF" tabindex="-1" role="presentation"></a>La fonction <code>Object.keys</code> vous sera utile lorsque vous aurez besoin de passer en revue les propriétés des objets pour les comparer.</p>
+
+<pre class="snippet cm-s-default" data-language="javascript" ><a class="c_ident" id="c_NtQ+1QK6EQ" href="#c_NtQ+1QK6EQ" tabindex="-1" role="presentation"></a><span class="cm-comment">// Votre code ici.</span>
+
+<span class="cm-keyword">let</span> <span class="cm-def">obj</span> <span class="cm-operator">=</span> {<span class="cm-property">voici</span>: {<span class="cm-property">donc</span>: <span class="cm-string">&quot;un&quot;</span>}, <span class="cm-property">objet</span>: <span class="cm-number">2</span>};
+<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">profondementEgal</span>(<span class="cm-variable">obj</span>, <span class="cm-variable">obj</span>));
+<span class="cm-comment">// → true</span>
+<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">profondementEgal</span>(<span class="cm-variable">obj</span>, {<span class="cm-property">donc</span>: <span class="cm-string">&quot;un&quot;</span>, <span class="cm-property">objet</span>: <span class="cm-number">2</span>}));
+<span class="cm-comment">// → false</span>
+<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">profondementEgal</span>(<span class="cm-variable">obj</span>, {<span class="cm-property">voici</span>: {<span class="cm-property">donc</span>: <span class="cm-string">&quot;un&quot;</span>}, <span class="cm-property">objet</span>: <span class="cm-number">2</span>}));
+<span class="cm-comment">// → true</span></pre>
+
+<div class="solution"><div class="solution-text">
+
+<p><a class="p_ident" id="p_jRTuQFzjkf" href="#p_jRTuQFzjkf" tabindex="-1" role="presentation"></a>Votre test pour savoir si vous avez affaire à un objet réel ressemblera à quelque chose comme <code>typeof x == &quot;object&quot; &amp;&amp; x != null</code>. Faites attention à comparer des propriétés uniquement lorsque <em>les deux</em> arguments sont des objets. Dans tous les autres cas, vous pouvez simplement renvoyer le résultat de l’application de <code>===</code>.</p>
+
+<p><a class="p_ident" id="p_rBLkmYLTTb" href="#p_rBLkmYLTTb" tabindex="-1" role="presentation"></a>Utilisez <code>Object.keys</code> pour passer en revue les propriétés. Vous devez tester si les deux objets possèdent le même ensemble de noms de propriétés et si ces propriétés ont des valeurs identiques. Une façon de le faire est de s’assurer que les deux objets ont le même nombre de propriétés (la longueur des listes de propriétés est la même). Ensuite, lorsque vous effectuez une boucle sur l’une des propriétés de l’objet pour les comparer, vérifiez toujours d’abord que l’autre objet possède effectivement une propriété de ce nom. S’ils ont le même nombre de propriétés et que toutes les propriétés de l’un existent aussi dans l’autre, ils ont le même ensemble de propriétés.</p>
+
+<p><a class="p_ident" id="p_2mdj7tBWNG" href="#p_2mdj7tBWNG" tabindex="-1" role="presentation"></a>La meilleure façon de renvoyer la valeur correcte de la fonction est de retourner immédiatement false lorsqu’une erreur est détectée et en retournant vrai à la fin de la fonction.</p>
+
+</div></div><nav><a href="03_functions.html" title="previous chapter">◀</a> <a href="index.html" title="cover">◆</a> <a href="05_higher_order.html" title="next chapter">▶</a></nav>
+</article>

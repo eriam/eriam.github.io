@@ -1,0 +1,294 @@
+<!doctype html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Valeurs Types et Opérateurs :: Eloquent JavaScript</title>
+  <link rel=stylesheet href="js/node_modules/codemirror/lib/codemirror.css">
+  <script src="js/acorn_codemirror.js"></script>
+  <link rel=stylesheet href="css/ejs.css">
+  <script src="js/sandbox.js"></script>
+  <script src="js/ejs.js"></script><script>var chapNum = 1;</script></head>
+
+<article>
+<nav><a href="00_intro.html" title="previous chapter">◀</a> <a href="index.html" title="cover">◆</a> <a href="02_program_structure.html" title="next chapter">▶</a></nav>
+
+<h1><span class=chap_num>Chapitre 1</span>Valeurs Types et Opérateurs</h1>
+
+<blockquote>
+
+<p><a class="p_ident" id="p_bWb3DmhUWu" href="#p_bWb3DmhUWu" tabindex="-1" role="presentation"></a>Sous la surface de la machine, le programme se déplace. Sans effort, il se dilate et se contracte. Dans une grande harmonie, les électrons se dispersent et se regroupent. Les formes sur l’écran ne sont que des ondulations sur l’eau. L’essence reste invisiblement en dessous.</p>
+
+<footer>Master Yuan-Ma, <cite>The Book of Programming</cite></footer>
+
+</blockquote><figure class="chapter framed"><img src="img/chapter_picture_1.jpg" alt="Picture of a sea of bits"></figure>
+
+<p><a class="p_ident" id="p_aKPqIn+y1r" href="#p_aKPqIn+y1r" tabindex="-1" role="presentation"></a>Dans le monde de l’ordinateur, il n’y a que des données. Vous pouvez lire des données, modifier des données, créer de nouvelles données, mais ce qui n’est pas des données ne peut pas être être mentionné. Toutes ces données sont stockées sous forme de longues séquences de bits et sont donc<br>fondamentalement identiques.</p>
+
+<p><a class="p_ident" id="p_im87TyFiaa" href="#p_im87TyFiaa" tabindex="-1" role="presentation"></a>Les <em>bits</em> sont des éléments à deux valeurs, généralement décrits comme des zéros et des uns. À l’intérieur de l’ordinateur, ils prennent la forme d’une charge électrique élevée ou faible, un signal fort ou faible, ou une tache brillante ou terne sur la surface d’un CD. Tout élément d’information discret peut être réduit à une séquence de zéros et de uns et donc représentée par des bits.</p>
+
+<p><a class="p_ident" id="p_rrL51GnLfq" href="#p_rrL51GnLfq" tabindex="-1" role="presentation"></a>Par exemple, nous pouvons exprimer le nombre 13 en bits. Cela fonctionne de la même manière qu’en numération décimale, mais au lieu de 10 chiffres différents, vous n’en avez que 2, et le poids de chacun d’eux augmente d’un facteur 2 de la droite vers la gauche. Voici les bits qui composent le nombre 13, avec les poids des chiffres indiqués en dessous.</p>
+
+<pre class="snippet cm-s-default" data-language="null" ><a class="c_ident" id="c_+fMMNc3yUt" href="#c_+fMMNc3yUt" tabindex="-1" role="presentation"></a>   0   0   0   0   1   1   0   1
+ 128  64  32  16   8   4   2   1</pre>
+
+<p><a class="p_ident" id="p_RNB782+VOg" href="#p_RNB782+VOg" tabindex="-1" role="presentation"></a>Il s’agit donc du nombre binaire 00001101. Ses chiffres non nuls représentent 8, 4, et 1, et donnent un total de 13.</p>
+
+<h2><a class="h_ident" id="h_Hyy/Nvx5aV" href="#h_Hyy/Nvx5aV" tabindex="-1" role="presentation"></a>Valeurs</h2>
+
+<p><a class="p_ident" id="p_I8Nr+gxFk/" href="#p_I8Nr+gxFk/" tabindex="-1" role="presentation"></a>Imaginez une mer de bits - un océan de bits. Un ordinateur moderne typique possède plus de 30 milliards de bits dans sa mémoire volatile (mémoire de travail). Le stockage non-volatile (le disque dur ou équivalent) a tendance à disposer de quelques ordres de grandeur supplémentaires.</p>
+
+<p><a class="p_ident" id="p_1280akbJJy" href="#p_1280akbJJy" tabindex="-1" role="presentation"></a>Pour pouvoir travailler avec de telles quantités de bits sans se perdre, nous devons les séparer en morceaux qui représentent des éléments d’information. Dans un environnement JavaScript, ces morceaux sont appelés <em>valeurs</em>. Bien que toutes les valeurs soient constituées de bits, elles jouent des rôles différents. Chaque valeur possède un type qui détermine son rôle. Certaines valeurs sont des nombres, certaines sont des morceaux de texte, certaines sont des fonctions, et ainsi de suite.</p>
+
+<p><a class="p_ident" id="p_PPvMGxjLrU" href="#p_PPvMGxjLrU" tabindex="-1" role="presentation"></a>Pour créer une valeur, il suffit d’invoquer son nom. C’est pratique. Vous n’avez pas besoin de rassembler des matériaux de construction pour vos valeurs ou de les payer. Il vous suffit d’en demander une, et <em>boum</em>, vous l’avez. Elles ne sont pas vraiment créées de toutes pièces, bien sûr. Chaque valeur doit être stockée quelque part, et si vous voulez en utiliser une quantité gigantesque en même temps, vous risquez de manquer de mémoire. Heureusement, ce n’est un problème que si vous avez besoin de toutes les valeurs simultanément. Dès que vous n’utilisez, elle se dissipe, laissant derrière elle ses bits qui seront recyclés comme matériau de construction pour la prochaine génération de valeurs.</p>
+
+<p><a class="p_ident" id="p_CvtIrVLG2l" href="#p_CvtIrVLG2l" tabindex="-1" role="presentation"></a>Ce chapitre présente les éléments atomiques des programmes JavaScript, c’est-à-dire les types de valeurs simples et les opérateurs qui peuvent agir sur ces valeurs.</p>
+
+<h2><a class="h_ident" id="h_jNgrxCq1Ev" href="#h_jNgrxCq1Ev" tabindex="-1" role="presentation"></a>Nombres</h2>
+
+<p><a class="p_ident" id="p_moBNbS7l0v" href="#p_moBNbS7l0v" tabindex="-1" role="presentation"></a>Les valeurs du type <em>number</em> sont, sans surprise, des valeurs numériques. Dans un programme JavaScript, elles s’écrivent comme suit :</p>
+
+<pre class="snippet cm-s-default" data-language="javascript" ><a class="c_ident" id="c_/u5ErTZbax" href="#c_/u5ErTZbax" tabindex="-1" role="presentation"></a><span class="cm-number">13</span></pre>
+
+<p><a class="p_ident" id="p_zAYYnyrJ58" href="#p_zAYYnyrJ58" tabindex="-1" role="presentation"></a>Utilisez-le dans un programme, et il fera en sorte que le modèle binaire pour le nombre 13 existe dans la mémoire de l’ordinateur.</p>
+
+<p><a class="p_ident" id="p_DlKRZeVY4Y" href="#p_DlKRZeVY4Y" tabindex="-1" role="presentation"></a>JavaScript utilise un nombre fixe de bits, 64, pour stocker une valeur numérique unique. Il n’y a qu’un nombre limité de motifs que vous pouvez faire avec 64 bits, ce qui signifie que le nombre de nombres différents qui peuvent être représentés est limité. Avec <em>N</em> chiffre décimaux, vous pouvez représenter 10<sup>N</sup> nombres. De même, avec 64 chiffres binaires chiffres binaires, vous pouvez représenter 2<sup>64</sup> nombres différents, soit environ 18 quintillion (un 18 suivi de 18 zéros). C’est beaucoup.</p>
+
+<p><a class="p_ident" id="p_TqZyRqXpaR" href="#p_TqZyRqXpaR" tabindex="-1" role="presentation"></a>Autrefois, la mémoire des ordinateurs était beaucoup plus petite, et les gens avaient tendance à utiliser groupes de 8 ou 16 bits pour représenter leurs nombres. Il était facile de dépasser accidentellement de si petits nombres ( <em>overflow</em>) - pour se retrouver avec un nombre qui ne tenait pas dans le nombre de bits donné. Aujourd’hui, même les ordinateurs qui tiennent dans la poche ont beaucoup de mémoire, donc vous êtes libre d’utiliser des blocs de 64 bits, et vous n’avez à vous soucier du dépassement de capacité que lorsque vous traitez avec des nombres vraiment astronomiques.</p>
+
+<p><a class="p_ident" id="p_o5je28IRcW" href="#p_o5je28IRcW" tabindex="-1" role="presentation"></a>Cependant tous les nombres entiers inférieurs à 18 quintillions ne rentrent pas dans un nombre JavaScript. Ces bits stockent également les nombres négatifs, donc un bit indique le signe du nombre. Un problème plus important est que les nombres non entiers (à virgules) doivent également être représentés. Pour ce  faire, certains des bits sont utilisés pour stocker la position de la virgule. Le nombre entier maximal réel qui peut être stocké est plutôt de l’ordre de 9 quadrillions (15 zéros), ce qui reste agréablement énorme.</p>
+
+<p><a class="p_ident" id="p_mSYdgC3hm5" href="#p_mSYdgC3hm5" tabindex="-1" role="presentation"></a>Les nombres fractionnaires s’écrivent à l’aide d’un point.</p>
+
+<pre class="snippet cm-s-default" data-language="javascript" ><a class="c_ident" id="c_tM8nqv41Gp" href="#c_tM8nqv41Gp" tabindex="-1" role="presentation"></a><span class="cm-number">9.81</span></pre>
+
+<p><a class="p_ident" id="p_rkEdfwkt8k" href="#p_rkEdfwkt8k" tabindex="-1" role="presentation"></a>Pour les très grands ou très petits nombres, vous pouvez également utiliser la notation scientifique en ajoutant un <em>e</em> (pour <em>exponent</em>) suivi de l’exposant du nombre.</p>
+
+<pre class="snippet cm-s-default" data-language="javascript" ><a class="c_ident" id="c_6ew5w+VhSM" href="#c_6ew5w+VhSM" tabindex="-1" role="presentation"></a><span class="cm-number">2.998e8</span></pre>
+
+<p><a class="p_ident" id="p_4c9F15yYjB" href="#p_4c9F15yYjB" tabindex="-1" role="presentation"></a>Il s’agit de 2.998 × 10<sup>8</sup> = 299,800,000.</p>
+
+<p><a class="p_ident" id="p_sDZ1eRkhay" href="#p_sDZ1eRkhay" tabindex="-1" role="presentation"></a>Les calculs avec des nombres entiers (également appelés <em>integers</em>) plus petits que les 9 quadrillions mentionnés sont garantis d’être toujours précis. Malheureusement, les calculs avec des nombres fractionnaires ne le sont généralement pas. Tout comme π (pi) ne peut pas être exprimé précisément par un nombre fini de chiffres décimaux, de nombreux nombres perdent un peu de précision lorsque seuls 64 bits sont disponibles pour les stocker. C’est dommage, mais cela pose des problèmes pratiques que dans des situations spécifiques. L’important est d’en être conscient et de traiter les nombres numériques fractionnaires comme des approximations, et non comme des valeurs précises.</p>
+
+<h3><a class="i_ident" id="i_FldyXaR2Oc" href="#i_FldyXaR2Oc" tabindex="-1" role="presentation"></a>Arithmétique</h3>
+
+<p><a class="p_ident" id="p_ohKWaHYmRu" href="#p_ohKWaHYmRu" tabindex="-1" role="presentation"></a>La principale chose à faire avec les nombres est l’arithmétique. Les opérations arithmétiques telles que l’addition ou la multiplication prennent deux valeurs numériques et produisent un nouveau nombre à partir de celles-ci. Voici à quoi elles ressemblent en JavaScript :</p>
+
+<pre class="snippet cm-s-default" data-language="javascript" ><a class="c_ident" id="c_bSU4Vtv/mt" href="#c_bSU4Vtv/mt" tabindex="-1" role="presentation"></a><span class="cm-number">100</span> <span class="cm-operator">+</span> <span class="cm-number">4</span> <span class="cm-operator">*</span> <span class="cm-number">11</span></pre>
+
+<p><a class="p_ident" id="p_K+ZXlx0gfC" href="#p_K+ZXlx0gfC" tabindex="-1" role="presentation"></a>Les symboles <code>+</code> et <code>*</code> sont appelés <em>opérateurs</em>. Le premier représente l’addition, et le second la multiplication. En plaçant un opérateur entre deux valeurs, il sera appliqué à ces valeurs et produira une nouvelle valeur.</p>
+
+<p><a class="p_ident" id="p_6VNAtnQVEK" href="#p_6VNAtnQVEK" tabindex="-1" role="presentation"></a>Mais l’exemple signifie-t-il “additionner 4 et 100, et multiplier le résultat par 11,” ou la multiplication se fait-elle avant l’addition ? Comme vous l’avez peut-être deviné, la multiplication se fait en premier. Mais comme en mathématiques, vous pouvez changer cela en mettant l’addition entre parenthèses.</p>
+
+<pre class="snippet cm-s-default" data-language="javascript" ><a class="c_ident" id="c_ij6V90ZZBQ" href="#c_ij6V90ZZBQ" tabindex="-1" role="presentation"></a>(<span class="cm-number">100</span> <span class="cm-operator">+</span> <span class="cm-number">4</span>) <span class="cm-operator">*</span> <span class="cm-number">11</span></pre>
+
+<p><a class="p_ident" id="p_O4vWiFMamB" href="#p_O4vWiFMamB" tabindex="-1" role="presentation"></a>Pour la soustraction, il y a l’opérateur <code>-</code>, et la division peut être faite avec l’opérateur <code>/</code>.</p>
+
+<p><a class="p_ident" id="p_fiVahOMC55" href="#p_fiVahOMC55" tabindex="-1" role="presentation"></a>Lorsque les opérateurs apparaissent ensemble sans parenthèses, l’ordre dans lequel ils sont  appliqués est déterminé par la <em>précédence</em> des opérateurs. L’exemple montre que la multiplication précède l’addition. L’opérateur <code>/</code> a la même précédence que <code>*</code>. De même, pour <code>+</code> et <code>-</code>. Lorsque plusieurs opérateurs ayant la même précédence sont appliqués, comme dans <code>1 - 2 + 1</code>, ils sont appliqués de gauche à droite : <code>(1 - 2) + 1</code>.</p>
+
+<p><a class="p_ident" id="p_JudqCS+yHd" href="#p_JudqCS+yHd" tabindex="-1" role="presentation"></a>Ne vous souciez pas trop des règles de précédence. En cas de doute, il suffit d’ajouter des parenthèses.</p>
+
+<p><a class="p_ident" id="p_VHkt8Tr2L7" href="#p_VHkt8Tr2L7" tabindex="-1" role="presentation"></a>Il existe un autre opérateur arithmétique, que vous ne reconnaîtrez peut-être pas immédiatement. Le symbole <code>%</code> est utilisé pour représenter l’opération <em>reste</em>. <code>X % Y</code> est le reste de la division de <code>X</code> par <code>Y</code>. Par exemple, <code>314 % 100</code> donne <code>14</code>, et <code>144 % 12</code> donne <code>0</code>. La précédence de l’opérateur de reste est la même que celle de la multiplication et de la division. Vous verrez aussi souvent cet opérateur désigné par le terme <em>modulo</em>.</p>
+
+<h3><a class="i_ident" id="i_LvJo97UpN4" href="#i_LvJo97UpN4" tabindex="-1" role="presentation"></a>Nombres spéciaux</h3>
+
+<p><a class="p_ident" id="p_q9ry7HyHYm" href="#p_q9ry7HyHYm" tabindex="-1" role="presentation"></a>Il existe trois valeurs spéciales en JavaScript qui sont considérées comme des nombres mais qui ne se comportent pas comme des nombres normaux.</p>
+
+<p><a class="p_ident" id="p_tgY8HGhNy/" href="#p_tgY8HGhNy/" tabindex="-1" role="presentation"></a>Les deux premières sont <code>Infinity</code> et <code>-Infinity</code>, qui représentent l’infini positif et l’infini négatif. <code>Infinity - 1</code> est toujours <code>Infinity</code>, et ainsi de suite. Ne faites pas trop confiance au calcul basé sur l’infini, cependant. Ce n’est pas mathématiquement correct, et cela vous mènera rapidement au prochain nombre spécial : <code>NaN</code>.</p>
+
+<p><a class="p_ident" id="p_KxdJ+cabbL" href="#p_KxdJ+cabbL" tabindex="-1" role="presentation"></a><code>NaN</code> signifie “not a number” (pas un nombre), même s’il <em>est</em> une valeur de type nombre. Vous obtiendrez ce résultat lorsque, par exemple, vous essayez de calculer <code>0 / 0</code> (zéro divisé par zéro), <code>Infini - Infini</code>, ou encore toute autre opération numérique qui ne donne pas de résultat significatif.</p>
+
+<h2><a class="h_ident" id="h_fesaQxmPEg" href="#h_fesaQxmPEg" tabindex="-1" role="presentation"></a>Chaînes de caractères</h2>
+
+<p><a class="p_ident" id="p_tN3fkJCI31" href="#p_tN3fkJCI31" tabindex="-1" role="presentation"></a>Le type de données de base suivant est la <em>chaîne de caractère</em>. Les chaînes de caractères sont utilisées pour représenter du texte. Elles sont écrites en mettant leur contenu entre guillemets.</p>
+
+<pre class="snippet cm-s-default" data-language="javascript" ><a class="c_ident" id="c_JcfC82q1V/" href="#c_JcfC82q1V/" tabindex="-1" role="presentation"></a><span class="cm-string-2">`Down on the sea`</span>
+<span class="cm-string">&quot;Lie on the ocean&quot;</span>
+<span class="cm-string">'Float on the ocean'</span></pre>
+
+<p><a class="p_ident" id="p_U2pLQLvED6" href="#p_U2pLQLvED6" tabindex="-1" role="presentation"></a>Vous pouvez utiliser des guillemets simples, doubles ou inversés pour marquer les chaînes de caractères, à condition que les guillemets au début et à la fin de la chaîne de caractères correspondent.</p>
+
+<p><a class="p_ident" id="p_mU1x2f+aJL" href="#p_mU1x2f+aJL" tabindex="-1" role="presentation"></a>Presque tout peut être mis entre guillemets, et JavaScript en fera une valeur de chaîne de caractères. Mais quelques caractères sont plus difficiles. Vous pouvez imaginer comment mettre des guillemets entre guillemets peut être difficile. Les <em>retours a la ligne</em> (les caractères que vous obtenez lorsque vous appuyez sur <span class="keyname">enter</span>) peuvent être incluses sans échappement uniquement lorsque la chaîne est citée avec des guillemets inversés. (<code>`</code>).</p>
+
+<p><a class="p_ident" id="p_GWN2CWa66M" href="#p_GWN2CWa66M" tabindex="-1" role="presentation"></a>Pour permettre d’inclure de tels caractères dans une chaîne, la notation suivante est utilisée suivante : chaque fois qu’une barre oblique inverse (<code>\</code>) se trouve à l’intérieur d’un texte texte entre guillemets, cela signifie que le caractère qui le suit a une sinigifcation spéciale. C’est ce qu’on appelle l’<em>échappement</em> du caractère. Un guillemet qui est précédée d’une barre oblique inverse ne terminera pas la chaîne de caractères mais en fera partie. Lorsqu’un caractère <code>n</code> apparaît après une barre oblique inverse, il est interprété comme une nouvelle ligne. De même, un <code>t</code> après une barre oblique inverse signifie un caractère de tabulation. Prenons la chaîne suivante :</p>
+
+<pre class="snippet cm-s-default" data-language="javascript" ><a class="c_ident" id="c_4V7jEJ6zbX" href="#c_4V7jEJ6zbX" tabindex="-1" role="presentation"></a><span class="cm-string">&quot;Voila la première ligne\nEt la seconde&quot;</span></pre>
+
+<p><a class="p_ident" id="p_5ecpWSxUDb" href="#p_5ecpWSxUDb" tabindex="-1" role="presentation"></a>Le texte contenu est le suivant :</p>
+
+<pre class="snippet cm-s-default" data-language="null" ><a class="c_ident" id="c_pjIlMSJDzp" href="#c_pjIlMSJDzp" tabindex="-1" role="presentation"></a>Voila la première ligne
+Et la seconde</pre>
+
+<p><a class="p_ident" id="p_7iv+1l2oQl" href="#p_7iv+1l2oQl" tabindex="-1" role="presentation"></a>Il y a, bien sûr, des situations où vous voulez qu’une barre oblique inverse dans une soit juste une barre oblique inversée, et non un code spécial. Si deux barres obliques inversées se suivent, elles fusionneront et il n’en restera qu’une seule dans la chaîne de caractères résultante. C’est ainsi que la chaîne de caractères “<em>Un caractère de nouvelle ligne s’écrit comme <code>&quot;</code>\n<code>&quot;</code>.</em>” peut être exprimée :</p>
+
+<pre class="snippet cm-s-default" data-language="javascript" ><a class="c_ident" id="c_/uRMOCJNYg" href="#c_/uRMOCJNYg" tabindex="-1" role="presentation"></a><span class="cm-string">&quot;Un caractère de nouvelle ligne s'écrit comme \&quot;\\n\&quot;.&quot;</span></pre>
+
+<p id="unicode"><a class="p_ident" id="p_8Gx28kt6ca" href="#p_8Gx28kt6ca" tabindex="-1" role="presentation"></a>Les chaînes de caractères, elles aussi, doivent être modélisées comme une série de bits pour pouvoir exister dans l’ordinateur. La façon dont JavaScript fait cela est basée sur la norme <em>Unicode</em>. Cette norme attribue un numéro à pratiquement tous les caractères dont vous pourriez avoir besoin, y compris les caractères du grec, de l’arabe, du japonais, de l’arménien, et ainsi de suite. Si nous avons un numéro pour chaque caractère, une chaîne de caractères peut être décrite par une séquence de nombres.</p>
+
+<p><a class="p_ident" id="p_NCi/kdM2L5" href="#p_NCi/kdM2L5" tabindex="-1" role="presentation"></a>Et c’est ce que fait JavaScript. Mais il y a une complication : la représentation de JavaScript utilise 16 bits par élément de chaîne, qui peut décrire jusqu’à 2<sup>16</sup> caractères différents. Mais Unicode définit plus de caractères que cela - environ deux fois plus, à ce stade. Ainsi, certains caractères, tels que de nombreux emoji, occupent deux “positions de caractères” dans les chaînes JavaScript. Nous reviendrons sur ce point au <a href="05_higher_order.html#code_units">chapitre 5</a>.</p>
+
+<p><a class="p_ident" id="p_IITpAGwBoD" href="#p_IITpAGwBoD" tabindex="-1" role="presentation"></a>Les chaînes de caractères ne peuvent pas être divisées, multipliées ou soustraites, mais l’opérateur &quot;+&quot; peut être utilisé sur elles. Il n’ajoute pas, mais il <em>colle</em> deux chaînes de caractères ensemble. La ligne suivante produira la chaîne <code>&quot;concaténer&quot;</code> :</p>
+
+<pre class="snippet cm-s-default" data-language="javascript" ><a class="c_ident" id="c_PXXg6kIkgm" href="#c_PXXg6kIkgm" tabindex="-1" role="presentation"></a><span class="cm-string">&quot;con&quot;</span> <span class="cm-operator">+</span> <span class="cm-string">&quot;cat&quot;</span> <span class="cm-operator">+</span> <span class="cm-string">&quot;é&quot;</span> <span class="cm-operator">+</span> <span class="cm-string">&quot;ner&quot;</span></pre>
+
+<p><a class="p_ident" id="p_4m63bbhHjA" href="#p_4m63bbhHjA" tabindex="-1" role="presentation"></a>Les chaînes de caractères ont un certain nombre de fonctions associées (<em>méthodes</em>) qui peuvent être utilisées pour effectuer d’autres opérations sur elles.  J’en dirai plus dans le <a href="04_data.html#methods">Chapitre 4</a>.</p>
+
+<p><a class="p_ident" id="p_Gd5tSIT176" href="#p_Gd5tSIT176" tabindex="-1" role="presentation"></a>Les chaînes de caractères écrites avec des guillemets simples ou doubles se comportent presque de la même manière. La seule différence réside dans le type de guillemet que vous devez échapper à l’intérieur de celles-ci. Les chaînes de caractères entre guillemets inversés, généralement appelées <em>template literals</em>, ont des capacités supplémentaires. Outre la possibilité de s’étendre sur plusieurs lignes, elles peuvent également intégrer d’autres valeurs.</p>
+
+<pre class="snippet cm-s-default" data-language="javascript" ><a class="c_ident" id="c_3ywk+seDUn" href="#c_3ywk+seDUn" tabindex="-1" role="presentation"></a><span class="cm-string-2">`la moitié de 100 est ${</span><span class="cm-number">100</span> <span class="cm-operator">/</span> <span class="cm-number">2</span><span class="cm-string-2">}</span><span class="cm-string-2">`</span></pre>
+
+<p><a class="p_ident" id="p_AbzKvzAeXf" href="#p_AbzKvzAeXf" tabindex="-1" role="presentation"></a>Lorsque vous écrivez quelque chose à l’intérieur de <code>${}</code> dans un template literals, son résultat sera calculé, converti en une chaîne de caractères, et inclus à cette position. L’exemple produit “<em>la moitié de 100 est 50</em>”.</p>
+
+<h2><a class="h_ident" id="h_iULE4Uu6c+" href="#h_iULE4Uu6c+" tabindex="-1" role="presentation"></a>Opérateurs unaires</h2>
+
+<p><a class="p_ident" id="p_J9PCUbtUIR" href="#p_J9PCUbtUIR" tabindex="-1" role="presentation"></a>Tous les opérateurs ne sont pas des symboles. Certains s’écrivent comme des mots. Un exemple est l’opérateur <code>typeof</code>, qui produit une chaîne de caractères désignant le type de la valeur que vous lui donnez.</p>
+
+<pre class="snippet cm-s-default" data-language="javascript" ><a class="c_ident" id="c_iWT//VyY7j" href="#c_iWT//VyY7j" tabindex="-1" role="presentation"></a><span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-keyword">typeof</span> <span class="cm-number">4.5</span>)
+<span class="cm-comment">// → number</span>
+<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-keyword">typeof</span> <span class="cm-string">&quot;x&quot;</span>)
+<span class="cm-comment">// → string</span></pre>
+
+<p id="console.log"><a class="p_ident" id="p_FvhH7zMVIH" href="#p_FvhH7zMVIH" tabindex="-1" role="presentation"></a>Nous utiliserons <code>console.log</code> dans le code d’exemple pour indiquer que nous voulons voir le résultat de l’évaluation de quelque chose. Plus d’informations à ce sujet dans le [prochain chapitre] (program_structure).</p>
+
+<p><a class="p_ident" id="p_/JnmwuHa/w" href="#p_/JnmwuHa/w" tabindex="-1" role="presentation"></a>Les autres opérateurs présentés opèrent tous sur deux valeurs, mais <code>typeof</code> n’en prend qu’une seule. Les opérateurs qui utilisent deux valeurs sont appelés opérateurs <em>binaires</em> tandis que ceux qui n’en prennent qu’une sont appelés opérateurs <em>unaires</em>. L’opérateur moins peut être utilisé à la fois comme opérateur binaire et comme opérateur unaire.</p>
+
+<pre class="snippet cm-s-default" data-language="javascript" ><a class="c_ident" id="c_VpL89RFAPj" href="#c_VpL89RFAPj" tabindex="-1" role="presentation"></a><span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-operator">-</span> (<span class="cm-number">10</span> <span class="cm-operator">-</span> <span class="cm-number">2</span>))
+<span class="cm-comment">// → -8</span></pre>
+
+<h2><a class="h_ident" id="h_AhnBkhx0lV" href="#h_AhnBkhx0lV" tabindex="-1" role="presentation"></a>Valeurs booléennes</h2>
+
+<p><a class="p_ident" id="p_gIyodUiP+N" href="#p_gIyodUiP+N" tabindex="-1" role="presentation"></a>Il est souvent utile d’avoir une valeur qui ne distingue que deux possibilités, comme “oui” et “non” ou “on” et “off”. À cette fin, JavaScript dispose d’un type <em>Boolean</em>, qui ne possède que deux valeurs, true et false, qui s’écrivent comme ces mots.</p>
+
+<h3><a class="i_ident" id="i_FxmLrWIIO3" href="#i_FxmLrWIIO3" tabindex="-1" role="presentation"></a>Comparaison</h3>
+
+<p><a class="p_ident" id="p_7u2O3gyJmL" href="#p_7u2O3gyJmL" tabindex="-1" role="presentation"></a>Voici une façon de produire des valeurs booléennes :</p>
+
+<pre class="snippet cm-s-default" data-language="javascript" ><a class="c_ident" id="c_GaxnXrIPwC" href="#c_GaxnXrIPwC" tabindex="-1" role="presentation"></a><span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-number">3</span> <span class="cm-operator">&gt;</span> <span class="cm-number">2</span>)
+<span class="cm-comment">// → true</span>
+<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-number">3</span> <span class="cm-operator">&lt;</span> <span class="cm-number">2</span>)
+<span class="cm-comment">// → false</span></pre>
+
+<p><a class="p_ident" id="p_KA4rui8Zh9" href="#p_KA4rui8Zh9" tabindex="-1" role="presentation"></a>Les signes <code>&gt;</code> et <code>&lt;</code> sont les symboles traditionnels pour “est plus grand plus grand que” et “plus petit que”, respectivement. Ce sont des opérateurs binaires. En les appliquant, on obtient une valeur booléenne qui indique s’ils sont vrais dans ce cas.</p>
+
+<p><a class="p_ident" id="p_E7/1KPHC1N" href="#p_E7/1KPHC1N" tabindex="-1" role="presentation"></a>Les chaînes de caractères peuvent être comparées de la même manière.</p>
+
+<pre class="snippet cm-s-default" data-language="javascript" ><a class="c_ident" id="c_Qud5plnVuV" href="#c_Qud5plnVuV" tabindex="-1" role="presentation"></a><span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-string">&quot;Aardvark&quot;</span> <span class="cm-operator">&lt;</span> <span class="cm-string">&quot;Zoroaster&quot;</span>)
+<span class="cm-comment">// → true</span></pre>
+
+<p><a class="p_ident" id="p_aBwswuF4yn" href="#p_aBwswuF4yn" tabindex="-1" role="presentation"></a>La façon dont les chaînes de caractères sont ordonnées est à peu près alphabétique mais pas vraiment ce que ce que l’on s’attend à voir dans un dictionnaire : les lettres majuscules sont toujours “inférieures” aux lettres minuscules, donc <code>&quot;Z&quot; &lt; &quot;a&quot;</code>, et les caractères non alphabétiques ( !, -, etc.) sont aussi inclus dans l’ordre. Lors de la comparaison des chaînes de caractères JavaScript procède de gauche à droite, en comparant les codes Unicode un par un.</p>
+
+<p><a class="p_ident" id="p_+HSsHYBVWi" href="#p_+HSsHYBVWi" tabindex="-1" role="presentation"></a>D’autres opérateurs similaires sont <code>&gt;=</code> (plus grand que ou égal à), <code>&lt;=</code> (inférieur ou égal à), <code>==</code> (égal à) et <code>!=</code> (non égal à).</p>
+
+<pre class="snippet cm-s-default" data-language="javascript" ><a class="c_ident" id="c_RPTpplTrun" href="#c_RPTpplTrun" tabindex="-1" role="presentation"></a><span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-string">&quot;Itchy&quot;</span> <span class="cm-operator">!=</span> <span class="cm-string">&quot;Scratchy&quot;</span>)
+<span class="cm-comment">// → true</span>
+<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-string">&quot;Pomme&quot;</span> <span class="cm-operator">==</span> <span class="cm-string">&quot;Orange&quot;</span>)
+<span class="cm-comment">// → false</span></pre>
+
+<p><a class="p_ident" id="p_qXvRPDGsfq" href="#p_qXvRPDGsfq" tabindex="-1" role="presentation"></a>Il n’y a qu’une seule valeur en JavaScript qui n’est pas égale à elle-même, il s’agit de <code>NaN</code> (“not a number”).</p>
+
+<pre class="snippet cm-s-default" data-language="javascript" ><a class="c_ident" id="c_Vhz09Rgw3h" href="#c_Vhz09Rgw3h" tabindex="-1" role="presentation"></a><span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-atom">NaN</span> <span class="cm-operator">==</span> <span class="cm-atom">NaN</span>)
+<span class="cm-comment">// → false</span></pre>
+
+<p><a class="p_ident" id="p_ZgVuaihtjO" href="#p_ZgVuaihtjO" tabindex="-1" role="presentation"></a>“NaN” est censé désigner le résultat d’un calcul absurde, et en tant que tel, il n’est pas égal au résultat de n’importe quel <em>autre</em> calcul absurde.</p>
+
+<h3><a class="i_ident" id="i_pWdfpH4Ba5" href="#i_pWdfpH4Ba5" tabindex="-1" role="presentation"></a>Opérateurs logiques</h3>
+
+<p><a class="p_ident" id="p_iY3SdaX63l" href="#p_iY3SdaX63l" tabindex="-1" role="presentation"></a>Il existe également certaines opérations qui peuvent être appliquées aux valeurs booléennes elles-mêmes. JavaScript prend en charge trois opérateurs logiques : <em>and</em>, <em>or</em>, et <em>not</em>. Ils peuvent être utilisés pour “raisonner” sur les booléens.</p>
+
+<p><a class="p_ident" id="p_wVBhhDVHhC" href="#p_wVBhhDVHhC" tabindex="-1" role="presentation"></a>L’opérateur <code>&amp;&amp;</code> représente le <em>and</em> logique. C’est un opérateur binaire, et son résultat n’est vrai que si les deux valeurs qui lui sont données sont vraies.</p>
+
+<pre class="snippet cm-s-default" data-language="javascript" ><a class="c_ident" id="c_SHi38sNkwM" href="#c_SHi38sNkwM" tabindex="-1" role="presentation"></a><span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-atom">true</span> <span class="cm-operator">&amp;&amp;</span> <span class="cm-atom">false</span>)
+<span class="cm-comment">// → false</span>
+<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-atom">true</span> <span class="cm-operator">&amp;&amp;</span> <span class="cm-atom">true</span>)
+<span class="cm-comment">// → true</span></pre>
+
+<p><a class="p_ident" id="p_7+MJiFg3Ms" href="#p_7+MJiFg3Ms" tabindex="-1" role="presentation"></a>L’opérateur <code>||</code> dénote un <em>or</em> logique. Il produit vrai si l’une ou l’autre des valeurs qui lui sont données est vraie.</p>
+
+<pre class="snippet cm-s-default" data-language="javascript" ><a class="c_ident" id="c_diXyv7iPd1" href="#c_diXyv7iPd1" tabindex="-1" role="presentation"></a><span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-atom">false</span> <span class="cm-operator">||</span> <span class="cm-atom">true</span>)
+<span class="cm-comment">// → true</span>
+<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-atom">false</span> <span class="cm-operator">||</span> <span class="cm-atom">false</span>)
+<span class="cm-comment">// → false</span></pre>
+
+<p><a class="p_ident" id="p_alCgcTdEOl" href="#p_alCgcTdEOl" tabindex="-1" role="presentation"></a><em>Not</em> s’écrit comme un point d’exclamation (<code>!</code>). C’est un opérateur unaire qui renverse la valeur qui lui est donnée - <code>!true</code> produit <code>false</code>, et <code>!false</code> donne <code>true</code>.</p>
+
+<p><a class="p_ident" id="p_ecVLTTjZ4P" href="#p_ecVLTTjZ4P" tabindex="-1" role="presentation"></a>Lorsque l’on mélange ces opérateurs booléens avec les opérateurs arithmétiques et autres il n’est pas toujours évident de savoir quand les parenthèses sont nécessaires. Dans la pratique, il suffit généralement de savoir que, parmi les opérateurs que nous avons vus jusqu’à présent, <code>||</code> a la plus faible priorité, puis vient <code>&amp;&amp;</code>, puis les opérateurs de comparaison (<code>&gt;</code>, <code>==</code>, et ainsi de suite), et enfin les autres. Cet ordre a été choisi de telle sorte que, dans les expressions typiques comme celle qui suit, le moins de parenthèses possible soient nécessaires :</p>
+
+<pre class="snippet cm-s-default" data-language="javascript" ><a class="c_ident" id="c_6eZ07bDo11" href="#c_6eZ07bDo11" tabindex="-1" role="presentation"></a><span class="cm-number">1</span> <span class="cm-operator">+</span> <span class="cm-number">1</span> <span class="cm-operator">==</span> <span class="cm-number">2</span> <span class="cm-operator">&amp;&amp;</span> <span class="cm-number">10</span> <span class="cm-operator">*</span> <span class="cm-number">10</span> <span class="cm-operator">&gt;</span> <span class="cm-number">50</span></pre>
+
+<p><a class="p_ident" id="p_aHKN5st3my" href="#p_aHKN5st3my" tabindex="-1" role="presentation"></a>Le dernier opérateur logique dont je vais parler n’est pas unaire, ni binaire, mais <em>ternaire</em>, opérant sur trois valeurs. Il s’écrit avec un point d’interrogation et un deux-points, comme ceci :</p>
+
+<pre class="snippet cm-s-default" data-language="javascript" ><a class="c_ident" id="c_G7eVm8ilWm" href="#c_G7eVm8ilWm" tabindex="-1" role="presentation"></a><span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-atom">true</span> <span class="cm-operator">?</span> <span class="cm-number">1</span> : <span class="cm-number">2</span>);
+<span class="cm-comment">// → 1</span>
+<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-atom">false</span> <span class="cm-operator">?</span> <span class="cm-number">1</span> : <span class="cm-number">2</span>);
+<span class="cm-comment">// → 2</span></pre>
+
+<p><a class="p_ident" id="p_ul1lGUBADF" href="#p_ul1lGUBADF" tabindex="-1" role="presentation"></a>Celui-ci est appelé l’opérateur <em>conditionnel</em> (ou parfois seulement l’opérateur <em>ternaire</em> puisqu’il s’agit du seul opérateur de ce type dans le langage). La valeur qui se trouve à gauche du point d’interrogation “choisit” laquelle des les deux autres valeurs qui sortiront. Lorsqu’elle est vraie, elle choisit la valeur du milieu, et quand elle est fausse, elle choisit la valeur de droite.</p>
+
+<h2><a class="h_ident" id="h_CKwcuxDYxb" href="#h_CKwcuxDYxb" tabindex="-1" role="presentation"></a>Valeur nulle on indéfinie</h2>
+
+<p><a class="p_ident" id="p_SveAhMfwwn" href="#p_SveAhMfwwn" tabindex="-1" role="presentation"></a>Il existe deux valeurs spéciales, écrites <code>null</code> et <code>undefined</code>, qui sont utilisées pour indiquer l’absence d’une valeur <em>significative</em>. Ces valeurs sont des valeurs elle même, mais elles ne portent aucune information.</p>
+
+<p><a class="p_ident" id="p_UuU6QL/ftE" href="#p_UuU6QL/ftE" tabindex="-1" role="presentation"></a>De nombreuses opérations dans le langage qui ne produisent pas de valeur significative (vous en verrez quelques unes plus tard) produisent des <code>undefined</code> simplement parce qu’elles doivent produire <em>une</em> valeur quelle qu’elle soit.</p>
+
+<p><a class="p_ident" id="p_ad/kATI7HY" href="#p_ad/kATI7HY" tabindex="-1" role="presentation"></a>La différence de signification entre <code>undefined</code> et <code>null</code> est un accident de conception de JavaScript, et elle n’a pas d’importance la plupart du temps. Dans les cas cas où vous devez réellement vous préoccuper de ces valeurs, je recommande de les traiter comme des valeurs interchangeables.</p>
+
+<h2><a class="h_ident" id="h_AY+YGu6qyM" href="#h_AY+YGu6qyM" tabindex="-1" role="presentation"></a>Automatic type conversion</h2>
+
+<p><a class="p_ident" id="p_yoxWh1kDxv" href="#p_yoxWh1kDxv" tabindex="-1" role="presentation"></a>Dans l’introduction, j’ai mentionné que JavaScript fait tout son possible pour accepter presque tous les programmes que vous lui donnez, même les programmes qui font des bizarreries. Ceci est bien démontré par les expressions suivantes :</p>
+
+<pre class="snippet cm-s-default" data-language="javascript" ><a class="c_ident" id="c_QqYG9KqZ2/" href="#c_QqYG9KqZ2/" tabindex="-1" role="presentation"></a><span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-number">8</span> <span class="cm-operator">*</span> <span class="cm-atom">null</span>)
+<span class="cm-comment">// → 0</span>
+<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-string">&quot;5&quot;</span> <span class="cm-operator">-</span> <span class="cm-number">1</span>)
+<span class="cm-comment">// → 4</span>
+<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-string">&quot;5&quot;</span> <span class="cm-operator">+</span> <span class="cm-number">1</span>)
+<span class="cm-comment">// → 51</span>
+<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-string">&quot;five&quot;</span> <span class="cm-operator">*</span> <span class="cm-number">2</span>)
+<span class="cm-comment">// → NaN</span>
+<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-atom">false</span> <span class="cm-operator">==</span> <span class="cm-number">0</span>)
+<span class="cm-comment">// → true</span></pre>
+
+<p><a class="p_ident" id="p_T7SbadfiOj" href="#p_T7SbadfiOj" tabindex="-1" role="presentation"></a>Lorsqu’un opérateur est appliqué au “mauvais” type de valeur, JavaScript va tranquillement convertir cette valeur dans le type dont il a besoin, en utilisant un ensemble de règles qui ne sont pas souvent ce que vous voulez ou attendez. Ce phénomène est appelé <em>coercition de type</em>. Le <code>null</code> de la première expression devient <code>0</code>, et le <code>&quot;5&quot;</code> de la deuxième expression devient <code>5</code> (de chaîne de caractères à nombre). Pourtant, dans la troisième expression, <code>+</code> essaie de concaténer les chaînes de caractères avant l’addition numérique, donc le <code>1</code> est converti en <code>&quot;1&quot;</code> (d’un nombre à une chaîne de caractères).</p>
+
+<p><a class="p_ident" id="p_MeZUXT/Y5o" href="#p_MeZUXT/Y5o" tabindex="-1" role="presentation"></a>Lorsque quelque chose qui ne correspond pas à un nombre de manière évidente (comme par exemple <code>&quot;five&quot;</code> ou <code>undefined</code>) est converti en un nombre, vous obtenez la valeur <code>NaN</code>. D’autres opérations arithmétiques sur <code>NaN</code> continuent à produire <code>NaN</code>, donc si vous obtenez l’une de ces valeurs à un endroit inattendu, recherchez les conversions de type accidentelles.</p>
+
+<p><a class="p_ident" id="p_g2ba98GkFi" href="#p_g2ba98GkFi" tabindex="-1" role="presentation"></a>Lorsque l’on compare des valeurs du même type en utilisant <code>==</code>, le résultat est facile à prédire : vous devriez obtenir true lorsque les deux valeurs sont identiques, sauf dans le cas de <code>NaN</code>. Mais lorsque les types diffèrent, JavaScript utilise un ensemble compliqué et confus de règles pour déterminer ce qu’il faut faire. Dans la plupart des cas, il essaie simplement de convertir l’une des valeurs en type de l’autre valeur. Cependant, lorsque <code>null</code> ou <code>undefined</code> se trouve de part et d’autre de l’opérateur, il ne produit un résultat vrai que si les deux côtés sont <code>null</code> ou <code>undefined</code>.</p>
+
+<pre class="snippet cm-s-default" data-language="javascript" ><a class="c_ident" id="c_qmGDPdETlf" href="#c_qmGDPdETlf" tabindex="-1" role="presentation"></a><span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-atom">null</span> <span class="cm-operator">==</span> <span class="cm-atom">undefined</span>);
+<span class="cm-comment">// → true</span>
+<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-atom">null</span> <span class="cm-operator">==</span> <span class="cm-number">0</span>);
+<span class="cm-comment">// → false</span></pre>
+
+<p><a class="p_ident" id="p_JM+ydHndhw" href="#p_JM+ydHndhw" tabindex="-1" role="presentation"></a>Ce comportement est souvent utile. Lorsque vous voulez tester si une valeur a une valeur réelle plutôt que <code>null</code> ou <code>undefined</code>, vous pouvez la comparer à <code>null</code> avec l’opérateur <code>==</code> (ou <code>!=</code>).</p>
+
+<p><a class="p_ident" id="p_I2ShNvhEd7" href="#p_I2ShNvhEd7" tabindex="-1" role="presentation"></a>Mais que faire si vous voulez tester si quelque chose se réfère à la valeur exacte précise <code>false</code> ? Des expressions comme <code>0 == false</code> et <code>&quot;&quot; == false</code> sont également vraies à cause de la conversion automatique des types. Lorsque vous ne voulez <em>pas</em> que des conversions de type se produisent, il existe deux opérateurs supplémentaires : <code>===</code> et <code>!==</code>. Le premier teste si une valeur est <em>précisément</em> égale à une autre à l’autre, et le second teste si elle n’est pas précisément égale.</p>
+
+<p><a class="p_ident" id="p_fe4sImq9uQ" href="#p_fe4sImq9uQ" tabindex="-1" role="presentation"></a>Ainsi, <code>&quot;&quot; === false</code> est faux comme prévu.</p>
+
+<p><a class="p_ident" id="p_QjSCGx4IL/" href="#p_QjSCGx4IL/" tabindex="-1" role="presentation"></a>Je recommande d’utiliser les opérateurs de comparaison à trois caractères de manière défensive pour éviter que des conversions de types inattendues ne vous fassent trébucher. Mais lorsque vous êtes certain que les types des deux côtés seront les mêmes, il n’y a pas de problème à l’utilisation d’opérateurs plus courts.</p>
+
+<h3><a class="i_ident" id="i_QuqGjMDuQ1" href="#i_QuqGjMDuQ1" tabindex="-1" role="presentation"></a>Court-circuiter les opérateurs logiques</h3>
+
+<p><a class="p_ident" id="p_L7NKmvWeEb" href="#p_L7NKmvWeEb" tabindex="-1" role="presentation"></a>Les opérateurs logiques <code>&amp;&amp;</code> et <code>||</code> traitent des valeurs de types différents d’une manière particulière. Ils convertissent la valeur de leur côté gauche en un type booléen afin de décider de ce qu’il faut faire, mais selon l’opérateur et du résultat de cette conversion, ils renverront soit la valeur de gauche valeur de gauche <em>originale</em> ou la valeur de droite.</p>
+
+<p><a class="p_ident" id="p_3q2mIpTlbp" href="#p_3q2mIpTlbp" tabindex="-1" role="presentation"></a>L’opérateur <code>||</code>, par exemple, retournera la valeur à sa gauche quand elle peut être convertie en true et retournera la valeur à sa droite sinon. Ceci a l’effet attendu lorsque les valeurs sont booléennes et fait quelque chose d’analogue pour les valeurs d’autres types.</p>
+
+<pre class="snippet cm-s-default" data-language="javascript" ><a class="c_ident" id="c_ENjxHGMklb" href="#c_ENjxHGMklb" tabindex="-1" role="presentation"></a><span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-atom">null</span> <span class="cm-operator">||</span> <span class="cm-string">&quot;user&quot;</span>)
+<span class="cm-comment">// → user</span>
+<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-string">&quot;Agnes&quot;</span> <span class="cm-operator">||</span> <span class="cm-string">&quot;user&quot;</span>)
+<span class="cm-comment">// → Agnes</span></pre>
+
+<p><a class="p_ident" id="p_IOOr1MYMY7" href="#p_IOOr1MYMY7" tabindex="-1" role="presentation"></a>Nous pouvons utiliser cette fonctionnalité comme un moyen de revenir à une valeur par défaut. Si vous avez une valeur qui pourrait être vide, vous pouvez mettre <code>||</code> après avec une valeur de remplacement. Si la valeur initiale peut être convertie en false, vous obtiendrez la valeur de remplacement. Les règles de conversion des chaînes de caractères et les nombres en valeurs booléennes stipulent que <code>0</code>, <code>NaN</code> et la chaîne vide (<code>&quot;&quot;</code>) sont considérés comme des <code>false</code>, tandis que toutes les autres valeurs sont considérées comme des <code>true</code>. Donc <code>0 || -1</code> produit <code>-1</code>, et <code>&quot;&quot; || &quot; !?&quot;</code> donne <code>&quot; !?&quot;</code>.</p>
+
+<p><a class="p_ident" id="p_m+Aft91CtP" href="#p_m+Aft91CtP" tabindex="-1" role="presentation"></a>L’opérateur <code>&amp;&amp;</code> fonctionne de manière similaire, mais dans l’autre sens. Lorsque la valeur gauche est quelque chose qui se convertit en faux, il retourne cette valeur, et sinon, il renvoie la valeur à sa droite.</p>
+
+<p><a class="p_ident" id="p_OGZ3Ohxa7h" href="#p_OGZ3Ohxa7h" tabindex="-1" role="presentation"></a>Une autre propriété importante de ces deux opérateurs est que la partie à leur droite n’est évaluée que lorsque cela est nécessaire. Dans le cas de <code>true ||| X</code>, peu importe ce qu’est <code>X</code> - même si c’est un morceau de programme qui fait quelque chose de <em>terrible</em>, le résultat sera vrai, et <code>X</code> n’est jamais évalué. Il en va de même pour <code>false &amp;&amp; X</code>, qui est faux et ignorera <code>X</code>. Cela s’appelle <em>court-circuit d’évaluation</em>.</p>
+
+<p><a class="p_ident" id="p_qnSQpEM7kk" href="#p_qnSQpEM7kk" tabindex="-1" role="presentation"></a>L’opérateur conditionnel fonctionne de manière similaire. Parmi les deuxième et troisième valeur, seule celle qui est sélectionnée est évaluée.</p>
+
+<h2><a class="h_ident" id="h_n7WJY8ZtsM" href="#h_n7WJY8ZtsM" tabindex="-1" role="presentation"></a>Résumé</h2>
+
+<p><a class="p_ident" id="p_6sDC+03TcV" href="#p_6sDC+03TcV" tabindex="-1" role="presentation"></a>Nous avons étudié quatre types de valeurs JavaScript dans ce chapitre : les nombres, les chaînes de caractères, les booléens et les valeurs indéfinies.</p>
+
+<p><a class="p_ident" id="p_siW7eSxvDj" href="#p_siW7eSxvDj" tabindex="-1" role="presentation"></a>Ces valeurs sont créées en tapant leur nom (<code>true</code>, <code>null</code>) ou leur valeur (<code>13</code>, <code>&quot;abc&quot;</code>). Vous pouvez combiner et transformer des valeurs avec des opérateurs. Nous avons vu les opérateurs binaires pour l’arithmétique (<code>+</code>, <code>-</code>, <code>*</code>, <code>/</code>, et <code>%</code>), la concaténation de chaînes de caractères (<code>+</code>), la comparaison (<code>==</code>, <code>!=</code>, <code>===</code>, <code>!==</code>, <code>&lt;</code>, <code>&gt;</code>, <code>&lt;=</code>, <code>&gt;=</code>) et la logique (<code>&amp;&amp;</code>, <code>||</code>), ainsi que plusieurs opérateurs unaires (<code>-</code> pour annuler un nombre, <code>!</code> pour annuler logiquement et <code>typeof</code> pour trouver le type d’une valeur) et un opérateur ternaire (<code>?:</code>) pour choisir une des deux valeurs en fonction d’une troisième valeur.</p>
+
+<p><a class="p_ident" id="p_u8PGgX+BBy" href="#p_u8PGgX+BBy" tabindex="-1" role="presentation"></a>Cela vous donne suffisamment d’informations pour utiliser JavaScript comme une calculatrice de poche, mais pas plus. Le chapitre <a href="02_program_structure.html">suivant</a> commencera à relier ces expressions ensemble dans des programmes de base.</p><nav><a href="00_intro.html" title="previous chapter">◀</a> <a href="index.html" title="cover">◆</a> <a href="02_program_structure.html" title="next chapter">▶</a></nav>
+</article>
