@@ -538,7 +538,6 @@ Code.initLanguage = function() {
 
   // Inject language strings.
   document.title += ' ' + MSG['title'];
-  document.getElementById('title').textContent = MSG['title'];
   document.getElementById('tab_blocks').textContent = MSG['blocks'];
 
   document.getElementById('linkButton').title = MSG['linkTooltip'];
