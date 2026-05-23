@@ -4,10 +4,14 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Overview
 
-This is a GitHub Pages personal site hosted at `eriam.github.io`. The repository is currently empty — no framework or static site generator has been chosen yet.
+GitHub Pages personal site at `eriam.github.io`. Plain HTML, no CSS, no JS, no framework — intentional aesthetic choice.
 
-## GitHub Pages Deployment
+## Structure
 
-GitHub Pages serves the `main` branch automatically. The default branch for publishing should be `main` (not `master`). Pages are live at `https://eriam.github.io` after pushing to the publishing branch.
+- `index.html` — landing page (French): axes de travail, activités, publications, projets, contact.
+- `dashboard-bts/dashboard_bts_sio.html` — dashboard d'analyse BTS (effectifs, cartographie, insertion professionnelle) via Leaflet et données data.gouv.fr / InserJeunes DEPP. Données dans `dashboard-bts/pipeline/output/`.
+- `cv.pdf` — CV local, non lié depuis le site.
 
-If Jekyll is used, GitHub Pages builds it automatically. For other frameworks (Hugo, Eleventy, Astro, plain HTML), a GitHub Actions workflow is needed to build and deploy to the `gh-pages` branch or the `main` branch root/`docs/` folder.
+## Deployment
+
+GitHub Pages sert la branche `main` à la racine. Pas de build step — les fichiers sont servis tels quels.
