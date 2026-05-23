@@ -713,6 +713,8 @@
               <th data-sort="eff1A" class="num" title="Effectif de 1ère année à la dernière rentrée">1A</th>
               <th data-sort="eff2A" class="num" title="Effectif de 2ème année (toutes options confondues) à la dernière rentrée">2A</th>
               <th data-sort="passage" class="num" title="Taux de passage cohorte = 2A de l'année N / 1A de l'année N-1 (même promotion)">Passage 1A→2A</th>
+              <th class="num" title="Médiane nationale du taux de passage pour cette spécialité">Méd. nat.</th>
+              <th class="num" title="80e percentile national — les 20 % d'établissements les plus performants dépassent ce seuil">P80 nat.</th>
               <th data-sort="trend3y" class="num" title="Pente annualisée des effectifs totaux sur les 3 dernières rentrées, normalisée par la moyenne (régression linéaire)">%/an (3 ans)</th>
               <th data-sort="score" class="num">Score</th>
               <th>Lien</th>
@@ -823,6 +825,7 @@ const STATE = {
   comparisonSet: new Set(),// UAIs comparés (incluant myUai si défini)
   enriched: null,          // data.json du pipeline {metadata, etablissements}
   enrichedSource: null,    // 'fetch' | 'manual' | null
+  nationalStats: null,     // {year: {passage:{median,p80,n}, mixite:{median,p80,n}}}
   dataReady: false,
   geocodeDone: false,
   geocodeStage: '',
@@ -1079,11 +1082,46 @@ function aggregateForSpecialty(specialty) {
    AGRÉGATIONS & SCORE
 ============================================================================ */
 
+// Indicateurs nationaux par année pour la spécialité courante (médiane + P80)
+function computeNationalStats() {
+  if (!STATE.specialty || !STATE.schools.size) { STATE.nationalStats = null; return; }
+  const byYear = {};
+  for (const school of STATE.schools.values()) {
+    for (const y of Object.keys(school.years).map(Number)) {
+      if (!byYear[y]) byYear[y] = { passages: [], mixites: [] };
+      const p = tauxPassage(school, y);
+      if (p !== null && isFinite(p) && p >= 0) byYear[y].passages.push(p);
+      const yr = school.years[y];
+      const tot = (yr.filles1A||0)+(yr.garcons1A||0)+(yr.filles2A||0)+(yr.garcons2A||0);
+      if (tot > 0) byYear[y].mixites.push(((yr.filles1A||0)+(yr.filles2A||0)) / tot);
+    }
+  }
+  const result = {};
+  for (const [y, d] of Object.entries(byYear)) {
+    const sp = [...d.passages].sort((a,b) => a-b);
+    const sm = [...d.mixites].sort((a,b) => a-b);
+    result[+y] = {
+      passage: { median: percentile(sp,50), p80: percentile(sp,80), n: sp.length },
+      mixite:  { median: percentile(sm,50), p80: percentile(sm,80), n: sm.length },
+    };
+  }
+  STATE.nationalStats = result;
+}
+
 // Évolution annuelle totale (1A + 2A)
 function totalEff(school, year) {
   const y = school.years[year];
   if (!y) return null;
   return y.eff1A + y.eff2A;
+}
+
+// Percentile sur tableau trié (interpolation linéaire)
+function percentile(sorted, p) {
+  if (!sorted.length) return null;
+  const idx = (p / 100) * (sorted.length - 1);
+  const lo = Math.floor(idx), hi = Math.ceil(idx);
+  if (lo === hi) return sorted[lo];
+  return sorted[lo] + (sorted[hi] - sorted[lo]) * (idx - lo);
 }
 
 // Taux de passage 1A->2A : eff2A[N] / eff1A[N-1]
@@ -1517,7 +1555,7 @@ function renderVue1() {
     {
       label: `Passage 1A → 2A`,
       value: passage == null ? '—' : fmt.pct(passage, 0),
-      sub: '',
+      sub: (() => { const n = STATE.nationalStats?.[yLast]?.passage; return n ? `Médiane nat. : ${fmt.pct(n.median,0)} · P80 nat. : ${fmt.pct(n.p80,0)} (${n.n} étab.)` : ''; })(),
       raw: true,
     },
     {
@@ -1603,6 +1641,24 @@ function renderVue1() {
           borderWidth: 2.5,
           pointRadius: 4,
           fill: true,
+        },
+        {
+          label: 'Médiane nationale',
+          data: years.map(y => { const s = STATE.nationalStats?.[y]?.passage; return s?.median != null ? Math.round(s.median*100) : null; }),
+          borderColor: '#6b7280',
+          borderDash: [4, 4],
+          borderWidth: 1.5,
+          pointRadius: 0,
+          fill: false,
+        },
+        {
+          label: 'P80 nationale',
+          data: years.map(y => { const s = STATE.nationalStats?.[y]?.passage; return s?.p80 != null ? Math.round(s.p80*100) : null; }),
+          borderColor: '#059669',
+          borderDash: [6, 3],
+          borderWidth: 1.5,
+          pointRadius: 0,
+          fill: false,
         },
       ],
     },
@@ -1835,6 +1891,7 @@ function renderTable(rows) {
       <td class="num" title="Rentrée ${r.yLast}">${fmt.int(r.eff1A)}</td>
       <td class="num" title="Rentrée ${r.yLast} (toutes options confondues)">${fmt.int(r.eff2A)}</td>
       <td class="num" title="${escapeHtml(passageTitle)}">${fmt.pct(r.passage,0)}${r.eff1A_prev != null ? ` <span style="color:var(--text-faint);font-size:11px">(${r.eff2A}/${r.eff1A_prev})</span>` : ''}</td>
+      ${(() => { const n = STATE.nationalStats?.[r.yLast]?.passage; return `<td class="num" title="Médiane nationale">${n?.median != null ? fmt.pct(n.median,0) : '—'}</td><td class="num" title="P80 nationale">${n?.p80 != null ? fmt.pct(n.p80,0) : '—'}</td>`; })()}
       <td class="num">${trendBadge}</td>
       <td class="score-cell" style="color:${scoreColor(r.score)}">${r.score ?? '—'}</td>
       <td><a href="${link}" target="_blank" rel="noopener" class="btn-link">↗</a></td>
@@ -2539,6 +2596,7 @@ async function setSpecialty(specName) {
   }
 
   aggregateForSpecialty(STATE.specialty);
+  computeNationalStats();
   log('setSpecialty: ', STATE.schools.size, 'établissements ·', STATE.years.length, 'années');
 
   // Le "Mon BTS" précédent peut ne plus exister dans la nouvelle spécialité
