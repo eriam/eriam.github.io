@@ -27,7 +27,6 @@
 
   Paramètres ajustables (bloc CONFIG ci-dessous, dans le <script>) :
     - CAPACITE_TYPE : capacité de référence d'une section
-    - OBJECTIF_PASSAGE : taux de passage 1A→2A visé
     - MIN_EFF_1A_VIABLE : seuil d'éligibilité aux classements
 
   Géocodage : utilise api-adresse.data.gouv.fr et met en cache dans
@@ -617,7 +616,7 @@
       </div>
       <div class="card">
         <h3>Taux de passage 1A → 2A</h3>
-        <p class="card-sub">Effectif 2A année N rapporté à l'effectif 1A année N-1. Objectif : <span id="objectif-label">80%</span>.</p>
+        <p class="card-sub">Effectif 2A année N rapporté à l'effectif 1A année N-1.</p>
         <div class="chart-canvas-wrap"><canvas id="chart-passage"></canvas></div>
       </div>
       <div class="card">
@@ -783,9 +782,6 @@ const CONFIG = {
   // "marge de croissance". Valeur indicative, applicable à un BTS scolaire
   // classique.
   CAPACITE_TYPE: 30,
-
-  // Taux de passage 1A→2A visé. Affiché en ligne de référence.
-  OBJECTIF_PASSAGE: 0.80,
 
   // Filtre dur d'éligibilité au score : effectif 1A en dessous duquel
   // la formation est considérée non viable.
@@ -1472,8 +1468,6 @@ function pointRadius(eff) {
 function renderVue1() {
   const titleEl = document.getElementById('vue1-title');
   const subEl = document.getElementById('vue1-subtitle');
-  document.getElementById('objectif-label').textContent = fmt.pct(CONFIG.OBJECTIF_PASSAGE, 0);
-
   if (!STATE.specialty) {
     titleEl.textContent = 'Mon BTS';
     subEl.textContent = 'Sélectionnez une spécialité dans le menu en haut.';
@@ -1523,10 +1517,7 @@ function renderVue1() {
     {
       label: `Passage 1A → 2A`,
       value: passage == null ? '—' : fmt.pct(passage, 0),
-      sub: passage == null ? '' :
-        `${passage >= CONFIG.OBJECTIF_PASSAGE
-            ? '<span class="delta up">au-dessus de l\'objectif</span>'
-            : '<span class="delta down">en deçà de l\'objectif ' + fmt.pct(CONFIG.OBJECTIF_PASSAGE,0) + '</span>'}`,
+      sub: '',
       raw: true,
     },
     {
@@ -1612,15 +1603,6 @@ function renderVue1() {
           borderWidth: 2.5,
           pointRadius: 4,
           fill: true,
-        },
-        {
-          label: `Objectif (${fmt.pct(CONFIG.OBJECTIF_PASSAGE,0)})`,
-          data: years.map(() => CONFIG.OBJECTIF_PASSAGE * 100),
-          borderColor: '#d97706',
-          borderDash: [6, 4],
-          borderWidth: 1.5,
-          pointRadius: 0,
-          fill: false,
         },
       ],
     },
