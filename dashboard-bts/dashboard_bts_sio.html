@@ -1,0 +1,2722 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Dashboard BTS — Trajectoire & Mobilité</title>
+
+<!--
+================================================================================
+  Dashboard BTS — fichier unique autonome
+  ------------------------------------------------------------------------------
+  Au démarrage, la page tente de précharger pipeline/output/bts_effectifs.json
+  (généré par `python3 pipeline/run.py`). En fallback (file://, fichier absent)
+  il reste possible de glisser-déposer ou charger le CSV brut.
+
+  Sources :
+    - Effectifs élèves voie pro / BTS — data.gouv.fr (mis à jour annuellement) :
+      https://www.data.gouv.fr/datasets/effectifs-des-eleves-en-voie-professionnelle-ou-bts-par-niveau-sexe-et-lycee-professionnel-date-dobservation-au-debut-du-mois-doctobre-chaque-annee
+    - InserJeunes (insertion à 6/12/18/24 mois) — DEPP :
+      https://data.education.gouv.fr/explore/dataset/fr-en-inserjeunes-lycee_pro-formation-fine
+
+  Sélection :
+    Choisir une spécialité dans le menu en haut → toutes les vues se
+    recalent sur cette spécialité (toutes options confondues : SISR+SLAM
+    pour SIO, etc.). Choisir ensuite "Mon BTS" pour mettre un
+    établissement en avant dans les classements et comparaisons.
+
+  Paramètres ajustables (bloc CONFIG ci-dessous, dans le <script>) :
+    - CAPACITE_TYPE : capacité de référence d'une section
+    - OBJECTIF_PASSAGE : taux de passage 1A→2A visé
+    - MIN_EFF_1A_VIABLE : seuil d'éligibilité aux classements
+
+  Géocodage : utilise api-adresse.data.gouv.fr et met en cache dans
+    localStorage. La première ouverture peut prendre 1 à 3 minutes
+    (≈300 communes à géocoder). Les ouvertures suivantes sont instantanées.
+
+  Vie privée : aucune donnée n'est envoyée ailleurs que vers le service
+    public de géocodage data.gouv.fr (commune + code postal uniquement).
+================================================================================
+-->
+
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+      integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+      crossorigin="">
+<style>
+  :root {
+    --bg: #fafafa;
+    --surface: #ffffff;
+    --surface-alt: #f4f4f5;
+    --border: #e4e4e7;
+    --border-strong: #d4d4d8;
+    --text: #18181b;
+    --text-muted: #71717a;
+    --text-faint: #a1a1aa;
+    --accent: #2563eb;
+    --accent-soft: #dbeafe;
+    --success: #16a34a;
+    --warning: #d97706;
+    --danger: #dc2626;
+    --highlight: #fef3c7;
+    --shadow: 0 1px 2px rgba(0,0,0,0.04), 0 1px 3px rgba(0,0,0,0.06);
+    --shadow-lg: 0 4px 12px rgba(0,0,0,0.06), 0 1px 3px rgba(0,0,0,0.04);
+    --radius: 10px;
+    --radius-sm: 6px;
+  }
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+                 Helvetica, Arial, sans-serif;
+    color: var(--text);
+    background: var(--bg);
+    font-size: 14px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  header.app-header {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 16px 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    flex-wrap: wrap;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .app-title { display: flex; flex-direction: column; gap: 2px; }
+  .app-title h1 { margin: 0; font-size: 17px; font-weight: 600; letter-spacing: -0.01em; }
+  .app-title .subtitle { font-size: 12px; color: var(--text-muted); }
+
+  .header-actions { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+  .btn {
+    background: var(--surface);
+    border: 1px solid var(--border-strong);
+    color: var(--text);
+    padding: 7px 14px;
+    border-radius: var(--radius-sm);
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.12s ease;
+    font-family: inherit;
+  }
+  .btn:hover { background: var(--surface-alt); border-color: var(--text-muted); }
+  .btn.primary { background: var(--text); color: var(--surface); border-color: var(--text); }
+  .btn.primary:hover { background: #000; }
+  .btn-link { background: none; border: none; color: var(--accent); cursor: pointer; font-size: 13px; padding: 0; }
+  .btn-link:hover { text-decoration: underline; }
+
+  .file-input-wrap { position: relative; overflow: hidden; }
+  .file-input-wrap input[type=file] {
+    position: absolute; opacity: 0; pointer-events: none; width: 1px; height: 1px;
+  }
+
+  nav.tabs {
+    display: flex;
+    gap: 4px;
+    padding: 0 32px;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 65px;
+    z-index: 99;
+  }
+  nav.tabs button {
+    background: none;
+    border: none;
+    border-bottom: 2px solid transparent;
+    padding: 12px 16px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-muted);
+    cursor: pointer;
+    margin-bottom: -1px;
+    font-family: inherit;
+    transition: color 0.1s, border-color 0.1s;
+  }
+  nav.tabs button:hover { color: var(--text); }
+  nav.tabs button.active { color: var(--text); border-bottom-color: var(--accent); }
+
+  main { padding: 24px 32px 80px; max-width: 1600px; margin: 0 auto; }
+  .view { display: none; }
+  .view.active { display: block; }
+
+  /* Drop zone */
+  .dropzone {
+    margin-top: 60px;
+    border: 2px dashed var(--border-strong);
+    border-radius: var(--radius);
+    padding: 60px 24px;
+    text-align: center;
+    color: var(--text-muted);
+    transition: all 0.2s;
+  }
+  .dropzone.dragover {
+    border-color: var(--accent);
+    background: var(--accent-soft);
+    color: var(--text);
+  }
+  .dropzone h2 { margin: 0 0 8px; font-size: 18px; font-weight: 600; color: var(--text); }
+  .dropzone p { margin: 4px 0; font-size: 13px; }
+  .dropzone .actions { margin-top: 20px; display: flex; justify-content: center; gap: 12px; }
+
+  /* Loading */
+  .loading {
+    display: inline-flex; align-items: center; gap: 8px;
+    color: var(--text-muted); font-size: 13px;
+  }
+  .spinner {
+    width: 14px; height: 14px;
+    border: 2px solid var(--border-strong);
+    border-top-color: var(--accent);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* Section heading */
+  .section-head { margin-bottom: 16px; }
+  .section-head h2 { font-size: 20px; font-weight: 600; margin: 0 0 4px; letter-spacing: -0.01em; }
+  .section-head p { font-size: 13px; color: var(--text-muted); margin: 0; }
+
+  /* KPI cards */
+  .kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 14px;
+    margin-bottom: 28px;
+  }
+  .kpi {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 16px 18px;
+    box-shadow: var(--shadow);
+  }
+  .kpi .label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--text-muted);
+    font-weight: 500;
+  }
+  .kpi .value {
+    font-size: 28px;
+    font-weight: 600;
+    margin-top: 6px;
+    letter-spacing: -0.02em;
+  }
+  .kpi .sub {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-top: 4px;
+  }
+  .delta { font-size: 13px; font-weight: 500; }
+  .delta.up { color: var(--success); }
+  .delta.down { color: var(--danger); }
+  .delta.flat { color: var(--text-muted); }
+
+  /* Chart cards */
+  .chart-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+  @media (max-width: 1100px) { .chart-grid { grid-template-columns: 1fr; } }
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 18px 20px;
+    box-shadow: var(--shadow);
+  }
+  .card h3 {
+    margin: 0 0 4px;
+    font-size: 14px;
+    font-weight: 600;
+  }
+  .card .card-sub {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin: 0 0 14px;
+  }
+  .card.wide { grid-column: 1 / -1; }
+  .chart-canvas-wrap { position: relative; height: 280px; }
+  .chart-canvas-wrap.tall { height: 420px; }
+
+  /* Top 10 cards */
+  .top10-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 14px;
+    margin-bottom: 20px;
+  }
+  @media (max-width: 1400px) { .top10-grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 700px) { .top10-grid { grid-template-columns: 1fr; } }
+  .top10-card { padding: 16px 18px; }
+  .top10-list {
+    list-style: none;
+    counter-reset: rank;
+    padding: 0;
+    margin: 0;
+  }
+  .top10-list li {
+    counter-increment: rank;
+    display: grid;
+    grid-template-columns: 22px 1fr auto;
+    gap: 10px;
+    align-items: baseline;
+    padding: 5px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 13px;
+  }
+  .top10-list li:last-child { border-bottom: none; }
+  .top10-list li::before {
+    content: counter(rank);
+    color: var(--text-faint);
+    font-variant-numeric: tabular-nums;
+    font-weight: 500;
+    text-align: right;
+    font-size: 12px;
+  }
+  .top10-list li.mine {
+    background: var(--accent-soft);
+    margin: 0 -10px;
+    padding: 5px 10px;
+    border-radius: var(--radius-sm);
+    border-bottom-color: transparent;
+  }
+  .top10-list li.mine::before { color: var(--accent); font-weight: 700; }
+  .top10-list li .school { overflow: hidden; min-width: 0; }
+  .top10-list li .school .school-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .top10-list li .school .school-meta { display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-top: 2px; }
+  .top10-list li .school .commune { color: var(--text-muted); font-size: 12px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
+  .top10-list li .school .sparkline-wrap { flex-shrink: 0; line-height: 0; }
+  .sparkline { display: block; }
+  .top10-list li .value { font-variant-numeric: tabular-nums; font-weight: 600; }
+  .top10-rank-me {
+    margin-top: 10px;
+    padding-top: 8px;
+    border-top: 1px dashed var(--border-strong);
+    font-size: 12px;
+    color: var(--text-muted);
+  }
+  .top10-rank-me strong { color: var(--text); font-weight: 600; }
+  .top10-empty { color: var(--text-faint); font-size: 12px; padding: 4px 0; }
+
+  /* Map */
+  .map-wrap { position: relative; }
+  #map { height: 540px; width: 100%; border-radius: var(--radius); border: 1px solid var(--border); background: var(--surface-alt); }
+  .map-overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    background: rgba(250,250,250,0.92);
+    border-radius: var(--radius);
+    z-index: 500;
+    font-size: 13px;
+    color: var(--text);
+    pointer-events: auto;
+  }
+  .map-overlay.hidden { display: none; }
+  .map-overlay .stage { font-weight: 600; font-size: 14px; }
+  .map-overlay .detail { color: var(--text-muted); font-size: 12px; max-width: 460px; text-align: center; padding: 0 16px; }
+  .map-overlay.error { background: rgba(254,242,242,0.95); }
+  .map-overlay.error .stage { color: var(--danger); }
+  .map-overlay .actions { display: flex; gap: 8px; }
+
+  /* Filters bar */
+  .filters {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-bottom: 16px;
+    padding: 12px 16px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+  }
+  .filter-group { display: flex; flex-direction: column; gap: 4px; }
+  .filter-group label {
+    font-size: 11px; text-transform: uppercase;
+    letter-spacing: 0.04em; color: var(--text-muted); font-weight: 500;
+  }
+  .filter-group select, .filter-group input {
+    padding: 5px 10px;
+    border: 1px solid var(--border-strong);
+    border-radius: var(--radius-sm);
+    font-size: 13px;
+    font-family: inherit;
+    background: var(--surface);
+    color: var(--text);
+    min-width: 140px;
+  }
+  .filter-group input[type=search] { min-width: 200px; }
+  .filter-actions { margin-left: auto; display: flex; align-items: flex-end; gap: 8px; }
+
+  /* Table */
+  .table-wrap {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    margin-top: 16px;
+  }
+  .table-scroll { overflow-x: auto; max-height: 600px; }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+  th, td {
+    padding: 9px 12px;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+    white-space: nowrap;
+  }
+  th {
+    background: var(--surface-alt);
+    font-weight: 600;
+    color: var(--text-muted);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    cursor: pointer;
+    user-select: none;
+    position: sticky;
+    top: 0;
+    z-index: 1;
+  }
+  th:hover { background: var(--border); }
+  th.sort-asc::after { content: ' ↑'; color: var(--accent); }
+  th.sort-desc::after { content: ' ↓'; color: var(--accent); }
+  tr.mine { background: var(--accent-soft); font-weight: 500; }
+  tr.mine td:first-child::before { content: '★ '; color: var(--accent); }
+  td.num { text-align: right; font-variant-numeric: tabular-nums; }
+  td.score-cell {
+    font-weight: 600;
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+  }
+  .badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 500;
+  }
+  .badge.up { background: #dcfce7; color: #166534; }
+  .badge.down { background: #fee2e2; color: #991b1b; }
+  .badge.flat { background: var(--surface-alt); color: var(--text-muted); }
+
+  /* Compare picker */
+  .compare-picker {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 16px;
+    margin-bottom: 16px;
+  }
+  .compare-picker h3 { margin: 0 0 10px; font-size: 14px; }
+  .selected-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; min-height: 28px; }
+  .chip {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: var(--accent-soft); color: var(--text);
+    border-radius: 999px; padding: 4px 10px;
+    font-size: 12px;
+  }
+  .chip.mine { background: var(--text); color: var(--surface); }
+  .chip .x { cursor: pointer; opacity: 0.6; }
+  .chip .x:hover { opacity: 1; }
+  .picker-search {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid var(--border-strong);
+    border-radius: var(--radius-sm);
+    font-size: 13px;
+    font-family: inherit;
+  }
+  .picker-results {
+    max-height: 220px;
+    overflow-y: auto;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    margin-top: 8px;
+    background: var(--surface);
+  }
+  .picker-result {
+    padding: 8px 12px;
+    border-bottom: 1px solid var(--border);
+    cursor: pointer;
+    display: flex; justify-content: space-between; gap: 12px;
+  }
+  .picker-result:last-child { border-bottom: none; }
+  .picker-result:hover { background: var(--surface-alt); }
+  .picker-result .meta { color: var(--text-muted); font-size: 12px; }
+
+  /* Vue Insertion */
+  .insertion-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
+    gap: 16px;
+  }
+  .insertion-card { padding: 18px 20px; }
+  .insertion-kpi-row {
+    display: flex; gap: 16px; flex-wrap: wrap;
+    margin: 8px 0 14px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border);
+  }
+  .insertion-kpi { font-size: 12px; color: var(--text-muted); }
+  .insertion-kpi .val { font-size: 18px; font-weight: 600; color: var(--text); display: block; font-variant-numeric: tabular-nums; }
+  .insertion-kpi.sisr .val { color: #2563eb; }
+  .insertion-kpi.slam .val { color: #0f766e; }
+  .insertion-kpi.median .val { color: var(--text-muted); font-weight: 500; }
+  .insertion-mask-info {
+    font-size: 11px; color: var(--text-faint);
+    margin-top: 8px; padding-top: 8px; border-top: 1px dashed var(--border-strong);
+  }
+  .enrich-status {
+    font-size: 12px; padding: 4px 10px; border-radius: 999px;
+    background: var(--surface-alt); color: var(--text-muted);
+  }
+  .enrich-status.ok { background: #dcfce7; color: #166534; }
+  .enrich-status.warn { background: #fef3c7; color: #854d0e; cursor: pointer; }
+  .enrich-status.warn:hover { background: #fde68a; }
+
+  /* Diagnostics */
+  .diagnostics {
+    margin-top: 32px;
+    padding: 14px 18px;
+    background: var(--surface-alt);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    font-size: 12px;
+    color: var(--text-muted);
+  }
+  .diagnostics h4 { margin: 0 0 8px; font-size: 12px; font-weight: 600; color: var(--text); }
+  .diagnostics ul { margin: 0; padding-left: 18px; }
+  .diagnostics li { margin: 2px 0; }
+  .diagnostics-empty { color: var(--success); }
+
+  /* Leaflet popup tweaks */
+  .leaflet-popup-content-wrapper { border-radius: var(--radius); }
+  .leaflet-popup-content {
+    margin: 12px 14px;
+    font-size: 13px;
+    line-height: 1.5;
+  }
+  .leaflet-popup-content .school-name { font-weight: 600; font-size: 14px; margin-bottom: 4px; }
+  .leaflet-popup-content .school-meta { color: var(--text-muted); font-size: 12px; margin-bottom: 6px; }
+  .leaflet-popup-content .school-stats {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 4px 12px; font-size: 12px;
+    padding-top: 6px; border-top: 1px solid var(--border);
+  }
+  .leaflet-popup-content .school-stats span:nth-child(odd) { color: var(--text-muted); }
+  .leaflet-popup-content .school-score {
+    margin-top: 8px; padding-top: 6px; border-top: 1px solid var(--border);
+    font-weight: 600;
+  }
+
+  /* Legend */
+  .map-legend {
+    background: var(--surface);
+    padding: 10px 14px;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border);
+    font-size: 12px;
+    box-shadow: var(--shadow);
+    line-height: 1.6;
+  }
+  .map-legend strong { display: block; font-size: 11px; text-transform: uppercase; color: var(--text-muted); margin-bottom: 4px; letter-spacing: 0.04em; }
+  .legend-row { display: flex; align-items: center; gap: 6px; }
+  .legend-dot { width: 12px; height: 12px; border-radius: 50%; display: inline-block; }
+</style>
+</head>
+<body>
+
+<header class="app-header">
+  <div class="app-title">
+    <h1>BTS — Trajectoire & Mobilité</h1>
+    <span class="subtitle" id="data-status">Chargement des données…</span>
+  </div>
+  <div class="header-actions">
+    <div class="filter-group" style="margin:0">
+      <label for="select-specialty" style="font-size:11px;color:var(--text-muted);text-transform:uppercase;letter-spacing:.04em">Spécialité</label>
+      <select id="select-specialty" style="min-width:240px"><option value="">— Choisir une spécialité —</option></select>
+    </div>
+    <div class="filter-group" style="margin:0">
+      <label for="select-myuai" style="font-size:11px;color:var(--text-muted);text-transform:uppercase;letter-spacing:.04em">Mon BTS</label>
+      <select id="select-myuai" style="min-width:220px" disabled><option value="">— Aucun —</option></select>
+    </div>
+    <span id="geocode-status" class="loading" style="display:none">
+      <span class="spinner"></span>
+      <span id="geocode-text">Géocodage…</span>
+    </span>
+    <span class="enrich-status" id="enrich-status" title="Statut des données enrichies (pipeline Python)">Données enrichies : —</span>
+    <label class="btn file-input-wrap" id="enrich-load-btn" style="display:none">
+      Charger data.json
+      <input type="file" id="enrich-input" accept=".json,application/json">
+    </label>
+    <button class="btn" id="clear-cache-btn" title="Vider le cache de géocodage local">Vider cache géo</button>
+    <label class="btn file-input-wrap" title="Recharger les effectifs depuis le CSV brut (fallback si le JSON pré-calculé n'est pas disponible)">
+      CSV brut
+      <input type="file" id="file-input" accept=".csv,text/csv">
+    </label>
+  </div>
+</header>
+
+<nav class="tabs">
+  <button data-view="vue1" class="active">Mon BTS</button>
+  <button data-view="vue2">Cartographie nationale</button>
+  <button data-view="vue3">Comparaison ciblée</button>
+  <button data-view="vue4">Insertion</button>
+</nav>
+
+<main>
+  <!-- DROP ZONE (visible si aucune source de données accessible) -->
+  <div id="dropzone" class="dropzone">
+    <h2>Chargement automatique impossible</h2>
+    <p>
+      Le fichier <code style="font-size:12px;background:var(--surface-alt);padding:1px 5px;border-radius:4px">pipeline/output/bts_effectifs.json</code> n'a pas pu être chargé
+      (page ouverte en <code>file://</code> ou pipeline non exécuté).
+    </p>
+    <p>Glisser-déposer le CSV brut ici, ou utiliser le bouton <strong>« CSV brut »</strong> en haut à droite.</p>
+    <p style="font-size:11px;margin-top:14px;line-height:1.6">
+      Source : data.gouv.fr — jeu de données
+      «&nbsp;<a href="https://www.data.gouv.fr/datasets/effectifs-des-eleves-en-voie-professionnelle-ou-bts-par-niveau-sexe-et-lycee-professionnel-date-dobservation-au-debut-du-mois-doctobre-chaque-annee"
+              target="_blank" rel="noopener" style="color:var(--accent);text-decoration:none">Effectifs des élèves en voie professionnelle ou BTS&nbsp;↗</a>&nbsp;»<br>
+      Fichier&nbsp;: <code style="font-size:11px;background:var(--surface-alt);padding:1px 5px;border-radius:4px">fr-en-lycee_pro-effectifs-niveau-sexe-mef.csv</code>
+      · Observation au début octobre, mis à jour chaque année
+    </p>
+  </div>
+
+  <!-- VUE 1 -->
+  <section id="vue1" class="view active" style="display:none">
+    <div class="section-head">
+      <h2 id="vue1-title">Mon BTS</h2>
+      <p id="vue1-subtitle">Trajectoire des effectifs et indicateurs clés.</p>
+    </div>
+    <div id="kpi-cards" class="kpi-grid"></div>
+    <div class="chart-grid">
+      <div class="card wide">
+        <h3>Évolution des effectifs</h3>
+        <p class="card-sub">1ère année et 2ème année séparées (toutes options confondues pour la 2A).</p>
+        <div class="chart-canvas-wrap tall"><canvas id="chart-evolution"></canvas></div>
+      </div>
+      <div class="card">
+        <h3>Taux de passage 1A → 2A</h3>
+        <p class="card-sub">Effectif 2A année N rapporté à l'effectif 1A année N-1. Objectif : <span id="objectif-label">80%</span>.</p>
+        <div class="chart-canvas-wrap"><canvas id="chart-passage"></canvas></div>
+      </div>
+      <div class="card">
+        <h3>Mixité — filles / garçons</h3>
+        <p class="card-sub">Répartition par rentrée scolaire, toutes années confondues.</p>
+        <div class="chart-canvas-wrap"><canvas id="chart-mixite"></canvas></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- VUE 2 -->
+  <section id="vue2" class="view" style="display:none">
+    <div class="section-head">
+      <h2 id="vue2-title">Cartographie nationale</h2>
+      <p id="vue2-subtitle">Carte des établissements publics et table classée par score de potentiel de redressement.</p>
+    </div>
+
+    <div class="filters" id="vue2-filters">
+      <div class="filter-group">
+        <label>Académie / région</label>
+        <select id="filter-academie"><option value="">Toutes</option></select>
+      </div>
+      <div class="filter-group">
+        <label>Taille</label>
+        <select id="filter-size">
+          <option value="">Toutes</option>
+          <option value="small">Petite (&lt; 20)</option>
+          <option value="medium">Moyenne (20–40)</option>
+          <option value="large">Grande (&gt; 40)</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <label>Tendance 3 ans</label>
+        <select id="filter-trend">
+          <option value="">Toutes</option>
+          <option value="up">Croissante</option>
+          <option value="stable">Stable</option>
+          <option value="down">Décroissante</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <label>Recherche</label>
+        <input type="search" id="filter-search" placeholder="Nom de lycée ou ville…">
+      </div>
+      <div class="filter-actions">
+        <button class="btn" id="reset-filters">Réinitialiser</button>
+      </div>
+    </div>
+
+    <div class="top10-grid">
+      <div class="card top10-card">
+        <h3>Top 10 — Marge de croissance 1A</h3>
+        <p class="card-sub">Sections les moins remplies en 1A vs leur pic historique (potentiel de reconquête).</p>
+        <ol class="top10-list" id="top10-remplissage"></ol>
+        <div class="top10-rank-me" id="rank-me-remplissage"></div>
+      </div>
+      <div class="card top10-card">
+        <h3>Top 10 — Hémorragie cohorte</h3>
+        <p class="card-sub">Plus forte perte 1A(N-1)→2A(N). Sparkline = évolution de la déperdition année par année.</p>
+        <ol class="top10-list" id="top10-deperdition"></ol>
+        <div class="top10-rank-me" id="rank-me-deperdition"></div>
+      </div>
+      <div class="card top10-card">
+        <h3>Top 10 — Amélioration</h3>
+        <p class="card-sub">Plus forte baisse de la déperdition sur les 3 dernières années — valorise le mouvement plutôt que l'état.</p>
+        <ol class="top10-list" id="top10-amelioration"></ol>
+        <div class="top10-rank-me" id="rank-me-amelioration"></div>
+      </div>
+      <div class="card top10-card">
+        <h3>Top 10 — Féminisation 1A</h3>
+        <p class="card-sub">Plus fort taux de filles parmi les recrutements 1A (sections d'au moins 8 étudiants).</p>
+        <ol class="top10-list" id="top10-filles"></ol>
+        <div class="top10-rank-me" id="rank-me-filles"></div>
+      </div>
+    </div>
+
+    <div class="map-wrap">
+      <div id="map"></div>
+      <div class="map-overlay" id="map-overlay">
+        <span class="spinner"></span>
+        <span class="stage" id="map-overlay-stage">En attente…</span>
+        <span class="detail" id="map-overlay-detail">Chargez un CSV puis ouvrez cet onglet.</span>
+        <div class="actions" id="map-overlay-actions"></div>
+      </div>
+    </div>
+    <div class="table-wrap">
+      <div class="table-scroll">
+        <table id="schools-table">
+          <thead>
+            <tr>
+              <th data-sort="patronyme">Lycée</th>
+              <th data-sort="commune">Ville</th>
+              <th data-sort="academie">Académie</th>
+              <th data-sort="eff1A" class="num" title="Effectif de 1ère année à la dernière rentrée">1A</th>
+              <th data-sort="eff2A" class="num" title="Effectif de 2ème année (toutes options confondues) à la dernière rentrée">2A</th>
+              <th data-sort="passage" class="num" title="Taux de passage cohorte = 2A de l'année N / 1A de l'année N-1 (même promotion)">Passage 1A→2A</th>
+              <th data-sort="trend3y" class="num" title="Pente annualisée des effectifs totaux sur les 3 dernières rentrées, normalisée par la moyenne (régression linéaire)">%/an (3 ans)</th>
+              <th data-sort="score" class="num">Score</th>
+              <th>Lien</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- VUE 3 -->
+  <section id="vue3" class="view" style="display:none">
+    <div class="section-head">
+      <h2>Comparaison ciblée</h2>
+      <p id="vue3-subtitle">Comparer « Mon BTS » avec 1 à 5 autres établissements de la même spécialité.</p>
+    </div>
+    <div class="compare-picker">
+      <h3>Sélectionner les établissements à comparer</h3>
+      <input type="search" class="picker-search" id="picker-search" placeholder="Tapez un nom de lycée ou une ville…">
+      <div class="selected-chips" id="selected-chips"></div>
+      <div class="picker-results" id="picker-results" style="display:none"></div>
+    </div>
+    <div class="chart-grid">
+      <div class="card">
+        <h3>Radar comparatif</h3>
+        <p class="card-sub">Normalisation 0–100 sur chaque axe.</p>
+        <div class="chart-canvas-wrap tall"><canvas id="chart-radar"></canvas></div>
+      </div>
+      <div class="card">
+        <h3>Évolution superposée des effectifs totaux</h3>
+        <p class="card-sub">Toutes années disponibles dans le CSV.</p>
+        <div class="chart-canvas-wrap tall"><canvas id="chart-compare-evolution"></canvas></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- VUE 4 — Insertion (données enrichies via pipeline) -->
+  <section id="vue4" class="view" style="display:none">
+    <div class="section-head">
+      <h2 id="vue4-title">Insertion professionnelle</h2>
+      <p id="vue4-subtitle">Taux d'emploi à 6, 12, 18, 24 mois et taux de poursuite d'études (source : InserJeunes DEPP).</p>
+    </div>
+    <div id="vue4-content"></div>
+  </section>
+
+  <div class="diagnostics" id="diagnostics" style="display:none">
+    <h4>Diagnostic</h4>
+    <ul id="diagnostics-list"></ul>
+  </div>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+        integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+        crossorigin=""></script>
+
+<script>
+'use strict';
+
+/* ============================================================================
+   CONFIG — paramètres de calcul
+============================================================================ */
+const CONFIG = {
+  // Capacité de référence d'une section (1A ou 2A). Sert au calcul du score
+  // "marge de croissance". Valeur indicative, applicable à un BTS scolaire
+  // classique.
+  CAPACITE_TYPE: 30,
+
+  // Taux de passage 1A→2A visé. Affiché en ligne de référence.
+  OBJECTIF_PASSAGE: 0.80,
+
+  // Filtre dur d'éligibilité au score : effectif 1A en dessous duquel
+  // la formation est considérée non viable.
+  MIN_EFF_1A_VIABLE: 8,
+
+  // Secteur d'enseignement conservé pour l'analyse de mobilité titulaire.
+  // À assouplir si on veut couvrir aussi le privé.
+  SECTEUR_NEEDLE: "PUBLIC",
+
+  // URL du JSON pré-calculé par pipeline/run.py. Relative au document HTML
+  // pour fonctionner aussi bien en local (python -m http.server) que sur
+  // GitHub Pages.
+  EFFECTIFS_JSON_URL: "./pipeline/output/bts_effectifs.json",
+};
+
+/* ============================================================================
+   ÉTAT GLOBAL
+============================================================================ */
+const STATE = {
+  // Données brutes chargées une fois (JSON ou CSV), réutilisées à chaque
+  // changement de spécialité sans re-télécharger.
+  allRows: [],             // [{an, uai, nom, cp, insee, com, sect, mef11,
+                           //   lib11, mef6, lib6, eff, effF, spec}, ...]
+  specialties: [],         // liste triée des spécialités canoniques disponibles
+  specialty: null,         // spécialité actuellement sélectionnée
+  myUai: null,             // UAI du "Mon BTS" sélectionné (peut rester null)
+
+  schools: new Map(),      // UAI -> school object (filtré par spécialité)
+  years: [],               // liste triée des rentrées scolaires
+  latestYear: null,
+  diagnostics: [],
+  geocodeCache: {},
+  charts: {},              // {evolution, passage, mixite, radar, compareEvo}
+  map: null,
+  markersLayer: null,
+  filteredSchools: [],     // après filtres vue 2
+  sortColumn: 'score',
+  sortDir: 'desc',
+  comparisonSet: new Set(),// UAIs comparés (incluant myUai si défini)
+  enriched: null,          // data.json du pipeline {metadata, etablissements}
+  enrichedSource: null,    // 'fetch' | 'manual' | null
+  dataReady: false,
+  geocodeDone: false,
+  geocodeStage: '',
+  vue2FiltersSetup: false,
+};
+
+/* ============================================================================
+   UTILITAIRES
+============================================================================ */
+const fmt = {
+  int: (v) => (v == null || isNaN(v)) ? '—' : new Intl.NumberFormat('fr-FR').format(v),
+  pct: (v, digits=0) => (v == null || isNaN(v)) ? '—' : (v*100).toFixed(digits) + '%',
+  signedPct: (v, digits=1) => {
+    if (v == null || isNaN(v)) return '—';
+    const s = (v*100).toFixed(digits);
+    return (v >= 0 ? '+' : '') + s + '%';
+  },
+  num: (v, digits=1) => (v == null || isNaN(v)) ? '—' : v.toFixed(digits),
+};
+
+function showStatus(text) {
+  document.getElementById('data-status').textContent = text;
+}
+
+// Logger structuré : préfixe + horodatage, visible dans la console navigateur (F12).
+const LOG_PREFIX = '[BTS-SIO]';
+function log(...args)  { console.log(LOG_PREFIX, ...args); }
+function warn(...args) { console.warn(LOG_PREFIX, ...args); }
+function logErr(...args)  { console.error(LOG_PREFIX, ...args); }
+
+// Overlay carte : visible tant que la carte n'est pas opérationnelle.
+function setMapOverlay({ stage, detail, error = false, spinner = true, actions = [] }) {
+  const ov = document.getElementById('map-overlay');
+  if (!ov) return;
+  ov.classList.remove('hidden');
+  ov.classList.toggle('error', !!error);
+  document.getElementById('map-overlay-stage').textContent = stage || '';
+  document.getElementById('map-overlay-detail').textContent = detail || '';
+  // Spinner uniquement si pas d'erreur et spinner=true
+  ov.querySelector('.spinner').style.display = (error || !spinner) ? 'none' : '';
+  const actDiv = document.getElementById('map-overlay-actions');
+  actDiv.innerHTML = '';
+  for (const a of actions) {
+    const b = document.createElement('button');
+    b.className = 'btn' + (a.primary ? ' primary' : '');
+    b.textContent = a.label;
+    b.addEventListener('click', a.onClick);
+    actDiv.appendChild(b);
+  }
+}
+function hideMapOverlay() {
+  const ov = document.getElementById('map-overlay');
+  if (ov) ov.classList.add('hidden');
+}
+
+function showGeocodeStatus(text) {
+  const el = document.getElementById('geocode-status');
+  if (text) { el.style.display = ''; document.getElementById('geocode-text').textContent = text; }
+  else { el.style.display = 'none'; }
+}
+
+function addDiagnostic(msg) {
+  STATE.diagnostics.push(msg);
+  const panel = document.getElementById('diagnostics');
+  const list = document.getElementById('diagnostics-list');
+  panel.style.display = '';
+  const li = document.createElement('li');
+  li.textContent = msg;
+  list.appendChild(li);
+}
+
+function resetDiagnostics() {
+  STATE.diagnostics = [];
+  document.getElementById('diagnostics-list').innerHTML = '';
+  document.getElementById('diagnostics').style.display = 'none';
+}
+
+/* ============================================================================
+   NORMALISATION SPÉCIALITÉ — équivalent JS de pipeline/sources/effectifs_csv.py
+   Permet de calculer la spécialité canonique localement quand on parse le CSV
+   en fallback (le JSON pré-calculé l'embarque déjà dans le champ `spec`).
+============================================================================ */
+const _YEAR_PREFIXES = [
+  '1BTS2 ', 'TBTS2 ', '2BTS2 ', '1BTS1 ', '2BTS1 ',
+  '1BTS3 ', '2BTS3 ', '3BTS3 ', 'TBTS3 ',
+];
+const _SUFFIX_PATTERNS = [
+  /[\s.]+OPT[A-Z][\s._:].*$/,
+  /[\s.]+OPT?[\s._:].*$/,
+  /[\s.]+1ERE?\s+ANN?EE.*$/,
+  /[\s.]+1E\s+ANN?\.?\s*\.?\s*COM\w*\.?$/,
+  /:\s*1ERE?\s+ANN?EE.*$/,
+];
+const _TRAIL_PUNCT = /[\s.:;,\-]+$/;
+
+function canonicalSpecialty(lib11) {
+  let s = (lib11 || '').toUpperCase().trim();
+  for (const p of _YEAR_PREFIXES) {
+    if (s.startsWith(p)) { s = s.substring(p.length); break; }
+  }
+  s = s.trim();
+  for (const pat of _SUFFIX_PATTERNS) s = s.replace(pat, '').trim();
+  return s.replace(_TRAIL_PUNCT, '');
+}
+
+/* ============================================================================
+   CHARGEMENT DES DONNÉES — JSON pré-calculé (préféré) ou CSV brut (fallback)
+   Dans les deux cas on aboutit à STATE.allRows + STATE.specialties.
+============================================================================ */
+async function loadJsonData() {
+  showStatus('Chargement du JSON pré-calculé…');
+  const r = await fetch(CONFIG.EFFECTIFS_JSON_URL, { cache: 'default' });
+  if (!r.ok) throw new Error('HTTP ' + r.status);
+  const payload = await r.json();
+  const rows = Array.isArray(payload) ? payload : payload.rows;
+  if (!Array.isArray(rows)) throw new Error('Schéma JSON inattendu (clé "rows" absente).');
+  STATE.allRows = rows;
+  finalizeRows();
+  const meta = (payload && payload.metadata) || {};
+  log('loadJsonData: OK ·', rows.length, 'lignes ·', STATE.specialties.length, 'spécialités · généré le', meta.generated_at || '?');
+}
+
+function parseCSV(file) {
+  resetDiagnostics();
+  showStatus(`Analyse de ${file.name} (${(file.size/1024/1024).toFixed(1)} Mo)…`);
+  STATE.allRows = [];
+  let totalRows = 0, btsRows = 0, dropped = 0;
+
+  return new Promise((resolve, reject) => {
+    Papa.parse(file, {
+      header: true,
+      delimiter: ';',
+      skipEmptyLines: true,
+      worker: false,
+      chunkSize: 1024 * 1024,
+      chunk: (results) => {
+        for (const row of results.data) {
+          totalRows++;
+          const lib6 = (row['mef_bcp_6_lib_l'] || '').toUpperCase();
+          // Filtre BTS : tous les niveaux mef6 commençant par "BREVET DE TECH.SUP"
+          if (!lib6.includes('BREVET') || !lib6.includes('TECH.SUP')) continue;
+
+          const uai = (row['UAI'] || '').trim();
+          const year = parseInt(row['Rentrée scolaire'] || row['Rentree scolaire'] ||
+                                Object.values(row)[0], 10);
+          const eff = parseInt(row['nombre_d_eleves_total'], 10);
+          if (!uai || isNaN(year) || isNaN(eff)) { dropped++; continue; }
+
+          const lib11 = row['mef_bcp_11_lib_l'] || '';
+          btsRows++;
+          STATE.allRows.push({
+            an: year,
+            uai,
+            nom: (row['patronyme'] || '').trim(),
+            cp: (row['code_postal'] || '').trim(),
+            insee: (row['commune_d_implantation'] || '').trim(),
+            com: (row['commune_d_implantation_lib_l'] || '').trim(),
+            sect: (row['secteur_d_enseignement_lib_l'] || '').trim(),
+            mef11: (row['mef_bcp_11'] || '').trim(),
+            lib11,
+            mef6: (row['mef_bcp_6'] || '').trim(),
+            lib6: row['mef_bcp_6_lib_l'] || '',
+            eff,
+            effF: parseInt(row['nombre_d_eleves_filles'], 10) || 0,
+            spec: canonicalSpecialty(lib11),
+          });
+        }
+      },
+      complete: () => {
+        if (btsRows === 0) {
+          reject(new Error("Aucune ligne BTS détectée dans ce CSV."));
+          return;
+        }
+        if (dropped > 0) {
+          addDiagnostic(`${dropped} ligne(s) BTS ignorée(s) (champs manquants).`);
+        }
+        finalizeRows();
+        log(`parseCSV: ${btsRows} lignes BTS sur ${totalRows} · ${STATE.specialties.length} spécialités`);
+        resolve();
+      },
+      error: (err) => reject(err),
+    });
+  });
+}
+
+// Calcule STATE.specialties à partir de STATE.allRows et met à jour le statut.
+function finalizeRows() {
+  const specSet = new Set();
+  for (const r of STATE.allRows) if (r.spec) specSet.add(r.spec);
+  STATE.specialties = [...specSet].sort((a, b) => a.localeCompare(b, 'fr'));
+  showStatus(`${STATE.allRows.length} lignes BTS · ${STATE.specialties.length} spécialités disponibles`);
+}
+
+/* ============================================================================
+   AGRÉGATION PAR SPÉCIALITÉ — construit STATE.schools à partir de STATE.allRows
+   filtré par spécialité canonique + secteur. Reproduit la structure
+   précédente : un objet école par UAI, eff1A+eff2A (toutes options sommées),
+   filles1A/garcons1A/filles2A/garcons2A.
+============================================================================ */
+function aggregateForSpecialty(specialty) {
+  STATE.schools.clear();
+  const yearsSet = new Set();
+  const needle = (CONFIG.SECTEUR_NEEDLE || '').toUpperCase();
+  let dropped = 0;
+  for (const r of STATE.allRows) {
+    if (r.spec !== specialty) continue;
+    if (needle && !(r.sect || '').toUpperCase().includes(needle)) continue;
+    const lib6 = (r.lib6 || '').toUpperCase();
+    let level = null;
+    if (lib6.includes('1E ANNEE') || lib6.includes('1ERE ANNEE')) level = '1A';
+    else if (lib6.includes('2E ANNEE') || lib6.includes('2EME ANNEE')) level = '2A';
+    else { dropped++; continue; }
+
+    yearsSet.add(r.an);
+    let school = STATE.schools.get(r.uai);
+    if (!school) {
+      school = {
+        uai: r.uai,
+        patronyme: r.nom,
+        code_postal: r.cp,
+        code_insee: r.insee,
+        commune: r.com,
+        dept: (r.cp || '').substring(0, 2),
+        years: {},
+        lat: null, lon: null,
+      };
+      STATE.schools.set(r.uai, school);
+    }
+    if (!school.years[r.an]) {
+      school.years[r.an] = { eff1A: 0, eff2A: 0, filles1A: 0, garcons1A: 0, filles2A: 0, garcons2A: 0 };
+    }
+    const y = school.years[r.an];
+    const filles = r.effF || 0;
+    const garcons = Math.max(0, (r.eff || 0) - filles);
+    y['eff' + level] += r.eff || 0;
+    y['filles' + level] += filles;
+    y['garcons' + level] += garcons;
+  }
+  STATE.years = [...yearsSet].sort((a, b) => a - b);
+  STATE.latestYear = STATE.years[STATE.years.length - 1] || null;
+  if (dropped > 0) {
+    addDiagnostic(`${dropped} ligne(s) ignorée(s) pour « ${specialty} » (niveau non identifié dans mef6).`);
+  }
+  // Réutilise les coordonnées déjà géocodées dans le cache (mémoire + localStorage).
+  // Évite de relancer un cycle de géocodage à chaque changement de spécialité.
+  for (const s of STATE.schools.values()) {
+    const k = `insee:${s.code_insee}|cp:${s.code_postal}|c:${s.commune}`;
+    const c = STATE.geocodeCache[k];
+    if (c) { s.lat = c.lat; s.lon = c.lon; }
+  }
+}
+
+/* ============================================================================
+   AGRÉGATIONS & SCORE
+============================================================================ */
+
+// Évolution annuelle totale (1A + 2A)
+function totalEff(school, year) {
+  const y = school.years[year];
+  if (!y) return null;
+  return y.eff1A + y.eff2A;
+}
+
+// Taux de passage 1A->2A : eff2A[N] / eff1A[N-1]
+function tauxPassage(school, year) {
+  const prev = school.years[year - 1];
+  const curr = school.years[year];
+  if (!prev || !curr) return null;
+  if (!prev.eff1A) return null;
+  return curr.eff2A / prev.eff1A;
+}
+
+// Taux de remplissage 1A : effectif actuel rapporté au pic historique
+// de la section (ou à CAPACITE_TYPE si le pic est plus bas).
+// Hypothèse : le maximum historique est un meilleur proxy de la capacité
+// réelle qu'une valeur nationale arbitraire, car il reflète ce que
+// l'établissement a déjà su accueillir.
+function tauxRemplissage1A(school) {
+  const yLast = STATE.latestYear;
+  const curr = school.years[yLast];
+  if (!curr) return null;
+  const allEff1A = Object.values(school.years).map(y => y.eff1A || 0);
+  const maxHist = Math.max(...allEff1A);
+  const ref = Math.max(maxHist, CONFIG.CAPACITE_TYPE);
+  if (ref === 0) return null;
+  return curr.eff1A / ref;
+}
+
+// Déperdition cohorte : 1 - passage. Plus la valeur est élevée, plus
+// la section perd d'étudiants entre la 1A et la 2A.
+function deperditionCohorte(school) {
+  const t = tauxPassage(school, STATE.latestYear);
+  if (t == null) return null;
+  return Math.max(0, 1 - t); // clamp à 0 (les rares cas > 1 = passage positif)
+}
+
+// Timeline complète de déperdition : pour chaque année où on peut calculer
+// la déperdition, retourne {year, dep, eff1A_prev, eff2A}.
+function deperditionTimeline(school) {
+  const years = Object.keys(school.years).map(Number).sort((a, b) => a - b);
+  const timeline = [];
+  for (const y of years) {
+    const prev = school.years[y - 1];
+    const curr = school.years[y];
+    if (prev && prev.eff1A > 0 && curr && curr.eff2A != null) {
+      const dep = Math.max(0, 1 - curr.eff2A / prev.eff1A);
+      timeline.push({ year: y, dep, eff1A_prev: prev.eff1A, eff2A: curr.eff2A });
+    }
+  }
+  return timeline;
+}
+
+// Réduction de la déperdition sur les N dernières années (N=3 par défaut).
+// Positif = amélioration (déperdition qui baisse).
+// On utilise (dep_oldest - dep_newest) sur la fenêtre, plus intuitif qu'une
+// pente mais comparable car la fenêtre est constante.
+function reductionDep(timeline, n = 3) {
+  if (!timeline || timeline.length < n) return null;
+  const window = timeline.slice(-n);
+  return window[0].dep - window[window.length - 1].dep;
+}
+
+// Sparkline SVG inline. Léger (~200 octets) et indépendant de Chart.js.
+// opts : { width, height, color }
+function sparklineSVG(timeline, opts = {}) {
+  if (!timeline || timeline.length < 2) return '';
+  const w = opts.width || 70;
+  const h = opts.height || 18;
+  const pad = 1.5;
+  const innerW = w - 2 * pad;
+  const innerH = h - 2 * pad;
+  // Échelle Y commune fixée à [0, 0.6] pour rendre les sparklines comparables
+  // entre établissements. Si la déperdition dépasse 0.6, on étend la borne.
+  const dataMax = Math.max(...timeline.map(p => p.dep));
+  const yMax = Math.max(0.6, dataMax);
+  const yMin = 0;
+  const range = yMax - yMin;
+
+  const pts = timeline.map((p, i) => {
+    const x = pad + (timeline.length === 1 ? innerW / 2 : (i / (timeline.length - 1)) * innerW);
+    const y = pad + innerH - ((p.dep - yMin) / range) * innerH;
+    return [x, y];
+  });
+  const pathLine = pts.map((p, i) => (i === 0 ? 'M' : 'L') + p[0].toFixed(1) + ',' + p[1].toFixed(1)).join(' ');
+  const pathArea = pathLine + ` L${pts[pts.length - 1][0].toFixed(1)},${(pad + innerH).toFixed(1)} L${pts[0][0].toFixed(1)},${(pad + innerH).toFixed(1)} Z`;
+
+  const color = opts.color || '#94a3b8';
+  const fill = color + '33';
+  const title = timeline.map(p => `${p.year} : ${(p.dep * 100).toFixed(0)}%`).join(' · ');
+
+  return `<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" class="sparkline" aria-label="Déperdition année par année"><title>${title}</title>` +
+    `<path d="${pathArea}" fill="${fill}" stroke="none"/>` +
+    `<path d="${pathLine}" fill="none" stroke="${color}" stroke-width="1.2" stroke-linejoin="round"/>` +
+    `</svg>`;
+}
+
+// Tendance 3 ans : régression linéaire sur les effectifs totaux des
+// 3 dernières années disponibles, exprimée en variation % moyenne par an
+// rapportée à la moyenne.
+function tendance3ans(school) {
+  const yrs = Object.keys(school.years).map(Number).sort((a,b) => a - b);
+  const last3 = yrs.slice(-3);
+  if (last3.length < 2) return null;
+  const points = last3.map((y, i) => ({ x: i, y: totalEff(school, y) || 0 }));
+  const n = points.length;
+  const sumX = points.reduce((s, p) => s + p.x, 0);
+  const sumY = points.reduce((s, p) => s + p.y, 0);
+  const sumXY = points.reduce((s, p) => s + p.x * p.y, 0);
+  const sumXX = points.reduce((s, p) => s + p.x * p.x, 0);
+  const slope = (n * sumXY - sumX * sumY) / (n * sumXX - sumX * sumX);
+  const mean = sumY / n;
+  if (mean === 0) return null;
+  return slope / mean; // % moyen par an
+}
+
+// Score 0-100
+function calculerScore(school) {
+  const yLast = STATE.latestYear;
+  const curr = school.years[yLast];
+  if (!curr) return null;
+  const eff1A_curr = curr.eff1A || 0;
+  const totalCurr = (curr.eff1A || 0) + (curr.eff2A || 0);
+
+  // Filtre dur de viabilité
+  if (eff1A_curr < CONFIG.MIN_EFF_1A_VIABLE) return null;
+
+  // (1) Déperdition 1A->2A
+  let ptsDep = 0;
+  const prev = school.years[yLast - 1];
+  if (prev && prev.eff1A > 0) {
+    const tauxPerte = (prev.eff1A - curr.eff2A) / prev.eff1A;
+    ptsDep = Math.min(40, Math.max(0, tauxPerte * 80));
+  }
+
+  // (2) Marge de croissance — capacité de référence : 2 sections (1A+2A)
+  const capacite = CONFIG.CAPACITE_TYPE * 2;
+  const ratio = totalCurr / capacite;
+  let ptsCroissance;
+  if (ratio < 0.5) ptsCroissance = 30;
+  else if (ratio >= 1.0) ptsCroissance = 0;
+  else ptsCroissance = 30 * (1 - (ratio - 0.5) / 0.5);
+
+  // (3) Tendance 3 ans
+  let ptsTendance = 0;
+  const trend = tendance3ans(school);
+  if (trend != null) {
+    if (trend >= 0) ptsTendance = 0;
+    else if (trend < -0.30) ptsTendance = 0;
+    else ptsTendance = -trend * 100; // -10% -> 10pts, -30% -> 30pts
+    ptsTendance = Math.min(30, Math.max(0, ptsTendance));
+  }
+
+  return Math.round(ptsDep + ptsCroissance + ptsTendance);
+}
+
+// Académie déduite du département (mapping abrégé : on retourne la ville
+// pivot de l'académie). Hypothèse : suffit pour filtrer/regrouper.
+const DEPT_TO_ACADEMIE = {
+  '01':'Lyon','02':'Amiens','03':'Clermont-Ferrand','04':'Aix-Marseille','05':'Aix-Marseille',
+  '06':'Nice','07':'Grenoble','08':'Reims','09':'Toulouse','10':'Reims','11':'Montpellier',
+  '12':'Toulouse','13':'Aix-Marseille','14':'Caen','15':'Clermont-Ferrand','16':'Poitiers',
+  '17':'Poitiers','18':'Orléans-Tours','19':'Limoges','21':'Dijon','22':'Rennes',
+  '23':'Limoges','24':'Bordeaux','25':'Besançon','26':'Grenoble','27':'Rouen',
+  '28':'Orléans-Tours','29':'Rennes','2A':'Corse','2B':'Corse','30':'Montpellier',
+  '31':'Toulouse','32':'Toulouse','33':'Bordeaux','34':'Montpellier','35':'Rennes',
+  '36':'Orléans-Tours','37':'Orléans-Tours','38':'Grenoble','39':'Besançon','40':'Bordeaux',
+  '41':'Orléans-Tours','42':'Lyon','43':'Clermont-Ferrand','44':'Nantes','45':'Orléans-Tours',
+  '46':'Toulouse','47':'Bordeaux','48':'Montpellier','49':'Nantes','50':'Caen',
+  '51':'Reims','52':'Reims','53':'Nantes','54':'Nancy-Metz','55':'Nancy-Metz',
+  '56':'Rennes','57':'Nancy-Metz','58':'Dijon','59':'Lille','60':'Amiens',
+  '61':'Caen','62':'Lille','63':'Clermont-Ferrand','64':'Bordeaux','65':'Toulouse',
+  '66':'Montpellier','67':'Strasbourg','68':'Strasbourg','69':'Lyon','70':'Besançon',
+  '71':'Dijon','72':'Nantes','73':'Grenoble','74':'Grenoble','75':'Paris',
+  '76':'Rouen','77':'Créteil','78':'Versailles','79':'Poitiers','80':'Amiens',
+  '81':'Toulouse','82':'Toulouse','83':'Nice','84':'Aix-Marseille','85':'Nantes',
+  '86':'Poitiers','87':'Limoges','88':'Nancy-Metz','89':'Dijon','90':'Besançon',
+  '91':'Versailles','92':'Versailles','93':'Créteil','94':'Créteil','95':'Versailles',
+  '971':'Guadeloupe','972':'Martinique','973':'Guyane','974':'La Réunion','976':'Mayotte',
+};
+function academieOf(school) {
+  const cp = school.code_postal || '';
+  if (cp.startsWith('97')) return DEPT_TO_ACADEMIE[cp.substring(0,3)] || 'Outre-mer';
+  return DEPT_TO_ACADEMIE[cp.substring(0,2)] || '—';
+}
+
+/* ============================================================================
+   GÉOCODAGE — api-adresse.data.gouv.fr + cache localStorage
+   Cascade : (1) code INSEE + nom commune, (2) commune + CP, (3) commune seule.
+   On bumpe la clé de cache en v2 pour invalider les nulls du v1.
+============================================================================ */
+const GEOCACHE_KEY = 'bts_sio_geocache_v2';
+
+function loadGeocache() {
+  try {
+    STATE.geocodeCache = JSON.parse(localStorage.getItem(GEOCACHE_KEY) || '{}');
+  } catch { STATE.geocodeCache = {}; }
+}
+function saveGeocache() {
+  try { localStorage.setItem(GEOCACHE_KEY, JSON.stringify(STATE.geocodeCache)); } catch {}
+}
+function clearGeocache() {
+  try {
+    localStorage.removeItem(GEOCACHE_KEY);
+    // Nettoyer aussi l'ancien format v1 si présent
+    localStorage.removeItem('bts_sio_geocache_v1');
+  } catch {}
+  STATE.geocodeCache = {};
+}
+
+async function fetchGeocode(url) {
+  try {
+    const r = await fetch(url);
+    if (!r.ok) return null;
+    const j = await r.json();
+    const feat = j.features && j.features[0];
+    if (feat && feat.geometry && feat.geometry.coordinates) {
+      const [lon, lat] = feat.geometry.coordinates;
+      return { lat, lon };
+    }
+  } catch (e) { /* signalé via diagnostic en fin */ }
+  return null;
+}
+
+async function geocodeSchool(school) {
+  const key = `insee:${school.code_insee}|cp:${school.code_postal}|c:${school.commune}`;
+  if (Object.prototype.hasOwnProperty.call(STATE.geocodeCache, key)) {
+    return STATE.geocodeCache[key];
+  }
+
+  let coords = null;
+  const base = 'https://api-adresse.data.gouv.fr/search/?limit=1';
+  const commune = school.commune;
+  const cp = school.code_postal;
+  const insee = school.code_insee;
+
+  // Stratégie 1 : code INSEE + nom commune (le plus fiable, contourne les CP CEDEX)
+  if (insee && commune) {
+    coords = await fetchGeocode(`${base}&q=${encodeURIComponent(commune)}&citycode=${encodeURIComponent(insee)}&type=municipality`);
+  }
+  // Stratégie 2 : commune + CP "civil" (en remplaçant un éventuel CP CEDEX par dept+000)
+  if (!coords && commune && cp) {
+    coords = await fetchGeocode(`${base}&q=${encodeURIComponent(commune)}&postcode=${encodeURIComponent(cp)}&type=municipality`);
+  }
+  if (!coords && commune && cp && /^\d{5}$/.test(cp)) {
+    // Heuristique : forcer un CP géographique probable (dept + "000")
+    const fallbackCp = cp.substring(0, 2) + '000';
+    if (fallbackCp !== cp) {
+      coords = await fetchGeocode(`${base}&q=${encodeURIComponent(commune)}&postcode=${encodeURIComponent(fallbackCp)}&type=municipality`);
+    }
+  }
+  // Stratégie 3 : recherche par nom de commune seule
+  if (!coords && commune) {
+    coords = await fetchGeocode(`${base}&q=${encodeURIComponent(commune)}&type=municipality`);
+  }
+
+  STATE.geocodeCache[key] = coords; // peut être null — on mémorise l'échec
+  return coords;
+}
+
+async function geocodeAll() {
+  loadGeocache();
+  const schools = [...STATE.schools.values()];
+  let done = 0, total = schools.length;
+  const missed = [];
+  log(`geocodeAll: démarrage, ${total} établissement(s), cache contient ${Object.keys(STATE.geocodeCache).length} entrée(s)`);
+  showGeocodeStatus(`Géocodage 0 / ${total}…`);
+  STATE.geocodeDone = false;
+  STATE.geocodeStage = `Géocodage 0 / ${total}…`;
+
+  // Traitement séquentiel pour ne pas saturer l'API publique.
+  // Hypothèse : ~300 communes uniques, ~150ms par appel non caché → 45s max.
+  for (const s of schools) {
+    const coords = await geocodeSchool(s);
+    if (coords) { s.lat = coords.lat; s.lon = coords.lon; }
+    else missed.push(s);
+    done++;
+    if (done % 10 === 0 || done === total) {
+      const txt = `Géocodage ${done} / ${total}…`;
+      showGeocodeStatus(txt);
+      STATE.geocodeStage = txt;
+      // Si l'utilisateur est sur la vue carte, rafraîchir l'overlay aussi
+      const active = document.querySelector('nav.tabs button.active').dataset.view;
+      if (active === 'vue2' && !STATE.map) {
+        setMapOverlay({ stage: txt, detail: 'La carte s\'affichera automatiquement à la fin du géocodage.' });
+      }
+      saveGeocache();
+    }
+  }
+  saveGeocache();
+  showGeocodeStatus('');
+  STATE.geocodeDone = true;
+  log(`geocodeAll: terminé · ${total - missed.length} géocodé(s) · ${missed.length} en échec`);
+  if (missed.length > 0) {
+    const sample = missed.slice(0, 5).map(s => `${s.patronyme} (${s.commune}, CP ${s.code_postal}, INSEE ${s.code_insee})`).join(' · ');
+    const suffix = missed.length > 5 ? ` … et ${missed.length - 5} autre(s)` : '';
+    addDiagnostic(`${missed.length} établissement(s) sans coordonnées (non placés sur la carte). Échantillon : ${sample}${suffix}`);
+  }
+}
+
+/* ============================================================================
+   ENRICHISSEMENT — chargement de pipeline/output/data.json
+   ----------------------------------------------------------------------------
+   Stratégie : on tente un fetch silencieux au démarrage. Si on est servi
+   via HTTP (python -m http.server) ça marche. Si on est en file://, le
+   fetch échoue (CORS) — on affiche alors un bouton "Charger data.json".
+============================================================================ */
+const ENRICHED_URL = './pipeline/output/data.json';
+
+function setEnrichStatus(text, kind) {
+  const el = document.getElementById('enrich-status');
+  if (!el) return;
+  el.textContent = text;
+  el.classList.remove('ok', 'warn');
+  if (kind) el.classList.add(kind);
+}
+
+async function autoFetchEnriched() {
+  try {
+    log('Enrichissement: tentative fetch', ENRICHED_URL);
+    const r = await fetch(ENRICHED_URL, { cache: 'no-store' });
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    const data = await r.json();
+    applyEnriched(data, 'fetch');
+  } catch (e) {
+    // file:// → CORS échec ; HTTP → 404 si pipeline pas encore lancé
+    warn('Enrichissement: auto-fetch échoué (', e.message, '). Fallback manuel disponible.');
+    setEnrichStatus('Données enrichies : charger manuellement', 'warn');
+    const btn = document.getElementById('enrich-load-btn');
+    if (btn) btn.style.display = '';
+    // Permettre de cliquer le statut pour ouvrir le file picker
+    document.getElementById('enrich-status').onclick = () => {
+      document.getElementById('enrich-input').click();
+    };
+  }
+}
+
+function applyEnriched(data, sourceMode) {
+  STATE.enriched = data;
+  STATE.enrichedSource = sourceMode;
+  const nbEtab = Object.keys(data.etablissements || {}).length;
+  const generatedAt = (data.metadata && data.metadata.generated_at) || '';
+  const tag = sourceMode === 'fetch' ? 'auto' : 'manuel';
+  setEnrichStatus(`Données enrichies : ${nbEtab} établissements (${tag})`, 'ok');
+  log('Enrichissement: chargé', nbEtab, 'établissements, généré le', generatedAt);
+  // Si l'utilisateur est déjà sur la vue Insertion, rafraîchir
+  const active = document.querySelector('nav.tabs button.active').dataset.view;
+  if (active === 'vue4') renderInsertion();
+}
+
+function ingestEnrichedFile(file) {
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    try {
+      const data = JSON.parse(e.target.result);
+      applyEnriched(data, 'manual');
+    } catch (err) {
+      addDiagnostic('Fichier data.json invalide : ' + err.message);
+    }
+  };
+  reader.readAsText(file);
+}
+
+/* ============================================================================
+   COULEURS — palette sobre, dépendant du score
+============================================================================ */
+function scoreColor(score) {
+  if (score == null) return '#9ca3af';
+  // Du gris (faible potentiel) au bleu profond (fort potentiel)
+  if (score < 25) return '#cbd5e1';
+  if (score < 45) return '#93c5fd';
+  if (score < 65) return '#3b82f6';
+  if (score < 80) return '#1d4ed8';
+  return '#1e3a8a';
+}
+function pointRadius(eff) {
+  if (!eff) return 5;
+  return Math.max(5, Math.min(22, 4 + Math.sqrt(eff) * 1.6));
+}
+
+/* ============================================================================
+   VUE 1 — Mon BTS
+============================================================================ */
+function renderVue1() {
+  const titleEl = document.getElementById('vue1-title');
+  const subEl = document.getElementById('vue1-subtitle');
+  document.getElementById('objectif-label').textContent = fmt.pct(CONFIG.OBJECTIF_PASSAGE, 0);
+
+  if (!STATE.specialty) {
+    titleEl.textContent = 'Mon BTS';
+    subEl.textContent = 'Sélectionnez une spécialité dans le menu en haut.';
+    document.getElementById('kpi-cards').innerHTML = '';
+    ['evolution','passage','mixite'].forEach(destroyChart);
+    return;
+  }
+  const school = STATE.myUai ? STATE.schools.get(STATE.myUai) : null;
+  if (!school) {
+    titleEl.textContent = `Spécialité « ${STATE.specialty} »`;
+    subEl.textContent = `${STATE.schools.size} établissement(s) public(s) avec cette spécialité. Sélectionnez « Mon BTS » dans le menu en haut pour voir le détail d'un établissement.`;
+    document.getElementById('kpi-cards').innerHTML = '';
+    ['evolution','passage','mixite'].forEach(destroyChart);
+    return;
+  }
+
+  titleEl.textContent = `${school.patronyme} — ${school.commune}`;
+  subEl.textContent = `Spécialité « ${STATE.specialty} » · UAI ${school.uai} · ${school.code_postal} ${school.commune} · académie de ${academieOf(school)}`;
+
+  const yLast = STATE.latestYear;
+  const yPrev = yLast - 1;
+  const curr = school.years[yLast] || { eff1A:0, eff2A:0, filles1A:0, garcons1A:0, filles2A:0, garcons2A:0 };
+  const prev = school.years[yPrev];
+
+  const totalCurr = curr.eff1A + curr.eff2A;
+  const totalPrev = prev ? prev.eff1A + prev.eff2A : null;
+  const delta = (totalPrev != null && totalPrev > 0) ? (totalCurr - totalPrev) / totalPrev : null;
+  const filles = curr.filles1A + curr.filles2A;
+  const garcons = curr.garcons1A + curr.garcons2A;
+  const pctFilles = (filles + garcons) > 0 ? filles / (filles + garcons) : null;
+  const passage = tauxPassage(school, yLast);
+
+  // KPI cards
+  const kpis = [
+    {
+      label: `Effectif total ${yLast}`,
+      value: fmt.int(totalCurr),
+      sub: `dont ${fmt.int(curr.eff1A)} en 1A · ${fmt.int(curr.eff2A)} en 2A`,
+    },
+    {
+      label: `Évolution vs ${yPrev}`,
+      value: delta == null ? '—' :
+        `<span class="delta ${delta>0?'up':delta<0?'down':'flat'}">${fmt.signedPct(delta,1)}</span>`,
+      sub: totalPrev != null ? `${fmt.int(totalCurr - totalPrev)} étudiant(s) ${delta>=0?'gagnés':'perdus'} en un an` : 'pas de référence n-1',
+      raw: true,
+    },
+    {
+      label: `Passage 1A → 2A`,
+      value: passage == null ? '—' : fmt.pct(passage, 0),
+      sub: passage == null ? '' :
+        `${passage >= CONFIG.OBJECTIF_PASSAGE
+            ? '<span class="delta up">au-dessus de l\'objectif</span>'
+            : '<span class="delta down">en deçà de l\'objectif ' + fmt.pct(CONFIG.OBJECTIF_PASSAGE,0) + '</span>'}`,
+      raw: true,
+    },
+    {
+      label: `Mixité ${yLast}`,
+      value: pctFilles == null ? '—' : `${fmt.pct(pctFilles,0)} de filles`,
+      sub: `${fmt.int(filles)} filles · ${fmt.int(garcons)} garçons`,
+    },
+  ];
+
+  const kpiHTML = kpis.map(k => `
+    <div class="kpi">
+      <div class="label">${k.label}</div>
+      <div class="value">${k.raw ? k.value : escapeHtml(String(k.value))}</div>
+      <div class="sub">${k.sub || ''}</div>
+    </div>
+  `).join('');
+  document.getElementById('kpi-cards').innerHTML = kpiHTML;
+
+  // ------------------------ Graphiques ------------------------
+  const years = STATE.years;
+  const eff1Series = years.map(y => school.years[y]?.eff1A ?? null);
+  const eff2Series = years.map(y => school.years[y]?.eff2A ?? null);
+
+  destroyChart('evolution');
+  STATE.charts.evolution = new Chart(document.getElementById('chart-evolution'), {
+    type: 'line',
+    data: {
+      labels: years,
+      datasets: [
+        {
+          label: '1ère année',
+          data: eff1Series,
+          borderColor: '#2563eb',
+          backgroundColor: 'rgba(37,99,235,0.10)',
+          tension: 0.25,
+          borderWidth: 2.5,
+          pointRadius: 4,
+          pointBackgroundColor: '#2563eb',
+        },
+        {
+          label: '2ème année (toutes options confondues)',
+          data: eff2Series,
+          borderColor: '#0f766e',
+          backgroundColor: 'rgba(15,118,110,0.10)',
+          tension: 0.25,
+          borderWidth: 2.5,
+          pointRadius: 4,
+          pointBackgroundColor: '#0f766e',
+        },
+      ],
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      interaction: { intersect: false, mode: 'index' },
+      plugins: {
+        legend: { position: 'bottom', labels: { boxWidth: 12, font: { size: 12 } } },
+        tooltip: { callbacks: { label: (ctx) => `${ctx.dataset.label} : ${ctx.parsed.y ?? '—'}` } },
+      },
+      scales: {
+        y: { beginAtZero: true, grid: { color: 'rgba(0,0,0,0.04)' } },
+        x: { grid: { display: false } },
+      },
+    },
+  });
+
+  // Passage rate
+  const passageSeries = years.map(y => {
+    const p = tauxPassage(school, y);
+    return p == null ? null : Math.round(p * 100);
+  });
+  destroyChart('passage');
+  STATE.charts.passage = new Chart(document.getElementById('chart-passage'), {
+    type: 'line',
+    data: {
+      labels: years,
+      datasets: [
+        {
+          label: 'Taux de passage',
+          data: passageSeries,
+          borderColor: '#1d4ed8',
+          backgroundColor: 'rgba(29,78,216,0.10)',
+          tension: 0.25,
+          borderWidth: 2.5,
+          pointRadius: 4,
+          fill: true,
+        },
+        {
+          label: `Objectif (${fmt.pct(CONFIG.OBJECTIF_PASSAGE,0)})`,
+          data: years.map(() => CONFIG.OBJECTIF_PASSAGE * 100),
+          borderColor: '#d97706',
+          borderDash: [6, 4],
+          borderWidth: 1.5,
+          pointRadius: 0,
+          fill: false,
+        },
+      ],
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: {
+        legend: { position: 'bottom', labels: { boxWidth: 12, font: { size: 12 } } },
+        tooltip: { callbacks: { label: (ctx) => `${ctx.dataset.label} : ${ctx.parsed.y ?? '—'}%` } },
+      },
+      scales: {
+        y: { beginAtZero: true, suggestedMax: 120, ticks: { callback: (v) => v + '%' }, grid: { color: 'rgba(0,0,0,0.04)' } },
+        x: { grid: { display: false } },
+      },
+    },
+  });
+
+  // Mixité
+  const fillesSeries = years.map(y => {
+    const yr = school.years[y]; return yr ? (yr.filles1A + yr.filles2A) : null;
+  });
+  const garconsSeries = years.map(y => {
+    const yr = school.years[y]; return yr ? (yr.garcons1A + yr.garcons2A) : null;
+  });
+  destroyChart('mixite');
+  STATE.charts.mixite = new Chart(document.getElementById('chart-mixite'), {
+    type: 'bar',
+    data: {
+      labels: years,
+      datasets: [
+        { label: 'Filles', data: fillesSeries, backgroundColor: '#a78bfa' },
+        { label: 'Garçons', data: garconsSeries, backgroundColor: '#60a5fa' },
+      ],
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: {
+        legend: { position: 'bottom', labels: { boxWidth: 12, font: { size: 12 } } },
+      },
+      scales: {
+        x: { stacked: true, grid: { display: false } },
+        y: { stacked: true, beginAtZero: true, grid: { color: 'rgba(0,0,0,0.04)' } },
+      },
+    },
+  });
+}
+
+function destroyChart(name) {
+  if (STATE.charts[name]) { STATE.charts[name].destroy(); STATE.charts[name] = null; }
+}
+
+function escapeHtml(s) {
+  return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+/* ============================================================================
+   VUE 2 — Cartographie nationale
+============================================================================ */
+function buildVue2Rows() {
+  const rows = [];
+  const yLast = STATE.latestYear;
+  const yPrev = yLast - 1;
+  for (const s of STATE.schools.values()) {
+    const curr = s.years[yLast];
+    if (!curr) continue;
+    const prev = s.years[yPrev];
+    const trend = tendance3ans(s);
+    const score = calculerScore(s);
+    const remplissage = tauxRemplissage1A(s);
+    const allEff1A = Object.values(s.years).map(y => y.eff1A || 0);
+    const maxHistEff1A = Math.max(...allEff1A);
+    const depTimeline = deperditionTimeline(s);
+    const reduction = reductionDep(depTimeline, 3);
+    rows.push({
+      uai: s.uai,
+      patronyme: s.patronyme,
+      commune: s.commune,
+      academie: academieOf(s),
+      eff1A: curr.eff1A || 0,
+      eff2A: curr.eff2A || 0,
+      filles1A: curr.filles1A || 0,
+      pctFilles1A: (curr.eff1A > 0) ? (curr.filles1A || 0) / curr.eff1A : null,
+      eff1A_prev: prev ? (prev.eff1A || 0) : null, // pour expliquer le passage
+      passage: tauxPassage(s, yLast),
+      remplissage,
+      marge: remplissage != null ? 1 - remplissage : null,
+      maxHistEff1A,
+      depTimeline,
+      reduction, // positive = amélioration sur 3 ans
+      deperdition: deperditionCohorte(s),
+      trend3y: trend,
+      score: score,
+      lat: s.lat, lon: s.lon,
+      dept: s.dept,
+      yLast, yPrev,
+    });
+  }
+  return rows;
+}
+
+function initMap() {
+  if (STATE.map) { log('initMap: déjà initialisé, skip'); return; }
+  if (typeof L === 'undefined') {
+    logErr('initMap: la bibliothèque Leaflet n\'est pas chargée (variable L absente).');
+    setMapOverlay({
+      stage: 'Erreur : Leaflet non chargé',
+      detail: 'Le script Leaflet n\'a pas pu être téléchargé depuis le CDN. Vérifiez votre connexion internet ou recharger la page.',
+      error: true, spinner: false,
+      actions: [{ label: 'Recharger la page', primary: true, onClick: () => location.reload() }],
+    });
+    return;
+  }
+  const mapEl = document.getElementById('map');
+  log('initMap: conteneur dimensions =', mapEl.offsetWidth, 'x', mapEl.offsetHeight);
+  if (mapEl.offsetHeight === 0) {
+    warn('initMap: hauteur du conteneur = 0. Leaflet risque de mal rendre.');
+  }
+  try {
+    STATE.map = L.map('map', { preferCanvas: true }).setView([46.6, 2.4], 6);
+    log('initMap: instance Leaflet créée');
+  } catch (e) {
+    logErr('initMap: échec création Leaflet', e);
+    setMapOverlay({
+      stage: 'Erreur d\'initialisation Leaflet',
+      detail: e.message,
+      error: true, spinner: false,
+    });
+    return;
+  }
+  const tileLayer = L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+    maxZoom: 18,
+    attribution: '&copy; OpenStreetMap, &copy; CARTO',
+    subdomains: 'abcd',
+  });
+  tileLayer.on('tileerror', (e) => warn('Tile error:', e.tile?.src || e));
+  tileLayer.on('tileload', () => { if (!STATE._firstTileLoaded) { STATE._firstTileLoaded = true; log('initMap: première tuile chargée ✓'); } });
+  tileLayer.addTo(STATE.map);
+  STATE.markersLayer = L.layerGroup().addTo(STATE.map);
+  log('initMap: tiles + markersLayer ajoutés');
+
+  // Légende
+  const legend = L.control({ position: 'bottomright' });
+  legend.onAdd = function() {
+    const div = L.DomUtil.create('div', 'map-legend');
+    div.innerHTML = `
+      <strong>Score</strong>
+      <div class="legend-row"><span class="legend-dot" style="background:#cbd5e1"></span> &lt; 25</div>
+      <div class="legend-row"><span class="legend-dot" style="background:#93c5fd"></span> 25–44</div>
+      <div class="legend-row"><span class="legend-dot" style="background:#3b82f6"></span> 45–64</div>
+      <div class="legend-row"><span class="legend-dot" style="background:#1d4ed8"></span> 65–79</div>
+      <div class="legend-row"><span class="legend-dot" style="background:#1e3a8a"></span> ≥ 80</div>
+      <strong style="margin-top:6px">Taille</strong>
+      <div style="font-size:11px;color:var(--text-muted)">∝ effectif total</div>
+    `;
+    return div;
+  };
+  legend.addTo(STATE.map);
+}
+
+function renderMap(rows) {
+  if (!STATE.map) { log('renderMap: map non initialisée, init...'); initMap(); }
+  if (!STATE.map) { logErr('renderMap: map toujours non disponible après init'); return; }
+  STATE.markersLayer.clearLayers();
+  log(`renderMap: ${rows.length} ligne(s) à placer`);
+  let placed = 0;
+  for (const r of rows) {
+    if (r.lat == null || r.lon == null) continue;
+    const eff = r.eff1A + r.eff2A;
+    const isMe = r.uai === STATE.myUai;
+    const marker = L.circleMarker([r.lat, r.lon], {
+      radius: pointRadius(eff),
+      color: isMe ? '#dc2626' : '#1f2937',
+      weight: isMe ? 2.5 : 1,
+      fillColor: scoreColor(r.score),
+      fillOpacity: isMe ? 0.95 : 0.78,
+    });
+    const link = `https://www.google.com/search?q=${encodeURIComponent('lycée ' + r.patronyme + ' ' + r.commune)}`;
+    const passageDetail = (r.passage != null && r.eff1A_prev != null)
+      ? `${fmt.pct(r.passage,0)} <span style="color:var(--text-faint);font-size:11px">(${r.eff2A}/${r.eff1A_prev})</span>`
+      : fmt.pct(r.passage,0);
+    marker.bindPopup(`
+      <div class="school-name">${escapeHtml(r.patronyme)}${isMe?' ★':''}</div>
+      <div class="school-meta">${escapeHtml(r.commune)} · ${escapeHtml(r.academie)}</div>
+      <div class="school-stats">
+        <span>1A (${r.yLast})</span><span>${fmt.int(r.eff1A)}</span>
+        <span>2A (${r.yLast})</span><span>${fmt.int(r.eff2A)}</span>
+        <span>Passage cohorte</span><span>${passageDetail}</span>
+        <span>Tendance %/an</span><span>${fmt.signedPct(r.trend3y,1)}</span>
+      </div>
+      <div class="school-score">Score : ${r.score ?? '—'} / 100</div>
+      <div style="margin-top:6px"><a href="${link}" target="_blank" rel="noopener">Rechercher l'établissement ↗</a></div>
+    `);
+    marker.addTo(STATE.markersLayer);
+    placed++;
+  }
+  log(`renderMap: ${placed} marqueur(s) placé(s) sur ${rows.length} ligne(s) (${rows.length - placed} sans coordonnées)`);
+  if (placed === 0) {
+    addDiagnostic('Aucun établissement à afficher sur la carte avec les filtres actuels.');
+    setMapOverlay({
+      stage: 'Aucun établissement géolocalisé',
+      detail: rows.length === 0
+        ? 'Aucun établissement ne passe les filtres actuels.'
+        : `${rows.length} établissement(s) filtré(s) mais aucun n'a de coordonnées. Vérifiez le diagnostic ou videz le cache géo.`,
+      error: false, spinner: false,
+      actions: [{ label: 'Réinitialiser les filtres', primary: true, onClick: () => document.getElementById('reset-filters').click() }],
+    });
+  } else {
+    hideMapOverlay();
+  }
+}
+
+function renderTable(rows) {
+  const tbody = document.querySelector('#schools-table tbody');
+  tbody.innerHTML = '';
+  for (const r of rows) {
+    const isMe = r.uai === STATE.myUai;
+    const tr = document.createElement('tr');
+    if (isMe) tr.classList.add('mine');
+    const trendBadge = r.trend3y == null ? '<span class="badge flat">—</span>' :
+      r.trend3y > 0.02 ? `<span class="badge up">${fmt.signedPct(r.trend3y,1)}</span>` :
+      r.trend3y < -0.02 ? `<span class="badge down">${fmt.signedPct(r.trend3y,1)}</span>` :
+      `<span class="badge flat">${fmt.signedPct(r.trend3y,1)}</span>`;
+    const link = `https://www.google.com/search?q=${encodeURIComponent('lycée ' + r.patronyme + ' ' + r.commune)}`;
+    const passageTitle = (r.passage != null && r.eff1A_prev != null)
+      ? `Cohorte : ${r.eff2A} en 2A à la rentrée ${r.yLast} / ${r.eff1A_prev} en 1A à la rentrée ${r.yPrev}`
+      : 'Donnée manquante pour le calcul (1A de l\'an passé indisponible)';
+    tr.innerHTML = `
+      <td>${escapeHtml(r.patronyme)}</td>
+      <td>${escapeHtml(r.commune)}</td>
+      <td>${escapeHtml(r.academie)}</td>
+      <td class="num" title="Rentrée ${r.yLast}">${fmt.int(r.eff1A)}</td>
+      <td class="num" title="Rentrée ${r.yLast} (toutes options confondues)">${fmt.int(r.eff2A)}</td>
+      <td class="num" title="${escapeHtml(passageTitle)}">${fmt.pct(r.passage,0)}${r.eff1A_prev != null ? ` <span style="color:var(--text-faint);font-size:11px">(${r.eff2A}/${r.eff1A_prev})</span>` : ''}</td>
+      <td class="num">${trendBadge}</td>
+      <td class="score-cell" style="color:${scoreColor(r.score)}">${r.score ?? '—'}</td>
+      <td><a href="${link}" target="_blank" rel="noopener" class="btn-link">↗</a></td>
+    `;
+    tbody.appendChild(tr);
+  }
+}
+
+function applyVue2Filters() {
+  const all = buildVue2Rows();
+  const acad = document.getElementById('filter-academie').value;
+  const size = document.getElementById('filter-size').value;
+  const trendF = document.getElementById('filter-trend').value;
+  const search = document.getElementById('filter-search').value.trim().toLowerCase();
+
+  STATE.filteredSchools = all.filter(r => {
+    if (acad && r.academie !== acad) return false;
+    const eff = r.eff1A + r.eff2A;
+    if (size === 'small' && !(eff < 20)) return false;
+    if (size === 'medium' && !(eff >= 20 && eff <= 40)) return false;
+    if (size === 'large' && !(eff > 40)) return false;
+    if (trendF === 'up' && !(r.trend3y != null && r.trend3y > 0.02)) return false;
+    if (trendF === 'stable' && !(r.trend3y != null && Math.abs(r.trend3y) <= 0.02)) return false;
+    if (trendF === 'down' && !(r.trend3y != null && r.trend3y < -0.02)) return false;
+    if (search) {
+      const hay = (r.patronyme + ' ' + r.commune).toLowerCase();
+      if (!hay.includes(search)) return false;
+    }
+    return true;
+  });
+
+  // Tri
+  const dir = STATE.sortDir === 'asc' ? 1 : -1;
+  STATE.filteredSchools.sort((a, b) => {
+    let va = a[STATE.sortColumn], vb = b[STATE.sortColumn];
+    if (va == null) va = -Infinity;
+    if (vb == null) vb = -Infinity;
+    if (typeof va === 'string') return va.localeCompare(vb, 'fr') * dir;
+    return (va - vb) * dir;
+  });
+
+  renderMap(STATE.filteredSchools);
+  renderTable(STATE.filteredSchools);
+  renderTop10s(STATE.filteredSchools);
+}
+
+/* ----------------------------------------------------------------------------
+   Top 10 — marge de croissance, hémorragie cohorte, filles en 1A.
+   Respecte les filtres en cours et applique MIN_EFF_1A_VIABLE pour ne pas
+   surfacer des sections moribondes en tête des classements.
+---------------------------------------------------------------------------- */
+function renderTop10s(rows) {
+  const depSparkline = (r, color) => {
+    if (!r.depTimeline || r.depTimeline.length < 2) return '';
+    return sparklineSVG(r.depTimeline, { color });
+  };
+
+  const configs = [
+    {
+      listId: 'top10-remplissage', meId: 'rank-me-remplissage',
+      // Classe par MARGE (= 1 - remplissage) en descendant : grosses marges en tête.
+      key: 'marge',
+      dir: 'desc',
+      eligible: r => r.remplissage != null && r.eff1A >= CONFIG.MIN_EFF_1A_VIABLE && r.maxHistEff1A > 0,
+      format: r => `${fmt.pct(1 - r.remplissage,0)} <span style="color:var(--text-faint);font-weight:400;font-size:11px">(${r.eff1A}/${r.maxHistEff1A})</span>`,
+      meFormat: r => `${fmt.pct(1 - r.remplissage,0)} de marge (${r.eff1A} sur un pic de ${r.maxHistEff1A})`,
+      sparkline: null, // pas pertinent pour cet axe
+    },
+    {
+      listId: 'top10-deperdition', meId: 'rank-me-deperdition',
+      key: 'deperdition',
+      dir: 'desc', // les plus fortes pertes d'abord
+      eligible: r => r.deperdition != null && r.eff1A_prev != null && r.eff1A_prev >= CONFIG.MIN_EFF_1A_VIABLE,
+      format: r => `${fmt.pct(r.deperdition,0)} <span style="color:var(--text-faint);font-weight:400;font-size:11px">(${r.eff1A_prev}→${r.eff2A})</span>`,
+      meFormat: r => `${fmt.pct(r.deperdition,0)} de perte (${r.eff1A_prev} en 1A → ${r.eff2A} en 2A)`,
+      sparkline: r => depSparkline(r, '#dc2626'), // rouge (hémorragie)
+    },
+    {
+      listId: 'top10-amelioration', meId: 'rank-me-amelioration',
+      key: 'reduction',
+      dir: 'desc', // plus forte baisse de déperdition en tête
+      // Éligibilité : au moins 3 années de déperdition + section actuellement viable
+      eligible: r => r.reduction != null && r.reduction > 0 && r.depTimeline && r.depTimeline.length >= 3 && r.eff1A >= CONFIG.MIN_EFF_1A_VIABLE,
+      format: r => {
+        const tl = r.depTimeline.slice(-3);
+        const oldest = tl[0], newest = tl[tl.length - 1];
+        const pts = Math.round(r.reduction * 100);
+        return `<span style="color:#16a34a">−${pts}&nbsp;pts</span> <span style="color:var(--text-faint);font-weight:400;font-size:11px">(${fmt.pct(oldest.dep,0)}→${fmt.pct(newest.dep,0)})</span>`;
+      },
+      meFormat: r => {
+        const tl = r.depTimeline.slice(-3);
+        const oldest = tl[0], newest = tl[tl.length - 1];
+        const pts = Math.round(r.reduction * 100);
+        return `−${pts} pts de déperdition (${fmt.pct(oldest.dep,0)} en ${oldest.year} → ${fmt.pct(newest.dep,0)} en ${newest.year})`;
+      },
+      sparkline: r => depSparkline(r, '#16a34a'), // vert (amélioration)
+    },
+    {
+      listId: 'top10-filles', meId: 'rank-me-filles',
+      key: 'pctFilles1A',
+      dir: 'desc',
+      eligible: r => r.pctFilles1A != null && r.eff1A >= CONFIG.MIN_EFF_1A_VIABLE,
+      format: r => `${fmt.pct(r.pctFilles1A,0)} <span style="color:var(--text-faint);font-weight:400;font-size:11px">(${r.filles1A}/${r.eff1A})</span>`,
+      meFormat: r => `${fmt.pct(r.pctFilles1A,0)} de filles (${r.filles1A} filles sur ${r.eff1A} en 1A)`,
+      sparkline: null,
+    },
+  ];
+
+  for (const cfg of configs) {
+    const sorted = [...rows]
+      .filter(cfg.eligible)
+      .sort((a, b) => cfg.dir === 'asc' ? a[cfg.key] - b[cfg.key] : b[cfg.key] - a[cfg.key]);
+    const list = document.getElementById(cfg.listId);
+    const meSlot = document.getElementById(cfg.meId);
+    list.innerHTML = '';
+    meSlot.innerHTML = '';
+
+    if (sorted.length === 0) {
+      list.innerHTML = '<li class="top10-empty">Aucun établissement avec ces filtres.</li>';
+      continue;
+    }
+
+    const top = sorted.slice(0, 10);
+    for (const r of top) {
+      const isMe = r.uai === STATE.myUai;
+      const li = document.createElement('li');
+      if (isMe) li.classList.add('mine');
+      const sparkHtml = cfg.sparkline ? cfg.sparkline(r) : '';
+      li.innerHTML = `
+        <span class="school">
+          <div class="school-name">${escapeHtml(r.patronyme)}${isMe ? ' ★' : ''}</div>
+          <div class="school-meta">
+            <span class="commune">${escapeHtml(r.commune)}</span>
+            ${sparkHtml ? `<span class="sparkline-wrap">${sparkHtml}</span>` : ''}
+          </div>
+        </span>
+        <span class="value">${cfg.format(r)}</span>
+      `;
+      list.appendChild(li);
+    }
+
+    // Si un "Mon BTS" est sélectionné et qu'il n'apparaît pas en top 10,
+    // afficher son rang en pied de carte. Sinon : pas de pied (slot vidé plus haut).
+    if (STATE.myUai) {
+      const meIdx = sorted.findIndex(r => r.uai === STATE.myUai);
+      if (meIdx >= 10) {
+        const me = sorted[meIdx];
+        meSlot.innerHTML = `Votre établissement : <strong>${meIdx + 1}<sup>e</sup></strong> · ${cfg.meFormat(me)} (sur ${sorted.length} établissements éligibles)`;
+      } else if (meIdx < 0) {
+        meSlot.innerHTML = `Votre établissement n'apparaît pas dans ce classement (non éligible ou exclu par les filtres).`;
+      }
+    }
+  }
+}
+
+function setupVue2Filters() {
+  const sel = document.getElementById('filter-academie');
+  const acads = [...new Set([...STATE.schools.values()].map(academieOf))].sort();
+  sel.innerHTML = '<option value="">Toutes</option>' +
+    acads.map(a => `<option value="${escapeHtml(a)}">${escapeHtml(a)}</option>`).join('');
+
+  ['filter-academie','filter-size','filter-trend','filter-search'].forEach(id => {
+    document.getElementById(id).addEventListener('input', applyVue2Filters);
+  });
+  document.getElementById('reset-filters').addEventListener('click', () => {
+    sel.value = '';
+    document.getElementById('filter-size').value = '';
+    document.getElementById('filter-trend').value = '';
+    document.getElementById('filter-search').value = '';
+    applyVue2Filters();
+  });
+  document.querySelectorAll('#schools-table th[data-sort]').forEach(th => {
+    th.addEventListener('click', () => {
+      const col = th.dataset.sort;
+      if (STATE.sortColumn === col) {
+        STATE.sortDir = STATE.sortDir === 'asc' ? 'desc' : 'asc';
+      } else {
+        STATE.sortColumn = col;
+        STATE.sortDir = (col === 'patronyme' || col === 'commune' || col === 'academie') ? 'asc' : 'desc';
+      }
+      document.querySelectorAll('#schools-table th').forEach(t => t.classList.remove('sort-asc','sort-desc'));
+      th.classList.add(STATE.sortDir === 'asc' ? 'sort-asc' : 'sort-desc');
+      applyVue2Filters();
+    });
+  });
+}
+
+/* ============================================================================
+   VUE 3 — Comparaison
+============================================================================ */
+function renderPickerResults(query) {
+  const results = document.getElementById('picker-results');
+  if (!query.trim()) { results.style.display = 'none'; return; }
+  const q = query.toLowerCase();
+  const matches = [...STATE.schools.values()]
+    .filter(s => !STATE.comparisonSet.has(s.uai))
+    .filter(s => (s.patronyme + ' ' + s.commune).toLowerCase().includes(q))
+    .slice(0, 20);
+  results.innerHTML = matches.map(s => {
+    const eff = totalEff(s, STATE.latestYear) ?? '—';
+    return `<div class="picker-result" data-uai="${s.uai}">
+      <div>${escapeHtml(s.patronyme)} <span class="meta">— ${escapeHtml(s.commune)}</span></div>
+      <div class="meta">${eff} él. (${STATE.latestYear})</div>
+    </div>`;
+  }).join('') || '<div class="picker-result meta">Aucun résultat.</div>';
+  results.style.display = '';
+  results.querySelectorAll('.picker-result[data-uai]').forEach(el => {
+    el.addEventListener('click', () => {
+      if (STATE.comparisonSet.size >= 6) {
+        addDiagnostic('Maximum 6 établissements comparables simultanément.');
+        return;
+      }
+      STATE.comparisonSet.add(el.dataset.uai);
+      document.getElementById('picker-search').value = '';
+      results.style.display = 'none';
+      renderComparison();
+    });
+  });
+}
+
+function renderChips() {
+  const wrap = document.getElementById('selected-chips');
+  wrap.innerHTML = '';
+  for (const uai of STATE.comparisonSet) {
+    const s = STATE.schools.get(uai);
+    if (!s) continue;
+    const isMine = uai === STATE.myUai;
+    const chip = document.createElement('span');
+    chip.className = 'chip' + (isMine ? ' mine' : '');
+    chip.innerHTML = `${escapeHtml(s.patronyme)} <span style="opacity:.7">·</span> ${escapeHtml(s.commune)} <span class="x" data-uai="${uai}">✕</span>`;
+    wrap.appendChild(chip);
+  }
+  wrap.querySelectorAll('.x').forEach(x => {
+    x.addEventListener('click', () => {
+      const uai = x.dataset.uai;
+      STATE.comparisonSet.delete(uai);
+      renderComparison();
+    });
+  });
+}
+
+function renderComparison() {
+  renderChips();
+  const schools = [...STATE.comparisonSet].map(u => STATE.schools.get(u)).filter(Boolean);
+  if (schools.length === 0) return;
+  const yLast = STATE.latestYear;
+
+  // Pré-calcul des valeurs brutes pour normalisation
+  const raw = schools.map(s => {
+    const curr = s.years[yLast] || { eff1A:0, eff2A:0, filles1A:0, garcons1A:0, filles2A:0, garcons2A:0 };
+    const total = curr.eff1A + curr.eff2A;
+    const filles = curr.filles1A + curr.filles2A;
+    const garcons = curr.garcons1A + curr.garcons2A;
+    const mixite = (filles + garcons) > 0 ? filles / (filles + garcons) : 0;
+    const passage = tauxPassage(s, yLast);
+    const last3 = STATE.years.slice(-3).map(y => totalEff(s, y) || 0);
+    const mean = last3.reduce((a,b)=>a+b,0) / last3.length;
+    const variance = last3.reduce((a,b)=>a + (b - mean)**2, 0) / last3.length;
+    const stdev = Math.sqrt(variance);
+    const stab = mean > 0 ? Math.max(0, 1 - stdev / mean) : 0; // 1 = très stable
+    const trend = tendance3ans(s) || 0;
+    return { s, total, mixite: mixite || 0, passage: passage || 0, stab, trend };
+  });
+
+  // Normalisation 0-100 par axe (max relatif au panel)
+  const max = {
+    total: Math.max(...raw.map(r => r.total), 1),
+    passage: Math.max(...raw.map(r => r.passage), 1),
+    mixite: Math.max(...raw.map(r => r.mixite), 0.5),
+    stab: 1,
+    // Tendance : axe centré, on remappe [-0.3, +0.3] -> [0, 100]
+  };
+
+  const palette = ['#2563eb','#0f766e','#d97706','#a855f7','#dc2626','#475569'];
+  const datasets = raw.map((r, i) => {
+    const isMe = r.s.uai === STATE.myUai;
+    return {
+      label: `${r.s.patronyme} (${r.s.commune})`,
+      data: [
+        (r.total / max.total) * 100,
+        (r.passage / Math.max(max.passage, 1.2)) * 100,
+        (r.mixite / Math.max(max.mixite, 0.5)) * 100,
+        r.stab * 100,
+        Math.max(0, Math.min(100, ((r.trend + 0.3) / 0.6) * 100)),
+      ],
+      borderColor: isMe ? '#dc2626' : palette[i % palette.length],
+      backgroundColor: isMe ? 'rgba(220,38,38,0.18)' : palette[i % palette.length] + '33',
+      borderWidth: isMe ? 2.8 : 2,
+      pointRadius: 3,
+    };
+  });
+
+  destroyChart('radar');
+  STATE.charts.radar = new Chart(document.getElementById('chart-radar'), {
+    type: 'radar',
+    data: {
+      labels: ['Effectif total','Passage 1A→2A','% Filles','Stabilité','Tendance'],
+      datasets,
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { position: 'bottom', labels: { boxWidth: 12, font: { size: 11 } } } },
+      scales: {
+        r: {
+          beginAtZero: true, max: 100,
+          ticks: { display: false },
+          pointLabels: { font: { size: 12 } },
+          grid: { color: 'rgba(0,0,0,0.06)' },
+          angleLines: { color: 'rgba(0,0,0,0.06)' },
+        },
+      },
+    },
+  });
+
+  // Comparaison d'évolution
+  const evoDatasets = schools.map((s, i) => {
+    const isMe = s.uai === STATE.myUai;
+    return {
+      label: `${s.patronyme} (${s.commune})`,
+      data: STATE.years.map(y => totalEff(s, y)),
+      borderColor: isMe ? '#dc2626' : palette[i % palette.length],
+      backgroundColor: 'transparent',
+      borderWidth: isMe ? 3 : 2,
+      tension: 0.25,
+      pointRadius: 3,
+    };
+  });
+  destroyChart('compareEvo');
+  STATE.charts.compareEvo = new Chart(document.getElementById('chart-compare-evolution'), {
+    type: 'line',
+    data: { labels: STATE.years, datasets: evoDatasets },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      interaction: { intersect: false, mode: 'index' },
+      plugins: { legend: { position: 'bottom', labels: { boxWidth: 12, font: { size: 11 } } } },
+      scales: {
+        y: { beginAtZero: true, grid: { color: 'rgba(0,0,0,0.04)' } },
+        x: { grid: { display: false } },
+      },
+    },
+  });
+}
+
+/* ============================================================================
+   VUE 4 — Insertion (données InserJeunes via pipeline data.json)
+============================================================================ */
+
+// Indicateurs affichés. Pour chaque indicateur on calcule la médiane nationale
+// par millésime à partir de toutes les options de tous les établissements.
+const INSERTION_INDICS = [
+  { key: 'taux_emploi_6_mois',  label: 'Taux d\'emploi 6 mois' },
+  { key: 'taux_emploi_12_mois', label: 'Taux d\'emploi 12 mois' },
+  { key: 'taux_emploi_18_mois', label: 'Taux d\'emploi 18 mois' },
+  { key: 'taux_emploi_24_mois', label: 'Taux d\'emploi 24 mois' },
+  { key: 'taux_poursuite_etudes', label: 'Taux de poursuite d\'études' },
+];
+
+function median(values) {
+  const sorted = values.filter(v => v != null && !isNaN(v)).slice().sort((a, b) => a - b);
+  if (sorted.length === 0) return null;
+  const mid = Math.floor(sorted.length / 2);
+  return sorted.length % 2 ? sorted[mid] : (sorted[mid - 1] + sorted[mid]) / 2;
+}
+
+function buildInsertionDataset() {
+  // Retourne { years: [2019, 2020, ...], series: { SISR: {[k]: [...]}, SLAM: {...}, MED: {...} }, masked: int }
+  if (!STATE.enriched || !STATE.enriched.etablissements) return null;
+  const myUai = STATE.myUai;
+  const mine = STATE.enriched.etablissements[myUai];
+  const insertionMine = mine && mine.insertion ? mine.insertion : [];
+
+  // Découvrir l'ensemble des années (à partir de mon UAI uniquement pour l'axe)
+  const yearSet = new Set();
+  for (const e of insertionMine) {
+    if (e.annee_sortie) yearSet.add(e.annee_sortie);
+  }
+  const years = [...yearSet].sort((a, b) => a - b);
+
+  // Préparer les séries SISR / SLAM pour mon établissement
+  const series = { SISR: {}, SLAM: {}, MED: {} };
+  for (const ind of INSERTION_INDICS) {
+    series.SISR[ind.key] = years.map(() => null);
+    series.SLAM[ind.key] = years.map(() => null);
+    series.MED[ind.key] = years.map(() => null);
+  }
+  let maskedCount = 0;
+  for (const e of insertionMine) {
+    if (!e.annee_sortie || !e.option) continue;
+    const idx = years.indexOf(e.annee_sortie);
+    if (idx < 0) continue;
+    const opt = e.option;
+    if (!series[opt]) continue;
+    for (const ind of INSERTION_INDICS) {
+      const v = e[ind.key];
+      if (v == null) maskedCount++;
+      else series[opt][ind.key][idx] = v;
+    }
+  }
+  // S'il y a un doublon (parfois 2 lignes pour la même année/option), on garde
+  // la dernière non-nulle écrite, c'est suffisant pour V1.
+
+  // Médiane nationale par année et par indicateur
+  for (const ind of INSERTION_INDICS) {
+    const byYear = {};
+    for (const uai in STATE.enriched.etablissements) {
+      const entries = STATE.enriched.etablissements[uai].insertion || [];
+      for (const e of entries) {
+        if (!e.annee_sortie) continue;
+        const v = e[ind.key];
+        if (v == null) continue;
+        (byYear[e.annee_sortie] = byYear[e.annee_sortie] || []).push(v);
+      }
+    }
+    series.MED[ind.key] = years.map(y => median(byYear[y] || []));
+  }
+
+  return { years, series, maskedCount, hasData: insertionMine.length > 0 };
+}
+
+function renderInsertion() {
+  const content = document.getElementById('vue4-content');
+  // Pas de données enrichies du tout
+  if (!STATE.enriched) {
+    content.innerHTML = `
+      <div class="card">
+        <h3>Données enrichies non chargées</h3>
+        <p style="font-size:13px;color:var(--text-muted);margin:8px 0">
+          Pour afficher cette vue, le pipeline Python doit avoir produit
+          <code>pipeline/output/data.json</code>.
+        </p>
+        <p style="font-size:13px;color:var(--text-muted);margin:8px 0">
+          Soit (a) lancer un serveur HTTP local depuis le dossier du projet :
+          <code>python3 -m http.server 8000</code> puis ouvrir
+          <code>http://localhost:8000/dashboard_bts_sio.html</code>,
+          soit (b) cliquer sur le bouton <strong>« Charger data.json »</strong>
+          en haut à droite et sélectionner le fichier produit par le pipeline.
+        </p>
+      </div>`;
+    return;
+  }
+  // Le pipeline InserJeunes actuel n'extrait que la spécialité SIO (SISR/SLAM).
+  // Pour les autres spécialités, on signale l'absence de données.
+  if (!STATE.specialty || !STATE.specialty.includes('SERV.INFORMATIQ')) {
+    content.innerHTML = `
+      <div class="card">
+        <h3>Insertion : données limitées à la spécialité SIO pour l'instant</h3>
+        <p style="font-size:13px;color:var(--text-muted);margin:8px 0">
+          La source InserJeunes intégrée au pipeline n'est extraite que pour
+          « Services informatiques aux organisations » (SISR/SLAM).
+          Spécialité actuelle : <code>${escapeHtml(STATE.specialty || '— aucune —')}</code>.
+        </p>
+      </div>`;
+    return;
+  }
+  if (!STATE.myUai) {
+    content.innerHTML = `
+      <div class="card">
+        <h3>Sélectionnez « Mon BTS »</h3>
+        <p style="font-size:13px;color:var(--text-muted);margin:8px 0">
+          Choisissez un établissement dans le menu « Mon BTS » en haut à droite
+          pour afficher sa trajectoire d'insertion comparée à la médiane nationale.
+        </p>
+      </div>`;
+    return;
+  }
+  const ds = buildInsertionDataset();
+  if (!ds || !ds.hasData) {
+    content.innerHTML = `
+      <div class="card">
+        <h3>Aucune donnée d'insertion pour ${escapeHtml(STATE.myUai)}</h3>
+        <p style="font-size:13px;color:var(--text-muted);margin:8px 0">
+          L'UAI sélectionné (<code>${escapeHtml(STATE.myUai)}</code>) n'apparaît pas dans le dataset InserJeunes.
+          Possible si l'établissement est trop récent ou si l'effectif annuel
+          sortant est trop faible (masquage statistique DEPP &lt; 20).
+        </p>
+      </div>`;
+    return;
+  }
+
+  // Sous-titre enrichi avec le métadonnées
+  const generatedAt = (STATE.enriched.metadata && STATE.enriched.metadata.generated_at) || '';
+  document.getElementById('vue4-subtitle').textContent =
+    `Trajectoire d'insertion (SISR / SLAM) comparée à la médiane nationale · données générées le ${generatedAt.split('T')[0]}`;
+
+  // Construire la grille
+  const grid = document.createElement('div');
+  grid.className = 'insertion-grid';
+  content.innerHTML = '';
+  content.appendChild(grid);
+
+  for (const ind of INSERTION_INDICS) {
+    const card = document.createElement('div');
+    card.className = 'card insertion-card';
+    const cardId = 'chart-ins-' + ind.key;
+
+    // Dernière valeur connue pour les KPI en haut
+    const lastNonNull = (arr) => {
+      for (let i = arr.length - 1; i >= 0; i--) if (arr[i] != null) return arr[i];
+      return null;
+    };
+    const lastSisr = lastNonNull(ds.series.SISR[ind.key]);
+    const lastSlam = lastNonNull(ds.series.SLAM[ind.key]);
+    const lastMed  = lastNonNull(ds.series.MED[ind.key]);
+
+    card.innerHTML = `
+      <h3>${ind.label}</h3>
+      <div class="insertion-kpi-row">
+        <div class="insertion-kpi sisr">SISR <span class="val">${lastSisr != null ? lastSisr.toFixed(0) + '%' : '—'}</span></div>
+        <div class="insertion-kpi slam">SLAM <span class="val">${lastSlam != null ? lastSlam.toFixed(0) + '%' : '—'}</span></div>
+        <div class="insertion-kpi median">Médiane nationale <span class="val">${lastMed != null ? lastMed.toFixed(0) + '%' : '—'}</span></div>
+      </div>
+      <div class="chart-canvas-wrap"><canvas id="${cardId}"></canvas></div>
+    `;
+    grid.appendChild(card);
+
+    // Détruire l'ancien chart si re-render
+    if (STATE.charts[cardId]) { STATE.charts[cardId].destroy(); }
+    STATE.charts[cardId] = new Chart(document.getElementById(cardId), {
+      type: 'line',
+      data: {
+        labels: ds.years,
+        datasets: [
+          {
+            label: 'SISR',
+            data: ds.series.SISR[ind.key],
+            borderColor: '#2563eb',
+            backgroundColor: 'rgba(37,99,235,0.08)',
+            tension: 0.25, borderWidth: 2.5, pointRadius: 4,
+            spanGaps: false,
+          },
+          {
+            label: 'SLAM',
+            data: ds.series.SLAM[ind.key],
+            borderColor: '#0f766e',
+            backgroundColor: 'rgba(15,118,110,0.08)',
+            tension: 0.25, borderWidth: 2.5, pointRadius: 4,
+            spanGaps: false,
+          },
+          {
+            label: 'Médiane nationale',
+            data: ds.series.MED[ind.key],
+            borderColor: '#94a3b8',
+            backgroundColor: 'transparent',
+            tension: 0.25, borderWidth: 1.5, pointRadius: 2,
+            borderDash: [4, 4], spanGaps: false,
+          },
+        ],
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        interaction: { intersect: false, mode: 'index' },
+        plugins: {
+          legend: { position: 'bottom', labels: { boxWidth: 12, font: { size: 11 } } },
+          tooltip: {
+            callbacks: {
+              label: (ctx) => `${ctx.dataset.label} : ${ctx.parsed.y != null ? ctx.parsed.y.toFixed(0) + '%' : 'masqué (< 20 sortants)'}`,
+            },
+          },
+        },
+        scales: {
+          y: { beginAtZero: true, max: 100, ticks: { callback: (v) => v + '%' }, grid: { color: 'rgba(0,0,0,0.04)' } },
+          x: { grid: { display: false } },
+        },
+      },
+    });
+  }
+
+  // Mention sur les valeurs masquées
+  const maskNote = document.createElement('div');
+  maskNote.className = 'insertion-mask-info';
+  maskNote.innerHTML = `Les valeurs manquantes correspondent à des cohortes de moins de 20 sortants (masquage statistique DEPP). ${ds.maskedCount} valeur(s) masquée(s) pour votre établissement.`;
+  content.appendChild(maskNote);
+}
+
+/* ============================================================================
+   ROUTAGE TABS
+============================================================================ */
+function switchTab(name) {
+  document.querySelectorAll('nav.tabs button').forEach(b =>
+    b.classList.toggle('active', b.dataset.view === name)
+  );
+  document.querySelectorAll('main > .view').forEach(v =>
+    v.style.display = v.id === name ? 'block' : 'none'
+  );
+  // Init lazy : la carte Leaflet et la table ne peuvent être préparées que
+  // quand la vue est effectivement visible (sinon le conteneur a une taille 0).
+  if (name === 'vue2') ensureVue2Ready();
+  if (name === 'vue3') renderComparison();
+  if (name === 'vue4') renderInsertion();
+}
+
+// Idempotent : peut être rappelé sans effet de bord.
+function ensureVue2Ready() {
+  log('ensureVue2Ready: dataReady =', STATE.dataReady, '· spec =', STATE.specialty, '· geocodeDone =', STATE.geocodeDone, '· mapInited =', !!STATE.map);
+  if (!STATE.dataReady) {
+    setMapOverlay({
+      stage: 'En attente des données',
+      detail: 'Le JSON pré-calculé n\'a pas pu être chargé. Glissez-déposez le CSV brut ou utilisez « CSV brut » en haut à droite.',
+      spinner: false,
+    });
+    return;
+  }
+  if (!STATE.specialty) {
+    setMapOverlay({
+      stage: 'En attente de la sélection d\'une spécialité',
+      detail: 'Choisissez une spécialité dans le menu en haut pour afficher la carte.',
+      spinner: false,
+    });
+    return;
+  }
+  // Pendant le géocodage, afficher l'avancée et ne pas encore initialiser la carte.
+  if (!STATE.geocodeDone) {
+    setMapOverlay({
+      stage: STATE.geocodeStage || 'Géocodage en cours…',
+      detail: 'La carte s\'affichera dès que les coordonnées des établissements seront disponibles. La première fois peut prendre 1 à 3 minutes ; les ouvertures suivantes sont quasi instantanées grâce au cache local.',
+    });
+    return;
+  }
+  // Étape 1 : init de la carte si pas encore fait.
+  if (!STATE.map) {
+    setMapOverlay({ stage: 'Initialisation de la carte…', detail: '' });
+    initMap();
+    if (!STATE.map) return; // initMap a affiché l'erreur
+  }
+  // Étape 2 : setup des filtres (une seule fois par chargement CSV).
+  if (!STATE.vue2FiltersSetup) {
+    log('ensureVue2Ready: setup filtres');
+    setupVue2Filters();
+    STATE.sortColumn = 'score';
+    STATE.sortDir = 'desc';
+    document.querySelectorAll('#schools-table th').forEach(t => t.classList.remove('sort-asc','sort-desc'));
+    document.querySelector('#schools-table th[data-sort=score]').classList.add('sort-desc');
+    STATE.vue2FiltersSetup = true;
+  }
+  applyVue2Filters();
+  // Critique : forcer Leaflet à recalculer ses dimensions maintenant que
+  // la vue est visible (sans ce délai, on voit une carte grise/vide).
+  setTimeout(() => {
+    if (STATE.map) {
+      STATE.map.invalidateSize();
+      log('ensureVue2Ready: invalidateSize OK · dimensions =',
+          document.getElementById('map').offsetWidth, 'x',
+          document.getElementById('map').offsetHeight);
+    }
+  }, 100);
+}
+
+/* ============================================================================
+   FLUX PRINCIPAL
+============================================================================ */
+
+// Peuple le <select> des spécialités à partir de STATE.specialties.
+// Choisit une spécialité par défaut : SIO si présente, sinon la première.
+function populateSpecialtySelect() {
+  const el = document.getElementById('select-specialty');
+  const current = STATE.specialty;
+  el.innerHTML = '<option value="">— Choisir une spécialité —</option>' +
+    STATE.specialties.map(s => {
+      const attr = (s === current) ? ' selected' : '';
+      return `<option value="${escapeHtml(s)}"${attr}>${escapeHtml(s)}</option>`;
+    }).join('');
+}
+
+// Peuple le <select> "Mon BTS" avec les écoles de la spécialité courante,
+// triées alphabétiquement par patronyme.
+function populateMyUaiSelect() {
+  const sel = document.getElementById('select-myuai');
+  if (!STATE.specialty || STATE.schools.size === 0) {
+    sel.innerHTML = '<option value="">— Aucun —</option>';
+    sel.disabled = true;
+    return;
+  }
+  const schools = [...STATE.schools.values()]
+    .sort((a, b) => (a.patronyme || '').localeCompare(b.patronyme || '', 'fr'));
+  sel.innerHTML = '<option value="">— Aucun —</option>' +
+    schools.map(s => {
+      const isSel = (s.uai === STATE.myUai) ? ' selected' : '';
+      const label = `${s.patronyme} — ${s.commune} (${s.uai})`;
+      return `<option value="${s.uai}"${isSel}>${escapeHtml(label)}</option>`;
+    }).join('');
+  sel.disabled = false;
+}
+
+// Bascule sur une spécialité : agrège, met à jour selects et vues, lance
+// le géocodage si nécessaire.
+async function setSpecialty(specName) {
+  log('setSpecialty:', specName);
+  STATE.specialty = specName || null;
+  STATE.vue2FiltersSetup = false;
+  STATE.filteredSchools = [];
+  STATE.comparisonSet.clear();
+  // Reset map (les marqueurs sont liés au filtre courant et à la spécialité)
+  if (STATE.map) { STATE.map.remove(); STATE.map = null; STATE.markersLayer = null; STATE._firstTileLoaded = false; }
+
+  if (!STATE.specialty) {
+    STATE.schools.clear();
+    STATE.years = [];
+    STATE.latestYear = null;
+    populateMyUaiSelect();
+    renderVue1();
+    return;
+  }
+
+  aggregateForSpecialty(STATE.specialty);
+  log('setSpecialty: ', STATE.schools.size, 'établissements ·', STATE.years.length, 'années');
+
+  // Le "Mon BTS" précédent peut ne plus exister dans la nouvelle spécialité
+  if (STATE.myUai && !STATE.schools.has(STATE.myUai)) STATE.myUai = null;
+  populateMyUaiSelect();
+
+  // Si Mon BTS sélectionné, l'ajouter par défaut à la comparaison
+  if (STATE.myUai) STATE.comparisonSet.add(STATE.myUai);
+
+  // Documenter le sous-titre de Vue 2
+  document.getElementById('vue2-subtitle').textContent =
+    `Spécialité « ${STATE.specialty} » · ${STATE.schools.size} établissement(s) public(s).`;
+
+  renderVue1();
+  const active = document.querySelector('nav.tabs button.active').dataset.view;
+  if (active === 'vue3') renderComparison();
+  if (active === 'vue4') renderInsertion();
+
+  // Géocodage en arrière-plan (les coordonnées déjà connues sont déjà appliquées
+  // par aggregateForSpecialty via le cache localStorage).
+  const missing = [...STATE.schools.values()].some(s => s.lat == null);
+  if (missing) {
+    STATE.geocodeDone = false;
+    try { await geocodeAll(); }
+    catch (e) { logErr('geocodeAll: échec', e); STATE.geocodeDone = true; }
+  } else {
+    STATE.geocodeDone = true;
+  }
+
+  const currentActive = document.querySelector('nav.tabs button.active').dataset.view;
+  if (currentActive === 'vue2') ensureVue2Ready();
+}
+
+// Change l'établissement "Mon BTS" et re-rend les vues impactées.
+function setMyUai(uai) {
+  log('setMyUai:', uai);
+  STATE.myUai = uai || null;
+  // Maintenir la comparaison : ajouter le nouveau Mon BTS
+  if (STATE.myUai && !STATE.comparisonSet.has(STATE.myUai)) {
+    STATE.comparisonSet.add(STATE.myUai);
+  }
+  renderVue1();
+  const active = document.querySelector('nav.tabs button.active').dataset.view;
+  if (active === 'vue2') applyVue2Filters();
+  if (active === 'vue3') renderComparison();
+  if (active === 'vue4') renderInsertion();
+}
+
+async function ingestFile(file) {
+  log('ingestFile:', file.name, '·', (file.size/1024/1024).toFixed(1), 'Mo');
+  STATE.dataReady = false;
+  STATE.specialty = null;
+  STATE.myUai = null;
+  STATE.geocodeDone = false;
+  STATE.geocodeStage = '';
+  STATE.vue2FiltersSetup = false;
+  STATE.schools.clear();
+  if (STATE.map) { STATE.map.remove(); STATE.map = null; STATE.markersLayer = null; }
+  setMapOverlay({ stage: 'Lecture du CSV…', detail: 'Analyse en cours.' });
+  document.getElementById('dropzone').style.display = 'none';
+
+  try {
+    await parseCSV(file);
+  } catch (e) {
+    showStatus('Erreur de lecture du CSV');
+    addDiagnostic('Erreur : ' + e.message);
+    document.getElementById('dropzone').style.display = '';
+    document.querySelectorAll('main > .view').forEach(v => v.style.display = 'none');
+    return;
+  }
+
+  STATE.dataReady = true;
+  const active = document.querySelector('nav.tabs button.active').dataset.view;
+  document.querySelectorAll('main > .view').forEach(v =>
+    v.style.display = v.id === active ? 'block' : 'none'
+  );
+  populateSpecialtySelect();
+  populateMyUaiSelect();
+  renderVue1();
+}
+
+/* ============================================================================
+   EVENTS
+============================================================================ */
+document.addEventListener('DOMContentLoaded', async () => {
+  log('DOM prêt · Leaflet:', typeof L !== 'undefined' ? 'OK' : 'ABSENT',
+      '· Chart.js:', typeof Chart !== 'undefined' ? 'OK' : 'ABSENT',
+      '· PapaParse:', typeof Papa !== 'undefined' ? 'OK' : 'ABSENT');
+  window.addEventListener('error', (e) => logErr('Erreur globale:', e.message, 'à', e.filename + ':' + e.lineno));
+  window.addEventListener('unhandledrejection', (e) => logErr('Promise rejetée:', e.reason));
+
+  document.getElementById('file-input').addEventListener('change', (e) => {
+    if (e.target.files && e.target.files[0]) ingestFile(e.target.files[0]);
+  });
+  document.querySelectorAll('nav.tabs button').forEach(b =>
+    b.addEventListener('click', () => switchTab(b.dataset.view))
+  );
+  document.getElementById('enrich-input').addEventListener('change', (e) => {
+    if (e.target.files && e.target.files[0]) ingestEnrichedFile(e.target.files[0]);
+  });
+
+  document.getElementById('select-specialty').addEventListener('change', (e) => {
+    setSpecialty(e.target.value);
+  });
+  document.getElementById('select-myuai').addEventListener('change', (e) => {
+    setMyUai(e.target.value);
+  });
+
+  // Tenter le fetch automatique du data.json InserJeunes (silencieux si échec)
+  autoFetchEnriched();
+
+  document.getElementById('clear-cache-btn').addEventListener('click', () => {
+    if (confirm('Vider le cache de géocodage local ? Le prochain chargement re-géocodera tous les établissements.')) {
+      clearGeocache();
+      addDiagnostic('Cache de géocodage vidé.');
+    }
+  });
+  document.getElementById('picker-search').addEventListener('input', (e) =>
+    renderPickerResults(e.target.value)
+  );
+
+  // Drag & drop pour CSV brut (fallback uniquement)
+  const dz = document.getElementById('dropzone');
+  ['dragenter','dragover'].forEach(ev => {
+    document.body.addEventListener(ev, (e) => { e.preventDefault(); dz.classList.add('dragover'); });
+  });
+  ['dragleave','drop'].forEach(ev => {
+    document.body.addEventListener(ev, (e) => { e.preventDefault(); dz.classList.remove('dragover'); });
+  });
+  document.body.addEventListener('drop', (e) => {
+    const f = e.dataTransfer.files && e.dataTransfer.files[0];
+    if (f) ingestFile(f);
+  });
+
+  // Charger le cache de géocodage AVANT le chargement des données : on en
+  // a besoin tout de suite pour appliquer les coords au premier render.
+  loadGeocache();
+
+  // Cacher les vues tant qu'aucune source de données n'est prête
+  document.querySelectorAll('main > .view').forEach(v => v.style.display = 'none');
+
+  // Tentative de préchargement du JSON pré-calculé. En cas d'échec, on
+  // affiche la dropzone (CSV brut) en fallback.
+  try {
+    await loadJsonData();
+    STATE.dataReady = true;
+    populateSpecialtySelect();
+    // Rendre les vues visibles selon l'onglet actif
+    const active = document.querySelector('nav.tabs button.active').dataset.view;
+    document.querySelectorAll('main > .view').forEach(v =>
+      v.style.display = v.id === active ? 'block' : 'none'
+    );
+    renderVue1();
+  } catch (e) {
+    warn('loadJsonData échoué:', e.message, '— fallback CSV brut.');
+    showStatus('JSON pré-calculé indisponible — chargez le CSV brut');
+    document.getElementById('dropzone').style.display = '';
+  }
+});
+</script>
+
+</body>
+</html>
