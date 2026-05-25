@@ -1,0 +1,257 @@
+\documentclass[12pt,a4paper]{article}
+
+\usepackage[french]{babel}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage{microtype}
+\usepackage{geometry}
+\usepackage{setspace}
+\usepackage{titlesec}
+\usepackage{fancyhdr}
+\usepackage{csquotes}
+\usepackage{booktabs}
+\usepackage{parskip}
+\usepackage[style=authoryear,backend=biber,sorting=nyt]{biblatex}
+\usepackage[hidelinks]{hyperref}
+
+\geometry{a4paper, top=2.5cm, bottom=2.5cm, left=3cm, right=3cm}
+\onehalfspacing
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.8em}
+
+\titleformat{\section}{\large\bfseries}{}{0em}{}[\titlerule]
+\titleformat{\subsection}{\normalsize\bfseries\itshape}{}{0em}{}
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{\small\itshape L'expert-comptable comme tiers garant du code opposable}
+\lhead{\small E. Schaffter}
+\cfoot{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\addbibresource{expert-comptable-tiers-garant.bib}
+
+\title{%
+  \vspace{-1cm}
+  {\large Papier de réflexion}\\[0.5em]
+  \textbf{L'expert-comptable comme tiers garant du code opposable}\\[0.4em]
+  {\large Diagnostic d'une mutation et esquisse d'un nouveau modèle}%
+}
+
+\author{%
+  Eriam Schaffter\\
+  {\small Enseignant agrégé ISI --- BTS SIO, Éducation nationale}\\
+  {\small Chargé de cours --- M2 MIAGE, Université Claude Bernard Lyon~1}\\
+  {\small \href{mailto:eriam@mediavirtuel.com}{eriam@mediavirtuel.com}}
+}
+
+\date{Mai 2026}
+
+\begin{document}
+
+\maketitle
+\thispagestyle{empty}
+
+\begin{abstract}
+Le métier d'expert-comptable est à la veille d'une transformation qui dépasse la simple intégration d'outils numériques dans la pratique existante. Avec les modèles de langage à grande échelle (LLM) et l'IA générative, le développement logiciel cesse d'être une fonction technique distincte pour devenir une production cristallisée à partir de réseaux de neurones. Dans cette mutation, ce qui prend de la valeur n'est pas la capacité à produire du code mais la capacité à en garantir l'opposabilité juridique. L'expert-comptable, par sa signature, sa déontologie, son régime assurantiel et sa relation de confiance avec le tissu des PME, occupe une position stratégique pour devenir ce tiers garant. Ce papier, rédigé depuis la double position d'un enseignant en informatique de gestion et d'un ancien responsable de comptabilité analytique hospitalière, développe ce diagnostic et esquisse l'architecture du nouveau modèle.
+\end{abstract}
+
+\tableofcontents
+\newpage
+
+% ==============================================================================
+\section{Introduction : une mutation qui dépasse le numérique}
+% ==============================================================================
+
+La question de la transformation numérique des professions réglementées revient périodiquement dans les revues professionnelles, le plus souvent sous une forme rassurante : les outils changent, mais le cœur du métier demeure. Cette lecture est probablement insuffisante pour la décennie qui s'ouvre.
+
+Ce qui se produit depuis 2022 avec la généralisation des modèles de langage à grande échelle n'est pas une accélération quantitative de la numérisation, mais un changement qualitatif dans la nature même du logiciel. Andrej Karpathy, alors directeur de l'IA chez Tesla, avait anticipé ce basculement dès 2017 sous le terme de \enquote{Software~2.0}~: les réseaux de neurones ne sont plus un outil supplémentaire dans la boîte du développeur, ils constituent une nouvelle façon d'écrire des programmes, dans laquelle les poids du modèle \emph{sont} le programme \parencite{karpathy2017}.
+
+Ce papier part de ce constat pour en dériver une thèse qui concerne directement la profession d'expert-comptable : dans un monde où le code devient accessible à tout agent économique, ce qui prend de la valeur n'est pas la capacité à produire du code mais la capacité à en garantir l'opposabilité juridique. Et l'expert-comptable, par l'architecture institutionnelle héritée de l'ordonnance de 1945, est l'acteur le mieux placé pour occuper cette fonction.
+
+Ce papier est rédigé depuis une double position : celle d'un enseignant en BTS SIO et en master MIAGE, qui observe les formations aux métiers de l'informatique de gestion, et celle d'un ancien responsable de comptabilité analytique dans un grand établissement hospitalier suisse, qui a vécu de l'intérieur les tensions entre la production comptable et la production informatique. Ce n'est pas un positionnement de consultant commercial ni de militant : c'est celui d'un observateur qui essaie de lire une transformation en cours.
+
+% ==============================================================================
+\section{La mutation du logiciel : du fluide au cristallin}
+% ==============================================================================
+
+\subsection{Software 1.0 et Software 2.0}
+
+Dans le paradigme classique --- que Karpathy nomme \enquote{Software~1.0} --- un programme est une séquence d'instructions symboliques écrites par un développeur humain. Chaque comportement du système est explicitement codé, chaque branche de traitement est traçable, chaque résultat est déterministe à entrée identique.
+
+Le \enquote{Software~2.0} renverse cette logique : au lieu de spécifier explicitement les règles, on fournit des exemples, et le réseau de neurones extrait les régularités. Le programme n'est plus lu, il est \emph{appris}. Ses poids sont opaques, ses décisions probabilistes, sa généralisation partiellement imprévisible.
+
+Cette distinction appelle une métaphore physique. L'état \emph{fluide} correspond au logiciel génératif : malléable, explorateur, capable d'improvisation, mais non déterministe et non engageable. L'état \emph{cristallin} correspond au code symbolique déployé : rigide, déterministe, traçable, et surtout \emph{opposable} --- c'est-à-dire invocable en justice, auditable par une autorité de contrôle, engageant la responsabilité de celui qui le signe.
+
+La mutation que nous observons n'est pas le remplacement du cristallin par le fluide, mais la modification radicale de la frontière entre les deux. La partie fluide s'étend considérablement (exploration, génération, conseil de premier niveau, production documentaire), tandis que la partie cristalline se rétrécit mais prend une valeur proportionnellement plus grande, précisément parce qu'elle reste le seul domaine où l'engagement juridique est possible.
+
+\subsection{Code is Law : la dimension normative du logiciel}
+
+Lawrence Lessig avait posé en 1999 une thèse qui prend une nouvelle acuité : le code informatique est une forme de régulation au même titre que la loi, les normes sociales ou le marché \parencite{lessig1999}. Le code contraint les comportements non pas par la menace de sanction mais par construction : ce que le système ne permet pas n'est pas interdit, il est impossible.
+
+Si le code a une force normative, alors sa production engage une responsabilité. Le développeur qui écrit un système de traitement de données personnelles n'est pas seulement un technicien : il est, dans les faits, un producteur de normes applicables aux individus dont les données sont traitées. L'idée que cette activité puisse rester sans tiers garant devient difficilement soutenable dans un cadre réglementaire mature.
+
+\subsection{La longue histoire de l'extériorisation technique}
+
+André Leroi-Gourhan nous rappelle que l'extériorisation des fonctions cognitives dans des artefacts techniques est constitutive de l'humanité elle-même \parencite{leroigourhan1964}. Chaque grande mutation technologique --- l'écriture, l'imprimerie, l'électronique --- a réorganisé la distribution du travail cognitif sans supprimer la responsabilité des acteurs, mais en la redistribuant différemment.
+
+La mutation LLM s'inscrit dans cette série. Elle externalise une partie du travail de formalisation symbolique (écrire du code) vers des systèmes entraînés sur corpus. Elle ne supprime pas la nécessité d'un acteur responsable : elle déplace la question de \enquote{qui sait coder ?} vers \enquote{qui peut garantir que ce code est conforme, sécurisé et juridiquement engageable ?}.
+
+% ==============================================================================
+\section{L'écosystème réglementaire : une demande structurelle non satisfaite}
+% ==============================================================================
+
+\subsection{La vague réglementaire 2018--2027}
+
+La période 2018--2027 constitue une séquence réglementaire sans précédent pour les systèmes d'information des entreprises françaises.
+
+Le Règlement général sur la protection des données (RGPD, règlement UE 2016/679) est entré en vigueur en mai 2018. Il impose à toute entité traitant des données personnelles de résidents européens : documentation des traitements (registre), analyse d'impact pour les traitements à risque (\emph{DPIA}), désignation d'un délégué à la protection des données pour les entités concernées, mise en \oe{}uvre des principes de \emph{privacy by design} et \emph{privacy by default}.
+
+Le règlement sur l'intelligence artificielle (AI Act, règlement UE 2024/1689) introduit un régime fondé sur le risque : les systèmes d'IA à haut risque sont soumis à des obligations d'évaluation de conformité, de documentation technique, de supervision humaine et d'enregistrement. Les premières échéances opérationnelles ont commencé à s'appliquer en 2025 et 2026.
+
+La directive NIS~2 (directive UE 2022/2555), transposée en droit français en 2024, étend très significativement le périmètre des entités soumises à des obligations de cybersécurité. Là où NIS~1 ne concernait qu'une poignée d'opérateurs de services essentiels, NIS~2 couvre désormais des milliers d'entreprises supplémentaires dans des secteurs étendus.
+
+Enfin, la facturation électronique obligatoire, dont le déploiement progressif est engagé à partir de 2026--2027, impose une refonte des systèmes de gestion des PME françaises.
+
+\subsection{Le déficit structurel d'effectivité}
+
+Ces réglementations créent des obligations massives. Mais les autorités publiques de contrôle n'ont pas les moyens d'en assurer l'effectivité auprès de millions d'entités assujetties.
+
+La CNIL traite environ 16~000 plaintes par an avec un effectif d'environ 280 agents \parencite{cnil2024}. Le ratio est arithmétiquement insuffisant pour contrôler effectivement l'ensemble des entités soumises au RGPD sur le territoire national. Il en va de même pour l'ANSSI en matière de cybersécurité, ou pour l'EU AI Office naissant.
+
+Ce déficit n'est pas temporaire : il est structurel. Les États membres n'auront pas les moyens budgétaires de construire des corps de contrôle capables de vérifier la conformité de toutes les PME françaises. Ce déficit appelle mécaniquement un tiers privé accrédité, qui joue le rôle que jouent déjà les commissaires aux comptes pour les comptes financiers : garantir la conformité non pas au bénéfice de l'État seul, mais au bénéfice de l'ensemble des parties prenantes.
+
+% ==============================================================================
+\section{L'expert-comptable en position privilégiée}
+% ==============================================================================
+
+\subsection{Une légitimité institutionnelle héritée de 1945}
+
+L'ordonnance n°~45-2138 du 19~septembre~1945 portant institution de l'ordre des experts-comptables s'inscrit dans la refondation institutionnelle de l'après-Libération. Aux côtés de la Sécurité sociale, de l'ENA, de l'ordre des médecins et de l'ordre des architectes, elle crée une profession structurée autour de la responsabilité économique, de la déontologie et de l'intérêt général.
+
+Cette légitimité historique n'est pas anecdotique. Elle confère à l'OEC une assise morale et politique que les plateformes numériques, aussi efficaces soient-elles techniquement, ne peuvent pas construire en quelques années de croissance.
+
+\subsection{Les caractéristiques qui font de la profession le candidat naturel}
+
+L'ordre professionnel (21~000 inscrits en France) dispose d'un mécanisme de sanction disciplinaire effectif par chambre de discipline, d'une assurance responsabilité civile professionnelle bien rodée et assurable, et d'un monopole légal sur la certification des comptes.
+
+La relation durable avec le tissu des PME françaises est peut-être le facteur décisif. L'expert-comptable est souvent le premier --- parfois le seul --- interlocuteur de conseil du dirigeant de PME. Cette relation de confiance, construite sur des années d'accompagnement comptable et fiscal, est un actif que les acteurs purement technologiques peinent à reproduire.
+
+Enfin, la culture de l'audit et du contrôle interne est directement transférable aux systèmes d'information. Un cabinet qui sait vérifier qu'un processus comptable respecte les normes peut apprendre à vérifier qu'un traitement informatique respecte le RGPD ou les exigences de NIS~2. La logique intellectuelle est identique : cartographier les risques, documenter les contrôles, émettre une opinion motivée.
+
+\subsection{L'extension naturelle d'une mission existante}
+
+L'expert-comptable garantit déjà l'opposabilité juridique d'une production : les comptes annuels. Cette mission consiste précisément à certifier qu'une représentation de la réalité économique est régulière, sincère, et constitue une image fidèle --- c'est-à-dire qu'elle peut être opposée à des tiers (administration fiscale, banquiers, associés).
+
+Étendre cette mission à la certification de la conformité des systèmes d'information n'est pas un changement de nature mais un changement de périmètre. Le code opposable est à la conformité numérique ce que les comptes certifiés sont à la conformité financière. La fonction de tiers garant est la même ; seul l'objet change.
+
+% ==============================================================================
+\section{La menace pour le métier comptable traditionnel}
+% ==============================================================================
+
+\subsection{La pression des plateformes}
+
+Les acteurs en ligne de type Indy, Dougs ou Pennylane ont déjà capturé une part significative du segment des travailleurs indépendants et des très petites entreprises. Leur modèle repose sur l'automatisation de la saisie, la réconciliation bancaire automatique, et un accompagnement humain minimal. Pour une micro-entreprise dont les transactions sont simples et récurrentes, la valeur ajoutée d'un cabinet traditionnel est effectivement difficile à justifier à 150~€~HT par mois.
+
+Cette capture du segment inférieur n'est que le premier acte. Les LLMs permettent désormais de générer des analyses comptables, des comparatifs sectoriels, des projections de trésorerie, et des réponses aux questions fiscales courantes avec un niveau de qualité suffisant pour la majorité des dirigeants de PME. Le conseil de premier niveau, qui représente une part significative de la valeur perçue par les clients des cabinets de taille moyenne, est directement menacé.
+
+\subsection{L'ampleur de la transformation à venir}
+
+Sans transformation active de la profession, la contraction des missions traditionnelles pourrait atteindre 30 à 50\% sur dix à quinze ans. Cette estimation, cohérente avec les projections publiées par les organisations professionnelles elles-mêmes, s'appuie sur l'hypothèse d'une adoption progressive mais continue des outils d'automatisation comptable.
+
+Les cabinets de taille intermédiaire sont particulièrement exposés : trop grands pour survivre sur la seule relation personnelle d'un associé avec ses clients, trop petits pour investir les sommes que les grands réseaux consacrent à leurs équipes d'IT advisory.
+
+La logique est donc la suivante : la menace existentielle sur les missions historiques et l'opportunité massive sur les missions nouvelles se manifestent \emph{simultanément}, pendant la même fenêtre 2026--2030. Les acteurs qui répondent à ces deux dynamiques en même temps construiront un avantage concurrentiel durable ; ceux qui n'y répondent qu'à la menace risquent de se réorganiser autour d'une activité en déclin.
+
+% ==============================================================================
+\section{L'architecture du nouveau modèle : l'équipe chirurgicale}
+% ==============================================================================
+
+\subsection{Le modèle de Brooks revisité}
+
+Dans \emph{The Mythical Man-Month}, Fred Brooks observe que les meilleurs projets logiciels de l'histoire ont été conduits par des équipes de dix à vingt personnes, pas par des armées de développeurs \parencite{brooks1975}. Il propose le modèle de l'\emph{équipe chirurgicale} : un chirurgien principal, responsable de toutes les décisions critiques et seul à toucher le code de production, entouré de spécialistes dont la fonction est d'augmenter sa capacité d'action sans diluer sa responsabilité.
+
+Ce modèle, pensé pour les projets logiciels des années 1970, décrit précisément l'organisation qu'un cabinet d'expertise comptable peut construire pour devenir maître d'œuvre des SI de ses clients PME.
+
+\subsection{La composition de l'équipe}
+
+L'\textbf{expert-comptable} joue le rôle du chirurgien : il est le responsable final, le signataire, celui dont la réputation et l'assurance sont engagées. Il ne code pas --- ou peu --- mais il comprend les systèmes, il pose les questions qui comptent, et il signe la conformité.
+
+L'\textbf{architecte logiciel} est le copilote : il conçoit les architectures, choisit les technologies, traduit les exigences réglementaires en contraintes techniques. Il est le second du chirurgien.
+
+Le \textbf{toolsmith} est le spécialiste des outils LLM et des pipelines de génération automatisée : il augmente la productivité de l'équipe entière, réduisant à quelques heures ce qui prenait des semaines.
+
+L'\textbf{administrateur système} gère l'infrastructure (cloud, conteneurs, sécurité périmétrique, sauvegardes). Il est le garant de la continuité opérationnelle.
+
+Le \textbf{language lawyer} --- avocat IT ou DPO expérimenté --- traduit les obligations réglementaires en langage actionnable pour l'équipe technique. Il intervient ponctuellement mais de façon déterminante sur les questions d'interprétation.
+
+L'\textbf{auditeur-testeur} vérifie indépendamment que ce qui a été produit est conforme à ce qui a été spécifié.
+
+Cette équipe de six à huit personnes, dotée d'outils LLM modernes, peut couvrir 70 à 80\% du budget informatique d'une PME de trente salariés, là où il fallait auparavant des effectifs éclatés entre plusieurs prestataires spécialisés.
+
+\subsection{La valeur de la signature}
+
+Dans ce modèle, la valeur ne réside pas dans la capacité à produire du code --- les LLMs en produisent en abondance --- mais dans la capacité à \emph{signer} ce code. Signer, c'est engager sa responsabilité professionnelle, activer son régime assurantiel, donner à la production une opposabilité juridique.
+
+C'est précisément cette signature que l'expert-comptable peut apporter et que les ESN, les freelances et les plateformes en ligne ne peuvent pas, structurellement, apporter avec la même crédibilité institutionnelle.
+
+% ==============================================================================
+\section{Le calcul économique}
+% ==============================================================================
+
+\subsection{Le budget IT des PME françaises}
+
+Selon les études du CIGREF, le budget informatique représente en moyenne 3 à 5\% du chiffre d'affaires pour les entreprises françaises, avec des variations significatives selon le secteur \parencite{cigref2023}. Pour une PME de trente salariés avec un chiffre d'affaires de 5~M€, ce budget s'établit entre 150~K€ et 250~K€ par an.
+
+La part de ce budget adressable par une équipe chirurgicale moderne est estimée à 60 à 80\%, soit 90~K€ à 200~K€ par client et par an. Les postes non adressables sont principalement les licences logicielles standardisées (Microsoft, ERP sectoriel) et les équipements matériels.
+
+\subsection{Le calcul au niveau du cabinet}
+
+Pour un cabinet de vingt à trente collaborateurs avec un portefeuille de deux cents clients PME, une pénétration de 25 à 40\% du portefeuille à cinq ans représente cinquante à quatre-vingts clients actifs sur les SI.
+
+À 100~K€ de mission annuelle moyenne par client (estimation conservatrice), le CA additionnel est de 5 à 8~M€ par an. Le coût de l'équipe chirurgicale (huit personnes à 80~K€ de coût chargé en moyenne) représente 640~K€ par an, soit une marge opérationnelle très supérieure aux missions comptables traditionnelles.
+
+Le retour sur investissement à dix ans, calculé sur une hypothèse de montée en charge progressive sur les trois premières années, est estimé entre 10 et 25. Ce ratio est nettement supérieur aux alternatives classiques d'investissement dans la profession : acquisition de cabinet concurrent, ouverture d'un bureau supplémentaire, ou diversification dans de nouvelles lignes de services comptables.
+
+% ==============================================================================
+\section{Implications pour la formation}
+% ==============================================================================
+
+\subsection{Le décrochage entre formation technique et réalité juridique}
+
+Les formations BTS SIO et master MIAGE forment aujourd'hui des techniciens compétents sur le plan des outils, mais dont la dimension juridique reste faible et compartimentée. La conformité numérique y est enseignée comme un module de droit isolé --- souvent perçu par les étudiants comme une contrainte administrative plutôt que comme une dimension constitutive de leur futur métier.
+
+Ce découplage est problématique. Un développeur qui ne comprend pas ce que signifie produire du \emph{code opposable} n'est pas formé pour le métier qui s'ouvre à lui. Il est formé pour le métier qui existait.
+
+\subsection{Vers une pédagogie du code opposable}
+
+Trois orientations semblent prioritaires.
+
+La \textbf{co-animation droit-technique} : les cours de développement et les cours de conformité doivent être animés conjointement ou, à tout le moins, co-construits. Un étudiant qui apprend à concevoir une API de traitement de données personnelles doit simultanément apprendre à documenter ce traitement selon les exigences du RGPD, pas en deux modules séparés.
+
+L'\textbf{intégration de l'opposabilité comme critère de livraison} : dans les projets de fin d'études, la question \enquote{est-ce que ça marche ?} devrait être complétée par \enquote{est-ce que ça peut être audité et signé ?}. La documentation technique, la traçabilité des décisions, la gestion des versions sont des compétences techniques à part entière, pas des compétences administratives.
+
+Le \textbf{croisement avec les formations comptables et juridiques} : des modules communs entre BTS SIO et BTS CG, entre master MIAGE et master droit du numérique, permettraient de former des profils hybrides capables de travailler à l'interface des deux univers.
+
+La question d'une éventuelle évolution ordinale --- la création à terme d'un ordre des ingénieurs logiciels, sur le modèle des ordres des ingénieurs dans d'autres pays européens --- reste ouverte. Elle est culturellement difficile en France, où la tradition ordinaliste est forte mais limitée à des professions bien établies. Elle mériterait néanmoins d'être posée sérieusement par les organisations professionnelles du secteur.
+
+% ==============================================================================
+\section{Conclusion : la fenêtre 2026--2030}
+% ==============================================================================
+
+L'histoire des professions réglementées face aux mutations technologiques offre des enseignements clairs. Les notaires ont traversé la dématérialisation des transactions immobilières : ceux qui ont investi dans les plateformes d'actes électroniques ont maintenu leur position ; ceux qui ont attendu ont subi une compression de leurs marges. Les architectes ont intégré la modélisation BIM : la transition a été douloureuse, mais la profession a survécu et renforcé son rôle de maître d'œuvre. Les radiologues ont adopté l'imagerie numérique : loin de les marginaliser, elle a démultiplié leur capacité d'analyse et renforcé leur position dans la chaîne de soin.
+
+Dans chacun de ces cas, la profession ordinale a prospéré lorsqu'elle a \emph{capturé activement} la transformation technologique plutôt que de la subir. Elle a décliné lorsqu'elle s'est contentée de défendre ses prérogatives existantes.
+
+La transformation décrite dans ce papier ne nécessite ni rupture législative majeure ni innovation technologique radicale. Les outils existent. Le cadre réglementaire est en place. La demande des PME est réelle, même si elle n'est pas encore formulée comme telle par les dirigeants. Ce qui manque, c'est la lucidité stratégique des dirigeants de cabinet et la volonté d'investir dans une transformation profonde de leur modèle.
+
+La fenêtre 2026--2030 est probablement décisive. L'AI Act déploie ses premières exigences opérationnelles. NIS~2 étend ses obligations. La facturation électronique transforme les flux documentaires. La demande de conformité SI va atteindre son pic précisément pendant cette période. Ceux qui construisent maintenant l'équipe chirurgicale, les compétences et la réputation seront en position pour capturer cette demande. Ceux qui attendent risquent de se retrouver face à un marché déjà structuré par d'autres acteurs --- ESN généralistes, grands cabinets de conseil, ou nouvelles plateformes hybrides --- qui auront comblé le vide.
+
+La transformation décrite ici n'est pas inéluctable pour les experts-comptables. Mais la fenêtre pour la choisir activement est limitée.
+
+% ==============================================================================
+\printbibliography[title={Références}]
+% ==============================================================================
+
+\end{document}
