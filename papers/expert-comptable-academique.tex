@@ -1,0 +1,345 @@
+\documentclass[12pt,a4paper]{article}
+
+\usepackage[french]{babel}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage{microtype}
+\usepackage{geometry}
+\usepackage{setspace}
+\usepackage{titlesec}
+\usepackage{fancyhdr}
+\usepackage{csquotes}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{array}
+\usepackage{parskip}
+\usepackage[style=authoryear,backend=biber,sorting=nyt,maxcitenames=2,
+            uniquelist=false]{biblatex}
+\usepackage[hidelinks]{hyperref}
+
+% --- Mise en page ---
+\geometry{a4paper, top=2.5cm, bottom=2.5cm, left=3cm, right=3cm}
+\onehalfspacing
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.8em}
+
+% --- Typographie des sections ---
+\titleformat{\section}{\large\bfseries}{\thesection.}{0.5em}{}[\titlerule]
+\titleformat{\subsection}{\normalsize\bfseries}{\thesubsection.}{0.5em}{}
+\titleformat{\subsubsection}{\normalsize\itshape}{\thesubsubsection.}{0.5em}{}
+
+% --- En-têtes ---
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{\small\itshape Expert-comptable et tiers garant du code opposable}
+\cfoot{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\addbibresource{expert-comptable-academique.bib}
+
+% =============================================================================
+% MANUSCRIT ANONYMISÉ — voir page de garde séparée pour l'identification
+% =============================================================================
+
+\title{%
+  \vspace{-1cm}
+  {\normalsize\itshape Soumission à \textnormal{[SIM / RFG]}}\\[0.8em]
+  \textbf{L'expert-comptable comme tiers garant du code opposable :}\\
+  \textbf{analyse prospective d'une recomposition professionnelle}\\
+  \textbf{à l'ère des mutations logicielles et réglementaires}\\[0.6em]
+  {\normalsize\textit{The Chartered Accountant as Trusted Third Party
+  for Enforceable Code: A Prospective Analysis of Professional
+  Repositioning in the Era of Software and Regulatory Change}}%
+}
+
+\author{\textit{Auteur(s) anonymisé(s) pour évaluation en double aveugle}}
+\date{Mai 2026}
+
+\begin{document}
+
+\maketitle
+\thispagestyle{empty}
+
+% =============================================================================
+\section*{Résumé}
+% =============================================================================
+
+La mutation technologique en cours, caractérisée depuis 2022 par l'émergence des grands modèles de langage (LLM) et par un changement qualitatif dans la nature même du logiciel, coïncide avec un durcissement sans précédent des obligations réglementaires numériques pesant sur les entreprises européennes. Le Règlement général sur la protection des données (RGPD, 2016), le règlement sur l'intelligence artificielle (AI Act, 2024) et la directive NIS~2 (2022) créent conjointement une demande structurelle de conformité numérique que les autorités publiques de contrôle ne disposent pas des capacités d'assurer effectivement auprès des petites et moyennes entreprises. Cet article développe l'hypothèse selon laquelle la profession d'expert-comptable, par l'architecture institutionnelle héritée de l'ordonnance de 1945, dispose d'un actif combiné — signature opposable, déontologie sanctionnable, assurabilité, relation durable avec le tissu des PME, culture de l'audit et du contrôle interne — qui en fait le candidat structurellement le mieux positionné pour occuper la fonction de tiers garant de la conformité des systèmes d'information dans les PME. Mobilisant la sociologie des professions \parencite{abbott1988}, la théorie du code normatif \parencite{lessig1999}, la théorie économique des tiers de confiance et une analyse institutionnelle comparée de la profession depuis le \textsc{xv}e siècle, cet essai théorique construit une argumentation sur les conditions dans lesquelles un tel repositionnement est envisageable. Les implications en sont discutées pour la gouvernance des systèmes d'information dans les PME, pour les systèmes de formation et pour la recherche en sciences de gestion.
+
+\textbf{Mots-clés :} expert-comptable, gouvernance des systèmes d'information, conformité numérique, sociologie des professions, tiers garant, transformation professionnelle.
+
+\bigskip
+
+\section*{Abstract}
+
+The current technological mutation, characterised since 2022 by the emergence of large language models (LLMs) and a qualitative shift in the nature of software itself, coincides with an unprecedented tightening of digital regulatory obligations weighing on European enterprises. The General Data Protection Regulation (GDPR, 2016), the Artificial Intelligence Act (2024) and the NIS~2 Directive (2022) jointly create a structural demand for digital compliance that public regulatory authorities lack the capacity to deliver effectively to small and medium-sized enterprises (SMEs). This article develops the hypothesis that the French chartered accountancy profession (\textit{experts-comptables}), through the institutional architecture inherited from the 1945 ordinance, possesses a combined set of assets — legally enforceable signature, sanctionable professional ethics, insurability, durable relationship with the SME fabric, and audit culture — making it structurally the best-positioned candidate to serve as a trusted third party for SME information systems compliance. Drawing on the sociology of professions \parencite{abbott1988}, normative code theory \parencite{lessig1999}, the economic theory of trusted intermediaries, and a comparative institutional analysis of the profession since the fifteenth century, this theoretical essay constructs an argument about the conditions under which such repositioning appears plausible. Implications are discussed for SME information systems governance, for training systems, and for management science research.
+
+\textbf{Keywords:} chartered accountancy, information systems governance, digital compliance, sociology of professions, trusted third party, professional transformation.
+
+\tableofcontents
+\newpage
+
+% =============================================================================
+\section{Introduction}
+% =============================================================================
+
+La décennie 2020--2030 soumet les professions réglementées à une double pression dont les dynamiques sont en apparence contradictoires. D'un côté, l'automatisation progressive des tâches intellectuelles de base par les plateformes numériques et, depuis 2022, par les grands modèles de langage érode la valeur ajoutée de nombreuses missions traditionnelles. De l'autre, la complexification de l'environnement réglementaire numérique produit une demande de conformité d'une ampleur inédite que le tissu économique n'a pas les moyens d'absorber sans recours à des tiers institutionnels.
+
+Cette tension est particulièrement aiguë pour la profession d'expert-comptable. Les projections publiées par les organisations professionnelles elles-mêmes anticipent une contraction significative des effectifs liés aux missions de tenue et de révision comptable sous l'effet de l'automatisation \parencite{brynjolfsson2014, frey2013}. Les plateformes numériques spécialisées (saisie automatisée, réconciliation bancaire, génération documentaire) ont déjà capturé une part du segment des travailleurs indépendants et des très petites entreprises. Les modèles de langage permettent désormais de produire des analyses, des comparatifs sectoriels et des projections de trésorerie avec un niveau de qualité suffisant pour une part significative des besoins des PME.
+
+Simultanément, la convergence entre le Règlement général sur la protection des données \parencite{rgpd2016}, le règlement sur l'intelligence artificielle \parencite{aiact2024}, la directive NIS~2 \parencite{nis22022} et la directive révisée sur la responsabilité du fait des produits défectueux \parencite{directive20242853} impose aux entreprises françaises et européennes des obligations de conformité numérique massives. Ces obligations concernent la documentation des traitements de données, la mise en œuvre de mesures de cybersécurité, l'évaluation de la conformité des systèmes d'intelligence artificielle et — avec la directive 2024/2853 — la prise en charge d'un régime de responsabilité étendu aux logiciels. Or les autorités publiques de contrôle ne disposent pas des moyens d'en assurer l'effectivité auprès de millions d'entités assujetties.
+
+La demande qui émerge de cette convergence est la demande d'un tiers capable de certifier la conformité des systèmes d'information — de rendre le code \emph{opposable} au sens juridique, c'est-à-dire invocable en justice, auditable et engageant la responsabilité d'un acteur identifié. Aucun acteur de marché n'occupe aujourd'hui de façon structurée et légitime cet espace. C'est dans cette lacune que s'inscrit la question de recherche centrale de cet article.
+
+\subsection*{Question de recherche}
+
+\begin{quote}
+Dans un contexte de mutation technologique accélérée et de durcissement réglementaire numérique, quels acteurs institutionnels sont susceptibles d'assurer la fonction de tiers garant de la conformité des systèmes d'information des PME, et dans quelles conditions la profession d'expert-comptable pourrait-elle occuper structurellement cette position ?
+\end{quote}
+
+Cette question présente un double intérêt. Sur le plan académique, elle articule des thématiques rarement traitées conjointement dans la littérature en sciences de gestion : la transformation des professions réglementées \parencite{abbott1988, susskind2015}, la gouvernance des systèmes d'information dans les PME \parencite{reix2011}, la dimension normative du code informatique \parencite{lessig1999, zittrain2008} et la théorie économique des tiers de confiance \parencite{akerlof1970, williamson1985}. Sur le plan pratique, elle intéresse directement les dirigeants de cabinet confrontés à des choix stratégiques dans une fenêtre temporelle limitée, ainsi que les régulateurs et les organismes de formation qui définissent les contours des compétences professionnelles.
+
+\subsection*{Plan de l'article}
+
+Cet article est structuré en six sections. La section~2 développe une revue de littérature articulant les thématiques pertinentes. La section~3 présente le cadre théorique et explicite la méthode — un essai théorique argumenté assorti d'une analyse prospective de signaux émergents. La section~4 développe l'analyse proprement dite, organisée en sept sous-sections. La section~5 discute les limites, les implications théoriques et pratiques, et les pistes de recherche. La section~6 conclut.
+
+% =============================================================================
+\section{Revue de littérature}
+% =============================================================================
+
+\subsection{La transformation des professions face aux mutations technologiques}
+
+La question de l'impact des mutations technologiques sur les professions structurées est au cœur de la sociologie des professions depuis au moins la formulation d'Abbott (1988). Dans \emph{The System of Professions}, \textcite{abbott1988} propose un cadre fondé sur la notion de \emph{juridiction} : les professions ne se définissent pas par leurs traits structurels (formation, licence, code éthique) mais par le contrôle qu'elles exercent sur des types de travail déterminés. Les professions s'affrontent dans des systèmes de juridictions concurrentes, et les mutations technologiques constituent des perturbations majeures de ces systèmes en créant des \emph{vacances juridictionnelles} — des espaces de travail dont l'attribution n'est plus réglée — et en dépréciant des compétences établies. Ce cadre sera mobilisé dans notre analyse pour interpréter la dynamique de recomposition en cours dans le secteur de la conformité numérique.
+
+\textcite{susskind2015} approfondissent cette analyse pour les professions contemporaines face au numérique. Ils soutiennent que la transformation ne se réduit pas à une automatisation des tâches existantes, mais implique une décomposition des prestations professionnelles en composantes, dont certaines sont standardisables et d'autres requièrent toujours une expertise humaine. \textcite{freidson2001} tempère ces analyses en soulignant la résilience du professionnalisme comme forme d'organisation du travail : la capacité des professions à se réguler elles-mêmes, à définir leurs propres standards et à contrôler l'accès à leur exercice constitue un avantage structurel que les disruptions technologiques n'ont pas, historiquement, éliminé.
+
+Les études sectorielles enrichissent ce tableau. L'analyse de la médecine face à l'imagerie par intelligence artificielle \parencite{topol2019} suggère un schéma d'augmentation : l'IA accroît la capacité d'analyse sans éliminer le jugement clinique. Les travaux sur les architectes et le BIM \parencite{eastman2011} montrent que la transformation numérique peut renforcer le rôle de maîtrise d'œuvre d'une profession qui s'en empare activement. Ces précédents sont pertinents pour notre analyse.
+
+\subsection{La profession comptable et la transformation numérique}
+
+La littérature sur l'impact des technologies sur la profession comptable est abondante et disputée. Les travaux pionniers portaient sur l'automatisation de la saisie et de la révision \parencite{kaplan2011}. La question de la blockchain comme vecteur potentiel de désintermédiation comptable a produit un débat important à partir de 2015 \parencite{dai2017}. L'émergence des LLMs a renouvelé ce débat.
+
+\textcite{kokina2017} ont été parmi les premiers à analyser systématiquement l'impact de l'intelligence artificielle sur l'audit, distinguant les tâches potentiellement automatisables — collecte de données, détection d'anomalies, génération de rapports standardisés — des tâches requérant un jugement humain non substituable — évaluation des risques complexes, interprétation contextuelle, engagement de responsabilité. \textcite{sutton2016} avaient anticipé cette réflexion en soulignant que les annonces de disparition de la profession comptable avaient déjà été formulées à plusieurs reprises sans s'être vérifiées, chaque vague technologique ayant finalement élargi plutôt que réduit le périmètre de la profession.
+
+Ces travaux convergent sur l'idée que la valeur des professionnels comptables se déplace vers les dimensions de conseil, d'interprétation et de certification, au détriment des tâches de production répétitive. Notre article s'inscrit dans cette ligne tout en proposant une extension plus radicale : la mutation en cours crée non seulement un déplacement des missions existantes, mais l'émergence d'un nouveau marché — la certification de la conformité numérique — potentiellement accessible à la profession.
+
+\subsection{La gouvernance des systèmes d'information dans les PME}
+
+La gouvernance des SI dans les PME constitue un champ de recherche spécifique, justifié par les particularités organisationnelles des petites et moyennes entreprises. \textcite{reix2011} ont posé les bases théoriques du management des SI en France en articulant les dimensions organisationnelles, technologiques et managériales. Les PME se distinguent des grandes organisations par des caractéristiques qui sont directement pertinentes pour notre analyse : ressources humaines et financières limitées pour la fonction informatique, forte dépendance aux prestataires externes, faible formalisation des processus de gouvernance SI, difficultés de recrutement de profils qualifiés \parencite{cragg1993, thong1999}.
+
+Ces caractéristiques créent une vulnérabilité structurelle face aux obligations de conformité numérique. Une PME de trente salariés ne dispose généralement pas d'un délégué à la protection des données interne, n'a pas les moyens de maintenir une veille réglementaire permanente, et doit externaliser la majorité de ses fonctions informatiques. \textcite{meissonier2010} ont montré que les résistances aux projets SI dans les PME sont souvent liées à des facteurs organisationnels et relationnels plutôt que techniques, ce qui renforce l'hypothèse d'un avantage structurel pour un acteur bénéficiant déjà d'une relation de confiance avec le dirigeant.
+
+\subsection{Le code comme norme et la responsabilité juridique du logiciel}
+
+\textcite{lessig1999} a fondé la théorie du code comme régulateur normatif. Le code informatique constitue une forme de régulation aussi contraignante que la loi : ce que l'architecture du système ne permet pas n'est pas soumis à un contrôle juridique, il est simplement impossible. \textcite{zittrain2008} a prolongé cette analyse en distinguant les systèmes \enquote{générateurs} (ouverts, adaptables) des systèmes \enquote{apprivoisés} (fermés, fiables), montrant que la tension entre ouverture et contrôle dans les architectures numériques produit des dynamiques qui débordent le cadre des acteurs qui ont conçu les systèmes.
+
+Ces analyses prennent une acuité nouvelle avec la directive UE 2024/2853, qui étend explicitement le régime de responsabilité du fait des produits défectueux aux logiciels \parencite{directive20242853}. Si la production de logiciel engage désormais une responsabilité quasi-producteur, la nécessité d'un tiers garant capable d'assumer ou de certifier cette responsabilité devient structurelle — ce qui constitue l'un des fondements de la thèse développée dans cet article.
+
+\subsection{La théorie économique des tiers de confiance}
+
+La fonction économique des tiers de confiance est analysée à travers plusieurs cadres complémentaires. \textcite{akerlof1970} a montré que l'asymétrie d'information entre vendeurs et acheteurs peut conduire à des équilibres sous-optimaux. Dans ce cadre, les institutions capables de certifier la qualité — standards professionnels, labels, certifications — ont une fonction économique essentielle. \textcite{williamson1985} a analysé, dans sa théorie des coûts de transaction, le rôle des tiers dans les transactions complexes et spécifiques : la certification professionnelle réduit l'incertitude comportementale entre les parties et constitue un mécanisme de gouvernance qui va au-delà du marché pur. \textcite{north1990} a montré dans une perspective institutionnelle plus large que les institutions formelles et informelles constituent le cadre dans lequel se déroulent les échanges économiques.
+
+Ces cadres suggèrent que la demande de tiers garant de la conformité numérique n'est pas un artefact réglementaire temporaire. Les PME qui investissent dans la conformité de leurs SI ne peuvent pas en démontrer crédiblement la réalité à leurs partenaires commerciaux, à leurs banquiers ou à leurs autorités de tutelle sans un tiers capable de les certifier. Cette asymétrie d'information ne disparaîtra pas avec l'évolution technologique.
+
+\subsection{Positionnement de la contribution}
+
+La revue de littérature met en évidence cinq thématiques ayant chacune fait l'objet de développements significatifs, mais rarement articulées dans un même cadre analytique. À notre connaissance, aucun travail n'a proposé de connexion systématique entre la sociologie des professions comptables, la théorie du code normatif, la gouvernance des SI dans les PME et la demande de conformité numérique dans le contexte de la mutation LLM.
+
+C'est cette lacune que cet article cherche à combler partiellement. Sa contribution est théorique et prospective : construire une argumentation sur la possibilité et les conditions d'un repositionnement de la profession comptable, en mobilisant les cadres existants et les données disponibles sur la transformation réglementaire et cyber en cours. Cette contribution appelle des travaux empiriques ultérieurs, identifiés en section~5.
+
+% =============================================================================
+\section{Cadre théorique et méthodologie}
+% =============================================================================
+
+\subsection{Cadres théoriques mobilisés}
+
+Cet article articule quatre cadres théoriques.
+
+\textbf{La théorie des juridictions professionnelles} \parencite{abbott1988} est utilisée pour analyser la dynamique de recomposition des périmètres professionnels induite par la mutation du logiciel et l'émergence de nouvelles obligations réglementaires. Dans ce cadre, la \enquote{vacance juridictionnelle} que nous identifions — la conformité numérique des PME — est un espace de travail dont les frontières sont en cours de redéfinition et dont la capture dépend de la capacité des acteurs à mobiliser leurs ressources institutionnelles.
+
+\textbf{La théorie du code normatif} \parencite{lessig1999, zittrain2008} permet d'analyser la dimension constitutive du logiciel comme production normative, et d'en dériver la nécessité d'un tiers garant de son opposabilité juridique. La distinction que nous introduisons entre code \emph{fluide} (génératif, non engageable) et code \emph{cristallin} (déployé, déterministe, engageable) s'inscrit dans la filiation directe de ce cadre.
+
+\textbf{La théorie économique des tiers de confiance} \parencite{akerlof1970, williamson1985, north1990} permet d'analyser la demande de certification de conformité numérique comme une réponse à une asymétrie d'information structurelle, et de justifier économiquement la viabilité d'une offre de certification par un tiers accrédité.
+
+\textbf{L'analyse institutionnelle comparée de la profession comptable}, appuyée sur les travaux d'histoire économique de la comptabilité \parencite{pacioli1494, minaud2006} et sur l'analyse institutionnelle \parencite{north1990, dimaggio1983}, permet de contextualiser la mutation actuelle dans une longue trajectoire et d'identifier les invariants qui persistent à travers les mutations technologiques.
+
+\subsection{Nature et méthode de l'analyse}
+
+Cet article est un \textbf{essai théorique argumenté à vocation prospective}. Cette qualification méthodologique mérite d'être explicitée.
+
+L'essai théorique argumenté est une forme de contribution académique reconnue en sciences de gestion \parencite{weick1989, whetten1989}, particulièrement adaptée aux questions émergentes qui ne disposent pas encore d'un corpus empirique suffisant pour des approches hypothético-déductives. Il consiste à construire une argumentation rigoureuse à partir de cadres théoriques existants, de données secondaires disponibles et d'une logique inférentielle explicite. La contribution est théorique : elle ouvre ou structure un programme de recherche plutôt que de tester des hypothèses préexistantes.
+
+Cette démarche est complétée par une \textbf{analyse prospective de signaux émergents} \parencite{ansoff1975, godet2007}. Elle consiste à identifier des évolutions en cours — mutation du logiciel, durcissement réglementaire, données sur l'exposition cyber des PME — et à en extrapoler les implications probables sous des hypothèses explicitées. Cette méthode est adaptée aux questions dont l'horizon de réalisation est incertain mais dont les déterminants actuels sont analysables.
+
+Il convient de souligner que les hypothèses développées sur le repositionnement possible de la profession comptable sont des hypothèses argumentées, pas des prédictions. Leur validation appelle des études empiriques — études de cas longitudinales, enquêtes auprès de dirigeants de PME, analyses comparatives — dont nous identifions les axes en section~5.
+
+\subsection{Sources et données mobilisées}
+
+L'analyse s'appuie sur trois catégories de sources.
+
+\textit{Sources théoriques} : la revue de littérature constitue le socle. Les cadres mobilisés sont présentés explicitement dans chaque sous-section.
+
+\textit{Sources réglementaires et institutionnelles} : les textes législatifs européens (RGPD, AI Act, NIS~2, directive 2024/2853), les textes fondateurs de la profession (ordonnance de 1945) et les rapports annuels des autorités de contrôle (CNIL, ANSSI) constituent les sources primaires pour l'analyse de l'écosystème réglementaire.
+
+\textit{Sources statistiques et sectorielles} : les données sur l'exposition cyber des PME françaises proviennent des enquêtes annuelles du CESIN \parencite{cesin2025}, d'Hiscox \parencite{hiscox2024} et du Panorama de la cybermenace de l'ANSSI \parencite{anssi2025}. Les données sur les budgets informatiques sont issues des études du CIGREF \parencite{cigref2023}. Ces chiffres sont utilisés comme indicateurs de l'ampleur de la demande et présentés avec leurs marges d'incertitude.
+
+% =============================================================================
+\section{Analyse prospective : vers un nouveau modèle de gouvernance des SI dans les PME}
+% =============================================================================
+
+\subsection{La mutation du logiciel : du fluide au cristallin}
+
+Le terme de \enquote{Software 2.0} proposé par \textcite{karpathy2017} désigne un changement qualitatif dans la nature du logiciel : au lieu de programmes écrits explicitement par des développeurs humains, les réseaux de neurones constituent une nouvelle façon d'écrire des programmes, dans laquelle les poids du modèle \emph{sont} le programme \parencite{lecun2015}. Cette mutation a des implications directes pour les questions de responsabilité et de conformité.
+
+Le logiciel symbolique classique (Software 1.0) est déterministe : ses décisions sont traçables, chaque comportement peut être audité, et la responsabilité de chaque résultat peut être remontée à une décision de conception explicite. Le logiciel neuronal (Software 2.0) est probabiliste : ses comportements sur des cas non représentés dans ses données d'entraînement sont partiellement imprévisibles. Ses décisions sont partiellement opaques.
+
+Cette distinction appelle une métaphore physique. L'état \emph{fluide} correspond au logiciel génératif : malléable, créatif, non déterministe, difficilement engageable. L'état \emph{cristallin} correspond au code symbolique déployé : rigide, déterministe, traçable, et \emph{opposable} — c'est-à-dire invocable en justice, auditable et engageant la responsabilité de celui qui le signe. La mutation en cours ne consiste pas à remplacer le cristallin par le fluide, mais à déplacer significativement la frontière entre les deux : la partie fluide s'étend, tandis que la partie cristalline se rétrécit mais acquiert une valeur proportionnellement plus grande, précisément parce qu'elle reste le seul domaine où l'engagement juridique est possible.
+
+Si le code a une force normative au sens de \textcite{lessig1999}, et si sa production engage désormais une responsabilité quasi-producteur au sens de la directive 2024/2853, alors la question de \emph{qui peut garantir} ce code devient structurelle. Elle ne se réduira pas avec l'évolution technologique : elle s'intensifiera au contraire à mesure que le logiciel pénètre des domaines à enjeux croissants.
+
+\subsection{La confiance vérifiable : invariant historique de Pacioli à l'ordonnance de 1945}
+
+La fonction sociale de certification de représentations de la réalité économique est antérieure à l'ère numérique. \textcite{pacioli1494} formalise pour la première fois dans un traité imprimé la comptabilité en partie double, en posant la condition de toute transaction commerciale à distance : la confiance vérifiable par un tiers. Les travaux de \textcite{minaud2006} sur la comptabilité dans l'Antiquité romaine montrent que cette exigence de preuve opposable est encore plus ancienne : la tenue des comptes répondait à Rome moins à un besoin de gestion interne qu'à une nécessité d'engagement juridique envers les tiers.
+
+L'ordonnance n°~45-2138 du 19~septembre~1945 \parencite{ordonnance1945} s'inscrit dans cette tradition en lui donnant un cadre institutionnel moderne. En créant l'ordre des experts-comptables — simultanément à d'autres institutions ordinales de l'après-Libération — elle constitue ce qu'Abbott (1988) appellerait une juridiction institutionnellement protégée : un espace de travail dont les règles d'accès et les normes de pratique sont définies collectivement et sanctionnées publiquement.
+
+Le fil conducteur de cette longue histoire peut être formulé ainsi : chaque fois que la complexification des échanges économiques a produit des représentations que les parties ne pouvaient pas vérifier par elles-mêmes, une institution de certification a émergé ou été créée pour réduire l'asymétrie d'information structurelle \parencite{akerlof1970}. La complexification informationnelle contemporaine suit une logique identique : les systèmes d'information des entreprises produisent des traitements que leurs dirigeants ne peuvent pas vérifier par eux-mêmes, et que leurs parties prenantes (autorités de contrôle, partenaires commerciaux, banquiers) ne peuvent pas évaluer sans un tiers accrédité.
+
+\subsection{L'écosystème réglementaire : une demande structurelle de conformité}
+
+La période 2016--2027 constitue une séquence réglementaire sans précédent pour les systèmes d'information des entreprises françaises. Le RGPD \parencite{rgpd2016} impose la documentation des traitements, les analyses d'impact, la désignation de délégués à la protection des données et la mise en œuvre de \emph{privacy by design}. L'AI Act \parencite{aiact2024} introduit un régime fondé sur le risque pour les systèmes d'IA, avec des obligations de documentation technique et de supervision humaine pour les systèmes à haut risque. La directive NIS~2 \parencite{nis22022} étend les obligations de cybersécurité à des milliers d'entités supplémentaires. La directive 2024/2853 \parencite{directive20242853} étend le régime de responsabilité aux logiciels. La facturation électronique obligatoire, dont le déploiement progressif commence en 2026--2027, impose une refonte des systèmes de gestion documentaire des PME.
+
+Ces réglementations créent des obligations massives. Elles créent également un déficit structurel d'effectivité : les autorités de contrôle ne disposent pas des moyens d'en assurer le respect auprès de millions d'entités assujetties. La CNIL a traité environ 16 000 plaintes en 2024 avec un effectif d'environ 280 agents \parencite{cnil2024}. Ce ratio illustre arithmétiquement l'impossibilité d'un contrôle exhaustif. Ce déficit appelle mécaniquement un tiers privé accrédité — jouant un rôle analogue à celui des commissaires aux comptes pour les comptes financiers — qui garantit la conformité non pas au seul bénéfice du contrôleur étatique, mais au bénéfice de l'ensemble des parties prenantes. C'est une fonction de réduction de l'asymétrie d'information au sens de \textcite{williamson1985}.
+
+\subsection{Le diagnostic cyber : ampleur et coût des défaillances actuelles}
+
+Les données disponibles pour 2024 permettent de mesurer l'ampleur du problème auquel la demande de conformité numérique cherche à répondre. La CNIL a enregistré 5~629 notifications de violation de données en 2024, soit une progression de 20\% par rapport à l'année précédente \parencite{cnil2024}. L'ANSSI a traité 4~386 événements de cybersécurité significatifs, en hausse de 15\%, dont 144 incidents de rançongiciel \parencite{anssi2025}.
+
+L'impact économique est concentré sur les PME. Le rapport Hiscox estime le coût moyen d'un incident significatif entre 20~000 et 50~000~€ pour une entreprise de moins de 250 salariés \parencite{hiscox2024}. Selon le baromètre du CESIN, 67\% des entreprises françaises déclarent avoir subi au moins une cyberattaque aboutie en 2024, contre 53\% en 2023 \parencite{cesin2025}. Le coût global pour l'économie française est estimé à plus de 100 milliards d'euros annuels.
+
+Ces données documentent non pas un risque hypothétique mais une situation déjà en cours. Elles indiquent en particulier que le défaut de conformité des SI génère des coûts réels qui dépassent dans de nombreux cas le coût de la mise en conformité ex ante. L'argument économique en faveur d'un tiers garant n'est pas un argument d'assurance contre un risque improbable : c'est un argument de gestion de risque face à une probabilité d'exposition élevée.
+
+\subsection{L'actif combiné de la profession comptable : analyse comparative}
+
+Plusieurs acteurs potentiels pourraient prétendre à la fonction de tiers garant de la conformité numérique des PME. Un examen comparatif de leurs actifs permet d'identifier un avantage comparatif structurel de la profession comptable.
+
+\begin{table}[h!]
+\centering
+\caption{Analyse comparative des acteurs candidats à la fonction de tiers garant}
+\label{tab:comparatif}
+\begin{tabularx}{\textwidth}{lXXXXX}
+\toprule
+\textbf{Acteur} & \textbf{Signature opposable} & \textbf{Déontologie sanctionnable} & \textbf{Assurabilité} & \textbf{Relation PME durable} & \textbf{Culture audit} \\
+\midrule
+Expert-comptable & Oui & Oui & Oui (rodée) & Oui & Oui \\
+\addlinespace
+ESN / Intégrateur & Non & Non & Partielle & Non & Non \\
+\addlinespace
+Avocat IT & Oui & Oui & Oui & Non & Non \\
+\addlinespace
+Organisme notifié & Sectorielle & Sectorielle & Oui & Non & Oui \\
+\addlinespace
+Plateforme numérique & Non & Non & Non & Partielle & Non \\
+\bottomrule
+\end{tabularx}
+\small\textit{Source : élaboration propre à partir des cadres réglementaires applicables (ordonnance de 1945, loi du 31~décembre 1971 pour les avocats, règlement UE 2024/1689 pour les organismes notifiés).}
+\end{table}
+
+Le tableau~\ref{tab:comparatif} synthétise l'analyse. L'expert-comptable est le seul acteur réunissant les cinq caractéristiques simultanément. Chaque concurrent potentiel manque d'un ou plusieurs éléments déterminants.
+
+\textit{La signature opposable et la déontologie sanctionnable} confèrent à la certification une valeur juridique que les certifications délivrées par des acteurs non ordinaux ne peuvent pas atteindre. L'ordre des experts-comptables dispose d'un mécanisme de sanction disciplinaire effectif — chambre de discipline régionale, radiation possible — qui constitue une garantie de comportement professionnel que le marché ne peut seul produire.
+
+\textit{L'assurabilité} est peut-être le facteur le plus discriminant : la responsabilité civile professionnelle des experts-comptables est bien rodée et assurable par des acteurs du marché de l'assurance qui connaissent le risque. Les ESN, qui n'ont pas de régime assurantiel équivalent pour des missions de conformité, ne peuvent pas offrir cette couverture.
+
+\textit{La relation durable avec les PME} est un actif relationnel que les acteurs purement technologiques peinent à reproduire. L'expert-comptable est, pour de nombreux dirigeants de PME, le premier interlocuteur de conseil de confiance. Cette relation réduit les coûts de transaction au sens de \textcite{williamson1985} et crée des conditions favorables à l'adoption d'une offre élargie.
+
+\textit{La culture de l'audit et du contrôle interne} est directement transférable aux systèmes d'information : cartographier les risques, documenter les contrôles, émettre une opinion motivée — ces compétences sont au cœur de la mission comptable et constituent le substrat d'un audit des SI.
+
+Il convient de noter que la compétence technique proprement dite — maîtrise des architectures logicielles, cybersécurité, IA — est le facteur sur lequel la profession comptable doit investir le plus. Cette compétence n'est pas naturellement présente dans les cabinets traditionnels et constitue le principal obstacle à la réalisation du scénario développé.
+
+\subsection{L'architecture organisationnelle du cabinet transformé}
+
+\textcite{brooks1975}, dans \emph{The Mythical Man-Month}, a proposé le modèle de l'\emph{équipe chirurgicale} pour les projets logiciels complexes : un chirurgien principal portant la responsabilité de toutes les décisions critiques, entouré de spécialistes dont la fonction est d'augmenter sa capacité d'action sans diluer sa responsabilité. Ce modèle, pensé pour des équipes de développement, décrit une organisation que la profession comptable peut construire.
+
+Dans cette analogie, l'expert-comptable joue le rôle du chirurgien : responsable final, signataire, garant de la conformité. Il est entouré d'un architecte logiciel (copilote technique), d'un spécialiste des outils LLM (augmentation de la productivité collective), d'un administrateur système (continuité opérationnelle), d'un juriste IT (interprétation réglementaire) et d'un auditeur-testeur (vérification indépendante). Cette équipe de six à huit personnes, dotée d'outils LLM modernes, peut couvrir 70 à 80\% du budget informatique d'une PME de trente salariés, là où il fallait auparavant faire appel à plusieurs prestataires spécialisés non coordonnés.
+
+La valeur créée par l'expert-comptable dans ce modèle n'est pas dans la capacité à produire du code — les LLMs en produisent en abondance — mais dans la capacité à le \emph{signer} : engager sa responsabilité professionnelle, activer son régime assurantiel, conférer à la production une opposabilité juridique que les acteurs purement technologiques ne peuvent pas offrir avec la même crédibilité institutionnelle.
+
+\subsection{L'économie de la transformation}
+
+Les estimations qui suivent sont des ordres de grandeur fondés sur les données sectorielles disponibles ; elles doivent être comprises comme des hypothèses de travail, non comme des prévisions.
+
+Le budget informatique représente en moyenne 3 à 5\% du chiffre d'affaires des entreprises françaises \parencite{cigref2023}. Pour une PME de trente salariés avec un chiffre d'affaires de 5~M€, ce budget s'établit entre 150~000 et 250~000~€ par an. La part potentiellement adressable par un cabinet repositionné est estimée à 60--80\%, les postes non adressables étant principalement les licences logicielles standardisées et les équipements matériels.
+
+Pour un cabinet de vingt à trente collaborateurs avec deux cents clients PME, une pénétration de 25 à 40\% du portefeuille à cinq ans représente cinquante à quatre-vingts clients SI actifs. À une mission annuelle moyenne de 100~000~€ (estimation conservatrice), le chiffre d'affaires additionnel est de 5 à 8~M€ par an. Le coût de l'équipe chirurgicale (huit personnes à 80~000~€ de coût chargé moyen) représente 640~000~€ par an, soit une marge opérationnelle substantiellement supérieure aux missions comptables traditionnelles.
+
+Ces estimations supposent une montée en charge progressive sur trois à cinq ans, un investissement initial dans la formation et le recrutement de profils hybrides, et un engagement de l'organe ordinal dans la définition de référentiels de compétences et de normes de mission. En l'absence de ces conditions, le scénario développé reste théoriquement plausible mais pratiquement inaccessible pour la majorité des cabinets.
+
+% =============================================================================
+\section{Discussion}
+% =============================================================================
+
+\subsection{Limites de l'analyse}
+
+L'analyse développée dans cet article est soumise à plusieurs limites qu'il convient d'expliciter.
+
+\textit{La nature hypothétique de l'argument.} Les hypothèses formulées sur le repositionnement possible de la profession comptable sont des constructions théoriques argumentées, pas des descriptions de réalités déjà observées. Elles reposent notamment sur un raisonnement par analogie — avec d'autres professions réglementées qui ont réussi à s'emparer de mutations technologiques — dont les limites sont celles de tout raisonnement analogique : les cas comparés peuvent différer sur des dimensions qui s'avèrent déterminantes. En particulier, la profession comptable est exposée simultanément à une menace sur son cœur de métier et à une opportunité sur un périmètre adjacent, ce qui crée une pression temporelle et une contrainte de ressources qui n'était pas présente dans les cas historiques mobilisés.
+
+\textit{L'absence de validation empirique directe.} Cet article ne repose pas sur des données empiriques collectées pour tester les hypothèses formulées. Les données secondaires mobilisées — CNIL, ANSSI, CESIN, CIGREF — documentent le contexte mais ne mesurent pas directement l'appétit des PME pour une offre de conformité portée par leur expert-comptable, ni la capacité réelle des cabinets à l'absorber. Ces mesures sont précisément l'objet des recherches empiriques appelées par cet article.
+
+\textit{Les hypothèses institutionnelles.} L'argument repose sur l'hypothèse que l'ordre des experts-comptables serait en mesure d'organiser collectivement la montée en compétence de la profession et d'étendre éventuellement le périmètre du monopole légal. Ces hypothèses méritent une analyse fine des dynamiques institutionnelles internes à la profession et des relations entre l'OEC et les régulateurs — analyse qui sort du périmètre de cet essai théorique.
+
+\textit{La vitesse d'adoption.} La vitesse à laquelle les cabinets pourraient réellement se transformer est incertaine. Les facteurs de blocage organisationnels — résistances culturelles, coûts de formation, contraintes de recrutement de profils hybrides — peuvent être significativement plus importants que ce que l'analyse théorique laisse supposer.
+
+\subsection{Hypothèses alternatives}
+
+Plusieurs scénarios alternatifs méritent d'être envisagés.
+
+\textit{L'hypothèse de la concentration au profit des grands réseaux.} Il est possible que les transformations décrites profitent non pas aux cabinets de taille moyenne, mais aux grands réseaux qui disposent déjà de départements IT advisory. Dans ce scénario, la concentration du marché de la conformité numérique des PME se ferait au détriment des cabinets indépendants.
+
+\textit{L'hypothèse de la solution réglementaire de marché.} Les autorités de régulation pourraient développer des mécanismes de certification sectorielle qui créent une nouvelle catégorie d'acteurs certifiés plutôt qu'étendre le périmètre de la profession ordinale existante. Des organismes notifiés sectoriels, sur le modèle de ce qui existe déjà dans certains domaines de l'AI Act, pourraient occuper cet espace.
+
+\textit{L'hypothèse de l'inertie professionnelle.} L'histoire des professions face aux mutations technologiques offre des exemples de transformations réussies mais aussi d'opportunités manquées par excès de conservatisme institutionnel. La profession comptable pourrait, confrontée à la gestion du déclin de ses missions traditionnelles, ne pas disposer de la capacité d'investissement et de la lucidité stratégique nécessaires.
+
+\subsection{Implications théoriques}
+
+Sur le plan théorique, cet article propose plusieurs contributions.
+
+Pour la \textit{sociologie des professions}, il illustre et enrichit la dynamique identifiée par \textcite{abbott1988} dans le contexte spécifique de la mutation logicielle : une perturbation technologique crée simultanément une menace sur une juridiction existante et une opportunité sur une juridiction émergente, créant une pression temporelle inédite sur la capacité de réponse professionnelle. Cette dualité menace/opportunité simultanée est un cas de figure qui n'est pas explicitement traité dans le modèle originel d'Abbott.
+
+Pour la \textit{théorie du code normatif}, l'article prolonge l'analyse de \textcite{lessig1999} en identifiant la nécessité d'un tiers institutionnel garant de l'opposabilité du code déployé — acteur que Lessig n'avait pas conceptualisé dans son analyse, centrée sur la régulation publique du code.
+
+Pour la \textit{gouvernance des SI dans les PME}, l'article propose un modèle de gouvernance externalisée qui articule compétences techniques, légitimité institutionnelle et relation de confiance. Ce modèle est distinct des modèles d'externalisation classiques en ce qu'il intègre une dimension de certification formelle de la conformité, qui dépasse la seule prestation de service informatique.
+
+\subsection{Implications pratiques et pistes de recherche}
+
+Sur le plan pratique, plusieurs observations découlent de l'analyse. Pour les dirigeants de cabinet, la fenêtre temporelle 2026--2030 — pendant laquelle la demande de conformité atteint son pic et le marché n'est pas encore structuré — constitue une période critique d'investissement. Pour les organes ordinaux, l'enjeu est d'organiser collectivement la montée en compétence par la formation continue et l'évolution des référentiels. Pour les systèmes de formation initiale, la co-animation droit-technique et l'intégration de l'opposabilité comme critère de livraison dans les projets constituent des pistes pédagogiques directement actionnables.
+
+Cet article identifie plusieurs axes de recherche empirique.
+
+\textbf{Axe 1 — Études de cas longitudinales.} Des études de cas de cabinets d'expertise comptable ayant engagé une transformation vers les missions SI permettraient de tester empiriquement les hypothèses formulées : comment s'organisent-ils, quels obstacles rencontrent-ils, quelle est la rentabilité effective de ces missions ? Une comparaison internationale — notamment avec les professions comptables britannique et allemande — enrichirait l'analyse.
+
+\textbf{Axe 2 — Enquêtes auprès de dirigeants de PME.} L'appétit des PME pour une offre de conformité numérique portée par leur expert-comptable n'est pas mesuré directement dans la littérature existante. Une enquête quantitative ciblée permettrait de tester cette demande et d'en identifier les déterminants.
+
+\textbf{Axe 3 — Analyse des dynamiques ordinales.} La capacité de l'ordre des experts-comptables à organiser collectivement une transformation aussi significative mérite une analyse des processus institutionnels internes — instances de gouvernance, mécanismes de formation, relations avec les régulateurs — inspirée des travaux de \textcite{dimaggio1983} sur l'isomorphisme institutionnel.
+
+% =============================================================================
+\section{Conclusion}
+% =============================================================================
+
+Cet article a développé l'hypothèse selon laquelle la profession d'expert-comptable se trouve dans une position structurellement avantageuse pour occuper la fonction de tiers garant de la conformité des systèmes d'information des PME, dans le contexte de la mutation du logiciel et du durcissement réglementaire numérique. Cette hypothèse repose sur l'identification d'un actif combiné — signature opposable, déontologie, assurabilité, relation PME, culture de l'audit — qu'aucun autre acteur ne réunit actuellement dans la même configuration.
+
+Sur le plan théorique, l'article articule quatre cadres : la théorie des juridictions professionnelles d'Abbott, la théorie du code normatif de Lessig, la théorie économique des tiers de confiance et l'analyse institutionnelle comparée de la profession depuis le \textsc{xv}e siècle. L'articulation de ces cadres permet de montrer que la mutation en cours crée une vacance juridictionnelle — la certification de la conformité des SI des PME — dont la capture par la profession comptable est plausible mais conditionnelle.
+
+Sur le plan pratique, l'analyse identifie une fenêtre temporelle 2026--2030 pendant laquelle la demande de conformité atteint son pic dans un marché encore non structuré. Elle identifie également les conditions de réalisation — investissement en compétences, transformation du modèle organisationnel, engagement ordinal — et les hypothèses alternatives qui pourraient contrarier ce scénario.
+
+Les limites de l'analyse sont celles de tout essai théorique prospectif : l'absence de validation empirique directe, la nature hypothétique des projections économiques, l'incertitude sur les dynamiques institutionnelles internes à la profession. Ces limites définissent précisément le programme de recherche empirique que cet article cherche à ouvrir.
+
+La question de fond qui traverse l'ensemble de l'analyse est la suivante : dans une économie où le code informatique acquiert une force normative croissante \parencite{lessig2006} et où sa production engage une responsabilité de plus en plus formalisée \parencite{directive20242853}, qui garantit que ce code est conforme, sécurisé et juridiquement engageable ? L'hypothèse développée dans cet article — que la profession comptable, sous condition de transformation active de son modèle, est le candidat institutionnel naturel à cette fonction — est suffisamment argumentée pour mériter l'attention des chercheurs en sciences de gestion et des décideurs de la profession.
+
+% =============================================================================
+\printbibliography[title={Références bibliographiques}]
+% =============================================================================
+
+\end{document}
