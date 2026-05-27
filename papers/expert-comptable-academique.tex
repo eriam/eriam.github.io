@@ -20,6 +20,7 @@
 
 % --- Mise en page ---
 \geometry{a4paper, top=2.5cm, bottom=2.5cm, left=3cm, right=3cm}
+\setlength{\headheight}{15pt}
 \onehalfspacing
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{0.8em}
@@ -228,7 +229,14 @@ Plusieurs acteurs potentiels pourraient prétendre à la fonction de tiers garan
 \centering
 \caption{Analyse comparative des acteurs candidats à la fonction de tiers garant}
 \label{tab:comparatif}
-\begin{tabularx}{\textwidth}{lXXXXX}
+\footnotesize
+\begin{tabularx}{\textwidth}{%
+  l
+  >{\centering\arraybackslash}X
+  >{\centering\arraybackslash}X
+  >{\centering\arraybackslash}X
+  >{\centering\arraybackslash}X
+  >{\centering\arraybackslash}X}
 \toprule
 \textbf{Acteur} & \textbf{Signature opposable} & \textbf{Déontologie sanctionnable} & \textbf{Assurabilité} & \textbf{Relation PME durable} & \textbf{Culture audit} \\
 \midrule
@@ -243,7 +251,11 @@ Organisme notifié & Sectorielle & Sectorielle & Oui & Non & Oui \\
 Plateforme numérique & Non & Non & Non & Partielle & Non \\
 \bottomrule
 \end{tabularx}
-\small\textit{Source : élaboration propre à partir des cadres réglementaires applicables (ordonnance de 1945, loi du 31~décembre 1971 pour les avocats, règlement UE 2024/1689 pour les organismes notifiés).}
+
+\par\vspace{0.4em}
+\noindent\small\textit{Source : élaboration propre à partir des cadres réglementaires applicables
+(ordonnance de 1945, loi du 31~décembre 1971 pour les avocats,
+règlement UE 2024/1689 pour les organismes notifiés).}
 \end{table}
 
 Le tableau~\ref{tab:comparatif} synthétise l'analyse. L'expert-comptable est le seul acteur réunissant les cinq caractéristiques simultanément. Chaque concurrent potentiel manque d'un ou plusieurs éléments déterminants.
