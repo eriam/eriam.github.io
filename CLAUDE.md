@@ -11,6 +11,7 @@ GitHub Pages personal site at `eriam.github.io`. Plain HTML, no CSS, no JS, no f
 - `index.html` — landing page (French): axes de travail, activités, publications, projets, contact.
 - `dashboard-bts/dashboard_bts_sio.html` — dashboard d'analyse BTS (effectifs, cartographie, insertion professionnelle) via Leaflet et données data.gouv.fr / InserJeunes DEPP. Données dans `dashboard-bts/pipeline/output/`.
 - `cv.pdf` — CV local, non lié depuis le site.
+- `~/Documents/Articles/` — travaux académiques (hors repo) : papier de réflexion et version académique soumission SIM/RFG sur l'expert-comptable comme tiers garant du code opposable.
 
 ## Deployment
 
