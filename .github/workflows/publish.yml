@@ -1,0 +1,32 @@
+name: Publish scheduled posts
+
+on:
+  schedule:
+    - cron: '0 7 * * *'   # chaque matin à 7h UTC
+  workflow_dispatch:       # déclenchement manuel depuis GitHub
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - run: pip install markdown
+
+      - name: Build
+        run: python build.py
+
+      - name: Commit and push if changed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add blog/
+          git diff --cached --quiet && echo "nothing to publish" || \
+            git commit -m "publish: $(date +%Y-%m-%d)" && git push
