@@ -1,0 +1,27 @@
+\babel@toc {french}{}\relax 
+\contentsline {section}{\numberline {1}Introduction}{4}{section.1}%
+\contentsline {section}{\numberline {2}Revue de littérature}{5}{section.2}%
+\contentsline {subsection}{\numberline {2.1}La transformation des professions face aux mutations technologiques}{5}{subsection.2.1}%
+\contentsline {subsection}{\numberline {2.2}La profession comptable et la transformation numérique}{6}{subsection.2.2}%
+\contentsline {subsection}{\numberline {2.3}La gouvernance des systèmes d'information dans les PME}{7}{subsection.2.3}%
+\contentsline {subsection}{\numberline {2.4}Le code comme norme et la responsabilité juridique du logiciel}{7}{subsection.2.4}%
+\contentsline {subsection}{\numberline {2.5}La théorie économique des tiers de confiance}{8}{subsection.2.5}%
+\contentsline {subsection}{\numberline {2.6}Positionnement de la contribution}{8}{subsection.2.6}%
+\contentsline {section}{\numberline {3}Cadre théorique et méthodologie}{9}{section.3}%
+\contentsline {subsection}{\numberline {3.1}Cadres théoriques mobilisés}{9}{subsection.3.1}%
+\contentsline {subsection}{\numberline {3.2}Nature et méthode de l'analyse}{9}{subsection.3.2}%
+\contentsline {subsection}{\numberline {3.3}Sources et données mobilisées}{10}{subsection.3.3}%
+\contentsline {section}{\numberline {4}Analyse prospective : vers un nouveau modèle de gouvernance des SI dans les PME}{11}{section.4}%
+\contentsline {subsection}{\numberline {4.1}La mutation du logiciel : du fluide au cristallin}{11}{subsection.4.1}%
+\contentsline {subsection}{\numberline {4.2}La confiance vérifiable : invariant historique de Pacioli à l'ordonnance de 1945}{11}{subsection.4.2}%
+\contentsline {subsection}{\numberline {4.3}L'écosystème réglementaire : une demande structurelle de conformité}{12}{subsection.4.3}%
+\contentsline {subsection}{\numberline {4.4}Le diagnostic cyber : ampleur et coût des défaillances actuelles}{13}{subsection.4.4}%
+\contentsline {subsection}{\numberline {4.5}L'actif combiné de la profession comptable : analyse comparative}{14}{subsection.4.5}%
+\contentsline {subsection}{\numberline {4.6}L'architecture organisationnelle du cabinet transformé}{15}{subsection.4.6}%
+\contentsline {subsection}{\numberline {4.7}L'économie de la transformation}{15}{subsection.4.7}%
+\contentsline {section}{\numberline {5}Discussion}{16}{section.5}%
+\contentsline {subsection}{\numberline {5.1}Limites de l'analyse}{16}{subsection.5.1}%
+\contentsline {subsection}{\numberline {5.2}Hypothèses alternatives}{17}{subsection.5.2}%
+\contentsline {subsection}{\numberline {5.3}Implications théoriques}{17}{subsection.5.3}%
+\contentsline {subsection}{\numberline {5.4}Implications pratiques et pistes de recherche}{18}{subsection.5.4}%
+\contentsline {section}{\numberline {6}Conclusion}{19}{section.6}%

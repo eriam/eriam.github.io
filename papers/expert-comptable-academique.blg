@@ -1,0 +1,15 @@
+[0] Config.pm:306> INFO - This is Biber 2.18
+[0] Config.pm:309> INFO - Logfile is 'expert-comptable-academique.blg'
+[97] biber:340> INFO - === mer. mai 27, 2026, 16:03:35
+[115] Biber.pm:418> INFO - Reading 'expert-comptable-academique.bcf'
+[182] Biber.pm:978> INFO - Found 41 citekeys in bib section 0
+[194] Biber.pm:4401> INFO - Processing section 0
+[205] Biber.pm:4592> INFO - Looking for bibtex file 'expert-comptable-academique.bib' for section 0
+[208] bibtex.pm:1713> INFO - LaTeX decoding ...
+[250] bibtex.pm:1518> INFO - Found BibTeX data source 'expert-comptable-academique.bib'
+[465] UCollate.pm:68> INFO - Overriding locale 'fr-FR' defaults 'variable = shifted' with 'variable = non-ignorable'
+[465] UCollate.pm:68> INFO - Overriding locale 'fr-FR' defaults 'normalization = NFD' with 'normalization = prenormalized'
+[465] Biber.pm:4221> INFO - Sorting list 'nyt/global//global/global' of type 'entry' with template 'nyt' and locale 'fr-FR'
+[465] Biber.pm:4227> INFO - No sort tailoring available for locale 'fr-FR'
+[508] bbl.pm:654> INFO - Writing 'expert-comptable-academique.bbl' with encoding 'UTF-8'
+[526] bbl.pm:757> INFO - Output to expert-comptable-academique.bbl
