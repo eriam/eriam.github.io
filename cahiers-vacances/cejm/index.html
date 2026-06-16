@@ -1,0 +1,2079 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CEJM — Repères pour la 2ème année</title>
+<style>/* ============================================================
+   Cahiers de Vacances BTS SIO — Thème Estival ☀️
+   ============================================================ */
+
+:root {
+  --color-bg:           #fffcf0;
+  --color-text:         #1c1917;
+  --color-muted:        #78716c;
+  --color-primary:      #f97316;
+  --color-primary-dark: #c2410c;
+  --color-primary-soft: #ffedd5;
+  --color-secondary:    #0891b2;
+  --color-success:      #16a34a;
+  --color-success-soft: #dcfce7;
+  --color-warning:      #d97706;
+  --color-warning-soft: #fef3c7;
+  --color-danger:       #dc2626;
+  --color-danger-soft:  #fee2e2;
+  --color-border:       #fed7aa;
+  --color-card:         #ffffff;
+  --radius:             14px;
+  --radius-sm:          10px;
+  --radius-xs:          6px;
+  --shadow:             0 2px 6px rgba(249,115,22,.08), 0 6px 24px rgba(0,0,0,.06);
+  --shadow-sm:          0 1px 4px rgba(0,0,0,.08);
+  --sidebar-w:          240px;
+  --font-base:          -apple-system, BlinkMacSystemFont, &#34;Segoe UI&#34;, Roboto, &#34;Helvetica Neue&#34;, Arial, sans-serif;
+  --font-mono:          ui-monospace, SFMono-Regular, &#34;SF Mono&#34;, Menlo, Consolas, monospace;
+  --transition:         0.15s ease;
+}
+
+/* ── Reset ── */
+*, *::before, *::after { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+
+body {
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-base);
+  font-size: 16px;
+  line-height: 1.7;
+}
+
+/* ── Header ── */
+.cahier-header {
+  background: linear-gradient(135deg, #f97316 0%, #fb923c 35%, #fbbf24 70%, #f59e0b 100%);
+  color: #fff;
+  padding: 2.5rem 2rem 3.5rem;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Wavy bottom border */
+.cahier-header::after {
+  content: &#34;&#34;;
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  right: 0;
+  height: 40px;
+  background: var(--color-bg);
+  clip-path: ellipse(55% 100% at 50% 100%);
+}
+
+/* Decorative sunrays */
+.cahier-header::before {
+  content: &#34;&#34;;
+  position: absolute;
+  top: -60px;
+  right: -60px;
+  width: 220px;
+  height: 220px;
+  background: rgba(255,255,255,.1);
+  border-radius: 50%;
+}
+
+.cahier-header-inner {
+  max-width: calc(var(--sidebar-w) + 860px + 3rem);
+  margin: 0 auto;
+  position: relative;
+  z-index: 1;
+}
+
+.cahier-header h1 {
+  font-size: 2rem;
+  font-weight: 800;
+  margin: 0 0 0.4rem;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+  text-shadow: 0 1px 3px rgba(0,0,0,.15);
+}
+
+.cahier-meta {
+  opacity: 0.92;
+  font-size: 0.95rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.25rem;
+  margin: 0;
+}
+
+.cahier-meta-badge {
+  background: rgba(255,255,255,.22);
+  border-radius: 20px;
+  padding: 0.2rem 0.8rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  border: 1px solid rgba(255,255,255,.35);
+}
+
+/* ── Page body (sidebar + content) ── */
+.page-body {
+  display: grid;
+  grid-template-columns: var(--sidebar-w) 1fr;
+  gap: 2rem;
+  max-width: calc(var(--sidebar-w) + 860px + 3rem);
+  margin: 0 auto;
+  padding: 1.5rem 1rem 3rem;
+  align-items: start;
+}
+
+/* ── Sidebar ── */
+nav.sommaire {
+  position: sticky;
+  top: 1.5rem;
+  background: var(--color-card);
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+  padding: 1.25rem;
+  max-height: calc(100vh - 3rem);
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-border) transparent;
+}
+
+nav.sommaire h2 {
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--color-muted);
+  margin: 0 0 0.75rem;
+}
+
+nav.sommaire ol {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+nav.sommaire li { margin: 0; }
+
+nav.sommaire a {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  padding: 0.35rem 0.5rem;
+  border-radius: var(--radius-xs);
+  color: var(--color-muted);
+  text-decoration: none;
+  font-size: 0.82rem;
+  line-height: 1.35;
+  transition: background var(--transition), color var(--transition);
+}
+
+nav.sommaire a:hover {
+  background: var(--color-primary-soft);
+  color: var(--color-primary-dark);
+}
+
+nav.sommaire a.active {
+  background: var(--color-primary-soft);
+  color: var(--color-primary-dark);
+  font-weight: 600;
+}
+
+nav.sommaire .nav-num {
+  flex-shrink: 0;
+  background: var(--color-primary-soft);
+  color: var(--color-primary);
+  font-size: 0.68rem;
+  font-weight: 700;
+  border-radius: 4px;
+  padding: 0.1rem 0.35rem;
+  min-width: 1.4rem;
+  text-align: center;
+}
+
+nav.sommaire a.active .nav-num {
+  background: var(--color-primary);
+  color: #fff;
+}
+
+.nav-duree {
+  color: var(--color-muted);
+  font-size: 0.72rem;
+  margin-left: auto;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+/* Progress in sidebar */
+.nav-progress {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--color-border);
+}
+
+.nav-progress-label {
+  font-size: 0.72rem;
+  color: var(--color-muted);
+  margin-bottom: 0.4rem;
+  display: flex;
+  justify-content: space-between;
+}
+
+.nav-progress-track {
+  height: 6px;
+  background: var(--color-border);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.nav-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--color-primary), #fbbf24);
+  border-radius: 4px;
+  width: 0%;
+  transition: width 0.4s ease;
+}
+
+/* ── Main content ── */
+main { min-width: 0; }
+
+main section {
+  background: var(--color-card);
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 1.75rem 2rem;
+  margin-bottom: 1.5rem;
+  scroll-margin-top: 1.5rem;
+  position: relative;
+}
+
+/* Subtle left accent per section */
+main section::before {
+  content: &#34;&#34;;
+  position: absolute;
+  top: 1rem;
+  bottom: 1rem;
+  left: 0;
+  width: 4px;
+  background: linear-gradient(180deg, var(--color-primary) 0%, #fbbf24 100%);
+  border-radius: 0 2px 2px 0;
+  opacity: 0.6;
+}
+
+main section h2 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin: 0 0 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  color: var(--color-text);
+}
+
+.section-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 8px;
+  background: linear-gradient(135deg, var(--color-primary), #fbbf24);
+  color: #fff;
+  font-size: 0.8rem;
+  font-weight: 700;
+  flex-shrink: 0;
+  box-shadow: 0 2px 6px rgba(249,115,22,.35);
+}
+
+/* ── Typography ── */
+h1 { font-size: 1.9rem; font-weight: 800; margin: 0 0 0.75rem; }
+h2 { font-size: 1.25rem; font-weight: 700; margin: 1.75rem 0 0.75rem; }
+h3 { font-size: 1.05rem; font-weight: 600; margin: 1.25rem 0 0.5rem; color: var(--color-primary-dark); }
+p  { margin: 0 0 1rem; }
+a  { color: var(--color-secondary); }
+
+ul, ol { margin: 0 0 1rem; padding-left: 1.5rem; }
+li { margin: 0.2rem 0; }
+strong { font-weight: 600; }
+
+/* ── Objectifs block ── */
+details.objectifs {
+  background: linear-gradient(135deg, #fff7ed, #ffedd5);
+  border-left: 3px solid var(--color-primary);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  padding: 0.6rem 1rem;
+  margin-bottom: 1.25rem;
+}
+
+details.objectifs summary {
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: var(--color-primary-dark);
+  list-style: none;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+details.objectifs summary::before {
+  content: &#34;▶&#34;;
+  font-size: 0.6rem;
+  transition: transform var(--transition);
+}
+
+details.objectifs[open] summary::before { transform: rotate(90deg); }
+details.objectifs ul { margin: 0.5rem 0 0; }
+
+/* ── Quiz QCM ── */
+.component-quiz-qcm {
+  background: linear-gradient(135deg, #fff9f0, #fff7ed);
+  border: 1.5px solid #fed7aa;
+  border-radius: var(--radius-sm);
+  padding: 1.25rem 1.5rem;
+  margin: 1.25rem 0;
+}
+
+.quiz-question {
+  font-weight: 600;
+  margin: 0 0 0.9rem;
+  line-height: 1.45;
+}
+
+.quiz-choices {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  margin-bottom: 0.9rem;
+}
+
+.quiz-choices label {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.55rem 0.9rem;
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-xs);
+  cursor: pointer;
+  transition: border-color var(--transition), background var(--transition);
+  font-size: 0.95rem;
+  line-height: 1.35;
+  background: var(--color-card);
+}
+
+.quiz-choices label:hover {
+  border-color: var(--color-primary);
+  background: var(--color-primary-soft);
+}
+
+.quiz-choices input[type=&#34;radio&#34;] {
+  accent-color: var(--color-primary);
+  width: 1rem;
+  height: 1rem;
+  flex-shrink: 0;
+}
+
+/* ── Quiz texte ── */
+.component-quiz-texte {
+  background: linear-gradient(135deg, #fff9f0, #fff7ed);
+  border: 1.5px solid #fed7aa;
+  border-radius: var(--radius-sm);
+  padding: 1.25rem 1.5rem;
+  margin: 1.25rem 0;
+}
+
+.quiz-input {
+  display: block;
+  width: 100%;
+  max-width: 22rem;
+  padding: 0.5rem 0.75rem;
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-xs);
+  font-family: var(--font-base);
+  font-size: 1rem;
+  margin: 0.5rem 0 0.9rem;
+  transition: border-color var(--transition);
+  background: var(--color-card);
+}
+
+.quiz-input:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(249,115,22,.15);
+}
+
+/* ── Shared button ── */
+.quiz-submit, .code-copy, .aide-ia-copy, .bilan-export {
+  background: var(--color-primary);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius-xs);
+  padding: 0.45rem 1.1rem;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-family: var(--font-base);
+  font-weight: 600;
+  transition: background var(--transition), transform var(--transition), box-shadow var(--transition);
+  box-shadow: 0 2px 6px rgba(249,115,22,.3);
+}
+
+.quiz-submit:hover, .code-copy:hover, .aide-ia-copy:hover, .bilan-export:hover {
+  background: var(--color-primary-dark);
+  box-shadow: 0 3px 10px rgba(249,115,22,.4);
+}
+
+.quiz-submit:active { transform: scale(0.97); }
+
+/* ── Quiz feedback ── */
+.quiz-feedback {
+  margin-top: 0.6rem;
+  font-weight: 600;
+  font-size: 0.95rem;
+  min-height: 1.4em;
+}
+.quiz-feedback.ok { color: var(--color-success); }
+.quiz-feedback.ko { color: var(--color-danger); }
+
+/* ── Code block ── */
+.component-code {
+  position: relative;
+  background: #1c1917;
+  color: #fef3c7;
+  border-radius: var(--radius-sm);
+  padding: 1.1rem 1.25rem;
+  font-family: var(--font-mono);
+  font-size: 0.88rem;
+  line-height: 1.6;
+  overflow-x: auto;
+  margin: 1.25rem 0;
+  border: 1px solid #292524;
+}
+
+.component-code pre { margin: 0; }
+.component-code code { background: none; padding: 0; color: inherit; }
+
+.code-copy {
+  position: absolute;
+  top: 0.6rem;
+  right: 0.6rem;
+  font-size: 0.78rem;
+  padding: 0.25rem 0.6rem;
+  opacity: 0.65;
+  box-shadow: none;
+}
+.code-copy:hover { opacity: 1; box-shadow: none; }
+
+/* ── Reveal / correction ── */
+.component-reveal {
+  border: 1.5px solid #fdba74;
+  background: linear-gradient(135deg, #fff7ed, #ffedd5);
+  border-radius: var(--radius-sm);
+  margin: 1.25rem 0;
+  overflow: hidden;
+}
+
+.component-reveal summary {
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.92rem;
+  color: var(--color-primary-dark);
+  padding: 0.7rem 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  list-style: none;
+  user-select: none;
+}
+
+.component-reveal summary::before {
+  content: &#34;▶&#34;;
+  font-size: 0.6rem;
+  transition: transform var(--transition);
+}
+
+.component-reveal[open] summary::before { transform: rotate(90deg); }
+
+.reveal-content {
+  padding: 0 1rem 0.9rem;
+  white-space: pre-wrap;
+  font-size: 0.95rem;
+  color: var(--color-primary-dark);
+  border-top: 1px solid #fdba74;
+}
+
+/* ── Aide IA ── */
+.component-aide-ia {
+  background: linear-gradient(135deg, #f0fdf4, #dcfce7);
+  border: 1.5px solid #86efac;
+  border-radius: var(--radius-sm);
+  padding: 1rem 1.25rem;
+  margin: 1.25rem 0;
+}
+
+.aide-ia-label {
+  font-weight: 700;
+  font-size: 0.88rem;
+  color: #14532d;
+  margin-bottom: 0.5rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.aide-ia-prompt {
+  background: rgba(255,255,255,.75);
+  border: 1px solid #86efac;
+  border-radius: var(--radius-xs);
+  padding: 0.75rem 1rem;
+  white-space: pre-wrap;
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  color: #14532d;
+  margin: 0 0 0.75rem;
+}
+
+.aide-ia-copy { background: #16a34a; font-size: 0.82rem; padding: 0.3rem 0.75rem; box-shadow: 0 2px 6px rgba(22,163,74,.3); }
+.aide-ia-copy:hover { background: #15803d; }
+
+/* ── Auto-eval ── */
+.component-auto-eval {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem 0.75rem;
+  background: linear-gradient(135deg, #fff9f0, #fef3c7);
+  border: 1.5px solid #fed7aa;
+  border-radius: var(--radius-sm);
+  padding: 0.85rem 1.1rem;
+  margin: 1.25rem 0;
+}
+
+.component-auto-eval p {
+  margin: 0;
+  font-weight: 600;
+  font-size: 0.9rem;
+  flex-basis: 100%;
+  color: var(--color-muted);
+}
+
+.component-auto-eval button {
+  background: var(--color-card);
+  border: 1.5px solid var(--color-border);
+  border-radius: 20px;
+  padding: 0.35rem 1rem;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-family: var(--font-base);
+  transition: border-color var(--transition), background var(--transition);
+}
+
+.component-auto-eval button:hover { border-color: var(--color-primary); }
+
+.component-auto-eval button[data-eval=&#34;ok&#34;].selected {
+  background: var(--color-success-soft);
+  border-color: var(--color-success);
+  color: #14532d;
+  font-weight: 600;
+}
+
+.component-auto-eval button[data-eval=&#34;hesitant&#34;].selected {
+  background: var(--color-warning-soft);
+  border-color: var(--color-warning);
+  color: #78350f;
+  font-weight: 600;
+}
+
+.component-auto-eval button[data-eval=&#34;bloque&#34;].selected {
+  background: var(--color-danger-soft);
+  border-color: var(--color-danger);
+  color: #7f1d1d;
+  font-weight: 600;
+}
+
+/* ── Progress bar (inside sidebar, managed by JS) ── */
+.component-progress-bar { display: none; }
+
+/* ── Bilan ── */
+.component-bilan {
+  background: linear-gradient(135deg, #f0fdf4, #dcfce7);
+  border: 1.5px solid #86efac;
+  border-radius: var(--radius-sm);
+  padding: 1.25rem 1.5rem;
+  margin: 1.5rem 0;
+}
+
+.component-bilan &gt; p { font-weight: 600; color: #14532d; margin-bottom: 0.6rem; }
+
+.component-bilan textarea {
+  width: 100%;
+  font-family: var(--font-base);
+  font-size: 0.95rem;
+  padding: 0.6rem 0.75rem;
+  border: 1.5px solid #86efac;
+  border-radius: var(--radius-xs);
+  background: rgba(255,255,255,.75);
+  resize: vertical;
+  min-height: 8rem;
+  margin-bottom: 0.75rem;
+  line-height: 1.6;
+}
+
+.component-bilan textarea:focus {
+  outline: none;
+  border-color: var(--color-success);
+  box-shadow: 0 0 0 3px rgba(22,163,74,.15);
+}
+
+.bilan-export { background: var(--color-success); box-shadow: 0 2px 6px rgba(22,163,74,.3); }
+.bilan-export:hover { background: #15803d; }
+
+/* ── Ressources externes ── */
+.component-ressources {
+  background: linear-gradient(135deg, #ecfeff, #cffafe);
+  border: 1.5px solid #67e8f9;
+  border-radius: var(--radius-sm);
+  padding: 1rem 1.25rem;
+  margin: 1.25rem 0;
+}
+
+.ressources-label {
+  font-weight: 700;
+  font-size: 0.88rem;
+  color: #0e7490;
+  margin-bottom: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.ressources-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
+.ressource-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.5rem 0.75rem;
+  background: rgba(255,255,255,.7);
+  border: 1px solid #a5f3fc;
+  border-radius: var(--radius-xs);
+  text-decoration: none;
+  color: var(--color-text);
+  transition: background var(--transition), border-color var(--transition), transform var(--transition);
+}
+
+.ressource-item:hover {
+  background: #fff;
+  border-color: #0891b2;
+  transform: translateX(3px);
+  color: var(--color-text);
+}
+
+.ressource-icon {
+  font-size: 1rem;
+  width: 2rem;
+  height: 2rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  flex-shrink: 0;
+}
+
+.ressource-badge-video {
+  background: #fee2e2;
+  color: #dc2626;
+}
+
+.ressource-badge-doc {
+  background: var(--color-primary-soft);
+  color: var(--color-primary-dark);
+}
+
+.ressource-badge-lien {
+  background: #e0f2fe;
+  color: #0369a1;
+}
+
+.ressource-text {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  min-width: 0;
+}
+
+.ressource-titre {
+  font-weight: 600;
+  font-size: 0.92rem;
+  line-height: 1.3;
+}
+
+.ressource-meta {
+  font-size: 0.78rem;
+  color: var(--color-muted);
+}
+
+/* ── Unknown component ── */
+.component-unknown {
+  background: var(--color-danger-soft);
+  border: 1px dashed var(--color-danger);
+  padding: 0.5rem 0.75rem;
+  border-radius: var(--radius-xs);
+  color: #7f1d1d;
+  font-size: 0.9rem;
+  margin: 1rem 0;
+}
+
+/* ── Footer ── */
+footer {
+  text-align: center;
+  color: var(--color-muted);
+  padding: 2rem 0 2.5rem;
+  font-size: 0.85rem;
+  border-top: 1px solid var(--color-border);
+  margin-top: 1rem;
+}
+
+/* ── Tables ── */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1rem 0;
+  font-size: 0.93rem;
+}
+th, td {
+  border: 1px solid var(--color-border);
+  padding: 0.5rem 0.75rem;
+  text-align: left;
+}
+th {
+  background: var(--color-primary-soft);
+  font-weight: 600;
+  color: var(--color-primary-dark);
+}
+tr:nth-child(even) td { background: #fffbf5; }
+
+/* ── Inline code ── */
+code {
+  font-family: var(--font-mono);
+  font-size: 0.88em;
+  background: #fff7ed;
+  border: 1px solid #fed7aa;
+  border-radius: 4px;
+  padding: 0.1em 0.35em;
+  color: var(--color-primary-dark);
+}
+
+pre code { background: none; border: none; padding: 0; font-size: inherit; color: inherit; }
+
+/* ── Responsive ── */
+@media (max-width: 768px) {
+  .page-body {
+    grid-template-columns: 1fr;
+    padding: 1rem 0.75rem 2rem;
+  }
+
+  nav.sommaire {
+    position: static;
+    max-height: none;
+  }
+
+  .cahier-header { padding: 1.5rem 1rem 2.5rem; }
+  .cahier-header h1 { font-size: 1.5rem; }
+
+  main section { padding: 1.25rem 1rem; }
+}
+</style>
+</head>
+<body>
+
+<header class="cahier-header">
+  <div class="cahier-header-inner">
+    <h1>CEJM — Repères pour la 2ème année</h1>
+    <p class="cahier-meta">
+      <span class="cahier-meta-badge">BTS SIO</span>
+      <span class="cahier-meta-badge">cejm</span>
+      <span class="cahier-meta-badge">⏱ 10h estimées</span>
+    </p>
+  </div>
+</header>
+
+<div class="page-body">
+
+  <nav class="sommaire" aria-label="Sommaire">
+    <h2>Plan du cahier</h2>
+    <ol>
+      
+        <li>
+          <a href="#section-1" data-nav-index="1">
+            <span class="nav-num">1</span>
+            <span>Bienvenue dans le cahier CEJM</span>
+            <span class="nav-duree">15min</span>
+          </a>
+        </li>
+      
+        <li>
+          <a href="#section-2" data-nav-index="2">
+            <span class="nav-num">2</span>
+            <span>Identifier les parties prenantes d&#39;une entreprise</span>
+            <span class="nav-duree">45min</span>
+          </a>
+        </li>
+      
+        <li>
+          <a href="#section-3" data-nav-index="3">
+            <span class="nav-num">3</span>
+            <span>Choisir une structure juridique pour son projet IT</span>
+            <span class="nav-duree">60min</span>
+          </a>
+        </li>
+      
+        <li>
+          <a href="#section-4" data-nav-index="4">
+            <span class="nav-num">4</span>
+            <span>Les sources du droit appliquées au numérique</span>
+            <span class="nav-duree">60min</span>
+          </a>
+        </li>
+      
+        <li>
+          <a href="#section-5" data-nav-index="5">
+            <span class="nav-num">5</span>
+            <span>RGPD — Principes et obligations pour un développeur</span>
+            <span class="nav-duree">75min</span>
+          </a>
+        </li>
+      
+        <li>
+          <a href="#section-6" data-nav-index="6">
+            <span class="nav-num">6</span>
+            <span>Analyser un marché IT et la concurrence</span>
+            <span class="nav-duree">60min</span>
+          </a>
+        </li>
+      
+        <li>
+          <a href="#section-7" data-nav-index="7">
+            <span class="nav-num">7</span>
+            <span>Organisation du travail — hiérarchique, matricielle et agile</span>
+            <span class="nav-duree">60min</span>
+          </a>
+        </li>
+      
+        <li>
+          <a href="#section-8" data-nav-index="8">
+            <span class="nav-num">8</span>
+            <span>Stratégie d&#39;entreprise — diversification et spécialisation</span>
+            <span class="nav-duree">60min</span>
+          </a>
+        </li>
+      
+        <li>
+          <a href="#section-9" data-nav-index="9">
+            <span class="nav-num">9</span>
+            <span>Mini-cas — Analyse de TechSud Solutions</span>
+            <span class="nav-duree">75min</span>
+          </a>
+        </li>
+      
+        <li>
+          <a href="#section-10" data-nav-index="10">
+            <span class="nav-num">10</span>
+            <span>Bilan final — CEJM</span>
+            <span class="nav-duree">30min</span>
+          </a>
+        </li>
+      
+    </ol>
+    <div class="nav-progress">
+      <div class="nav-progress-label">
+        <span>Progression</span>
+        <span class="nav-progress-text">0 / 10</span>
+      </div>
+      <div class="nav-progress-track">
+        <div class="nav-progress-fill"></div>
+      </div>
+    </div>
+  </nav>
+
+  <main>
+    
+      <section id="section-1" data-section-index="1">
+        <h2>
+          <span class="section-badge">1</span>
+          Bienvenue dans le cahier CEJM
+        </h2>
+        
+          <details class="objectifs">
+            <summary>Objectifs de cette section</summary>
+            <ul>
+              <li>Comprendre l&#39;utilité de la CEJM pour un technicien BTS SIO</li><li>Visualiser le parcours du cahier</li>
+            </ul>
+          </details>
+        
+        <h2>Pourquoi la CEJM en BTS SIO ?</h2>
+<p>Tu es en formation technique, et tu te demandes peut-être à quoi sert la CEJM (Culture Économique, Juridique et Managériale). La réponse est simple : <strong>ton futur métier ne se passe pas dans le vide</strong>.</p>
+<p>En tant que technicien ou développeur, tu vas travailler dans une entreprise. Tu auras des collègues, un chef, des clients, des délais, des contrats, des données personnelles à protéger. La CEJM te donne les clés pour comprendre ce contexte.</p>
+<p><strong>Quelques situations concrètes :</strong></p>
+<ul>
+<li>Tu rejoins une ESN (Entreprise de Services du Numérique) de 40 salariés. Qui décide quoi ? Comment est organisée l'équipe ?</li>
+<li>Un client te demande de stocker les adresses e-mail de ses utilisateurs. Quelles obligations légales s'appliquent ?</li>
+<li>Ton chef te parle de "stratégie de différenciation". C'est quoi exactement ?</li>
+<li>Tu réfléchis à créer ta propre micro-entreprise pour faire des missions en freelance. Quel statut juridique choisir ?</li>
+</ul>
+<p>Ce cahier répond à ces questions en 8 activités progressives, avec des cas concrets du monde IT.</p>
+<h2>Ce que tu vas travailler</h2>
+<table>
+<thead>
+<tr>
+<th>Activité</th>
+<th>Thème</th>
+<th>Durée</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>Parties prenantes</td>
+<td>45 min</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Structures juridiques</td>
+<td>60 min</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Sources du droit numérique</td>
+<td>60 min</td>
+</tr>
+<tr>
+<td>4</td>
+<td>RGPD pour les développeurs</td>
+<td>75 min</td>
+</tr>
+<tr>
+<td>5</td>
+<td>Marché et concurrence IT</td>
+<td>60 min</td>
+</tr>
+<tr>
+<td>6</td>
+<td>Organisation du travail</td>
+<td>60 min</td>
+</tr>
+<tr>
+<td>7</td>
+<td>Stratégie d'entreprise</td>
+<td>60 min</td>
+</tr>
+<tr>
+<td>8</td>
+<td>Mini-cas PME informatique</td>
+<td>75 min</td>
+</tr>
+</tbody>
+</table>
+<h2>Comment utiliser ce cahier ?</h2>
+<ol>
+<li><strong>Lis le rappel de cours</strong> : court, ciblé sur ce dont tu as besoin.</li>
+<li><strong>Fais les activités</strong> : quiz, exercices, justifications courtes.</li>
+<li><strong>Utilise l'aide IA</strong> si tu bloques, mais pas pour avoir la réponse directe.</li>
+<li><strong>Consulte la solution</strong> après avoir vraiment essayé.</li>
+<li><strong>Note ton auto-évaluation</strong> honnêtement — personne ne juge.</li>
+</ol>
+<div class="component-auto-eval" data-auto-eval><p>Où en es-tu ?</p><button data-eval="ok">😊 Compris</button><button data-eval="hesitant">🤔 À revoir</button><button data-eval="bloque">😣 Bloqué</button></div>
+      </section>
+    
+      <section id="section-2" data-section-index="2">
+        <h2>
+          <span class="section-badge">2</span>
+          Identifier les parties prenantes d&#39;une entreprise
+        </h2>
+        
+          <details class="objectifs">
+            <summary>Objectifs de cette section</summary>
+            <ul>
+              <li>Distinguer parties prenantes internes et externes</li><li>Identifier les attentes de chaque partie prenante dans un contexte IT</li>
+            </ul>
+          </details>
+        
+        <h2>Rappel de cours</h2>
+<p>Les <strong>parties prenantes</strong> (stakeholders) d'une entreprise sont l'ensemble des acteurs concernés par son activité. On distingue :</p>
+<ul>
+<li><strong>Parties prenantes internes</strong> : salariés, dirigeants, actionnaires</li>
+<li><strong>Parties prenantes externes</strong> : clients, fournisseurs, État, banques, collectivités locales</li>
+</ul>
+<p>Chaque partie prenante a des <strong>attentes</strong> souvent différentes, parfois opposées :</p>
+<table>
+<thead>
+<tr>
+<th>Partie prenante</th>
+<th>Attentes typiques</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Salariés</td>
+<td>Rémunération, conditions de travail, formation</td>
+</tr>
+<tr>
+<td>Dirigeants</td>
+<td>Croissance, rentabilité, pérennité</td>
+</tr>
+<tr>
+<td>Actionnaires</td>
+<td>Dividendes, valorisation</td>
+</tr>
+<tr>
+<td>Clients</td>
+<td>Qualité, prix compétitif, réactivité</td>
+</tr>
+<tr>
+<td>État</td>
+<td>Impôts, respect du droit du travail, emploi</td>
+</tr>
+<tr>
+<td>Banques</td>
+<td>Remboursement des crédits, solidité financière</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Dans une ESN de 30 salariés</strong>, les parties prenantes sont par exemple : les développeurs (salariés), le gérant (dirigeant), l'investisseur initial (actionnaire), les entreprises clientes, les éditeurs de logiciels (fournisseurs), l'URSSAF (État).</p>
+<h2>Activité 1 — Classer</h2>
+<div class="component-quiz-qcm" data-quiz><p class="quiz-question">Parmi ces acteurs, lesquels sont des parties prenantes INTERNES ?</p><div class="quiz-choices"><label><input type="radio" name="q-32" data-correct="true"> Les salariés</label><label><input type="radio" name="q-32" data-correct="true"> Les dirigeants</label><label><input type="radio" name="q-32" data-correct="false"> Les clients</label><label><input type="radio" name="q-32" data-correct="false"> Les fournisseurs de matériel</label><label><input type="radio" name="q-32" data-correct="true"> Les actionnaires</label></div><button class="quiz-submit" type="button">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<h2>Activité 2 — Cas pratique</h2>
+<p>Une startup SaaS (logiciel en ligne) de 12 personnes annonce qu'elle va lever des fonds pour embaucher 20 développeurs supplémentaires.</p>
+<div class="component-quiz-qcm" data-quiz><p class="quiz-question">Quelles parties prenantes sont les plus directement concernées par cette levée de fonds ?</p><div class="quiz-choices"><label><input type="radio" name="q-33" data-correct="true"> Les actionnaires existants</label><label><input type="radio" name="q-33" data-correct="true"> Les salariés actuels</label><label><input type="radio" name="q-33" data-correct="true"> Les nouveaux investisseurs</label><label><input type="radio" name="q-33" data-correct="true"> Les clients de la startup</label><label><input type="radio" name="q-33" data-correct="false"> Le propriétaire des bureaux</label></div><button class="quiz-submit" type="button">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<div class="component-quiz-texte" data-reponse="évolution de carrière"><p class="quiz-question">Quelle attente probable ont les salariés actuels face à cette croissance ?</p><input type="text" class="quiz-input"><button type="button" class="quiz-submit">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<h2>Activité 3 — Attentes contradictoires</h2>
+<p>Dans une PME informatique, les développeurs réclament du temps pour se former aux nouvelles technologies. Les actionnaires veulent maximiser la facturation client.</p>
+<div class="component-quiz-texte" data-reponse="conflit d&#x27;intérêts"><p class="quiz-question">Comment appelle-t-on ce type de situation où deux parties prenantes ont des attentes opposées ?</p><input type="text" class="quiz-input"><button type="button" class="quiz-submit">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<div class="component-quiz-qcm" data-quiz><p class="quiz-question">Quelle position le dirigeant doit-il adopter face à ce conflit ?</p><div class="quiz-choices"><label><input type="radio" name="q-34" data-correct="false"> Toujours donner raison aux actionnaires car ils financent</label><label><input type="radio" name="q-34" data-correct="false"> Toujours donner raison aux salariés pour les motiver</label><label><input type="radio" name="q-34" data-correct="true"> Arbitrer en cherchant un équilibre tenant compte des deux attentes</label><label><input type="radio" name="q-34" data-correct="false"> Ignorer le problème jusqu&#x27;à ce qu&#x27;il disparaisse</label></div><button class="quiz-submit" type="button">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<h2>Aide IA</h2>
+<div class="component-aide-ia"><div class="aide-ia-label">💡 Comment l'IA peut t'aider</div><pre class="aide-ia-prompt">Je suis étudiant en BTS SIO. Je dois identifier les attentes d&#x27;une
+partie prenante (ex : les salariés) face à une décision d&#x27;entreprise
+(ex : passage au télétravail total dans une ESN).
+Aide-moi à structurer mon raisonnement pas à pas, en me posant des
+questions, sans me donner la réponse directe.</pre><button type="button" class="aide-ia-copy">Copier le prompt</button></div>
+<h2>Solution</h2>
+<details class="component-reveal"><summary>Voir les éléments de correction</summary><div class="reveal-content">**Activité 1 — Internes :** salariés, dirigeants, actionnaires.
+Les clients et fournisseurs sont externes.
+**Activité 2 — Levée de fonds :**
+- Actionnaires existants : dilution possible de leurs parts
+- Salariés actuels : changement d&#x27;environnement, nouvelles opportunités
+- Nouveaux investisseurs : risque financier, espoir de retour sur investissement
+- Clients : améliorations du produit attendues grâce aux nouvelles recrues
+**Activité 3 :**
+- Ce type de situation s&#x27;appelle un conflit d&#x27;intérêts (ou tension entre parties prenantes).
+- Le dirigeant doit arbitrer : ex. accorder 1 jour/mois de formation
+  tout en maintenant les objectifs de facturation.</div></details>
+<h2>Auto-évaluation</h2>
+<div class="component-auto-eval" data-auto-eval><p>Où en es-tu ?</p><button data-eval="ok">😊 Compris</button><button data-eval="hesitant">🤔 À revoir</button><button data-eval="bloque">😣 Bloqué</button></div>
+      </section>
+    
+      <section id="section-3" data-section-index="3">
+        <h2>
+          <span class="section-badge">3</span>
+          Choisir une structure juridique pour son projet IT
+        </h2>
+        
+          <details class="objectifs">
+            <summary>Objectifs de cette section</summary>
+            <ul>
+              <li>Distinguer SARL, SAS et EI (entreprise individuelle)</li><li>Associer chaque structure à un profil de projet IT</li><li>Comprendre les notions de responsabilité et de capital social</li>
+            </ul>
+          </details>
+        
+        <h2>Rappel de cours</h2>
+<p>Quand on crée une entreprise (ou qu'on choisit son statut de freelance), le <strong>statut juridique</strong> détermine :
+- qui est responsable des dettes
+- comment les bénéfices sont partagés
+- quelles obligations administratives s'appliquent</p>
+<h3>Les trois structures principales</h3>
+<p><strong>EI — Entreprise Individuelle (dont micro-entreprise)</strong>
+- Une seule personne, pas de capital minimum requis
+- Responsabilité limitée au patrimoine professionnel (depuis 2022)
+- Idéal pour démarrer seul : freelance dev, infogérance indépendante
+- Inconvénient : difficile d'intégrer des associés</p>
+<p><strong>SARL — Société À Responsabilité Limitée</strong>
+- 2 à 100 associés (ou EURL si 1 seul)
+- Capital minimum : 1 euro (symbolique en pratique)
+- Responsabilité limitée aux apports
+- Fonctionnement encadré, moins de flexibilité
+- Utilisée par des PME de services informatiques familiales ou stables</p>
+<p><strong>SAS — Société par Actions Simplifiée</strong>
+- Grande liberté statutaire : les règles internes sont très personnalisables
+- Minimum 1 associé (SASU si seul)
+- Prisée par les startups et ESN car facilite les levées de fonds
+- Responsabilité limitée aux apports</p>
+<h3>Tableau récapitulatif</h3>
+<table>
+<thead>
+<tr>
+<th>Critère</th>
+<th>EI / Micro</th>
+<th>SARL</th>
+<th>SAS</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Associés</td>
+<td>1</td>
+<td>2 à 100</td>
+<td>1 ou plus</td>
+</tr>
+<tr>
+<td>Capital</td>
+<td>Aucun</td>
+<td>Libre (min. 1 €)</td>
+<td>Libre (min. 1 €)</td>
+</tr>
+<tr>
+<td>Flexibilité</td>
+<td>Faible</td>
+<td>Moyenne</td>
+<td>Forte</td>
+</tr>
+<tr>
+<td>Levée de fonds</td>
+<td>Non</td>
+<td>Difficile</td>
+<td>Facile</td>
+</tr>
+<tr>
+<td>Idéal pour</td>
+<td>Freelance solo</td>
+<td>PME stable</td>
+<td>Startup, ESN</td>
+</tr>
+</tbody>
+</table>
+<h2>Activité 1 — Choisir le bon statut</h2>
+<div class="component-quiz-qcm" data-quiz><p class="quiz-question">Lucas veut se lancer en freelance comme développeur web, seul, avec peu de budget. Quel statut est le plus adapté ?</p><div class="quiz-choices"><label><input type="radio" name="q-35" data-correct="false"> SAS</label><label><input type="radio" name="q-35" data-correct="false"> SARL</label><label><input type="radio" name="q-35" data-correct="true"> EI / Micro-entreprise</label><label><input type="radio" name="q-35" data-correct="false"> Association loi 1901</label></div><button class="quiz-submit" type="button">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<div class="component-quiz-qcm" data-quiz><p class="quiz-question">Trois amis créent une startup SaaS et prévoient de chercher des investisseurs dans 2 ans. Quelle structure privilégier ?</p><div class="quiz-choices"><label><input type="radio" name="q-36" data-correct="false"> EI</label><label><input type="radio" name="q-36" data-correct="false"> SARL</label><label><input type="radio" name="q-36" data-correct="true"> SAS</label><label><input type="radio" name="q-36" data-correct="false"> Micro-entreprise</label></div><button class="quiz-submit" type="button">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<h2>Activité 2 — Vrai ou faux</h2>
+<div class="component-quiz-qcm" data-quiz><p class="quiz-question">Lesquelles de ces affirmations sont VRAIES ?</p><div class="quiz-choices"><label><input type="radio" name="q-37" data-correct="true"> La SARL peut accueillir jusqu&#x27;à 100 associés</label><label><input type="radio" name="q-37" data-correct="false"> En EI, l&#x27;entrepreneur est responsable de toutes les dettes sur ses biens personnels</label><label><input type="radio" name="q-37" data-correct="true"> La SAS est très flexible dans son organisation interne</label><label><input type="radio" name="q-37" data-correct="false"> Le capital minimum d&#x27;une SARL est de 10 000 euros</label></div><button class="quiz-submit" type="button">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<h2>Activité 3 — Cas court</h2>
+<p>Une ESN de 8 salariés spécialisée en cybersécurité a été créée il y a 5 ans sous forme de SARL. Les associés (3 personnes) souhaitent maintenant ouvrir leur capital à un fonds d'investissement.</p>
+<div class="component-quiz-texte" data-reponse="SAS"><p class="quiz-question">Quel changement de structure juridique leur conseillerais-tu et pourquoi (en 1 mot) ?</p><input type="text" class="quiz-input"><button type="button" class="quiz-submit">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<h2>Aide IA</h2>
+<div class="component-aide-ia"><div class="aide-ia-label">💡 Comment l'IA peut t'aider</div><pre class="aide-ia-prompt">Je suis étudiant en BTS SIO. Je dois choisir un statut juridique pour
+un projet IT fictif. Le projet est : [décris ton projet en 2 lignes].
+Aide-moi à raisonner sur les critères importants (nombre d&#x27;associés,
+levée de fonds, responsabilité) sans me donner directement la réponse.</pre><button type="button" class="aide-ia-copy">Copier le prompt</button></div>
+<h2>Solution</h2>
+<details class="component-reveal"><summary>Voir les éléments de correction</summary><div class="reveal-content">**Activité 1 :** EI / Micro-entreprise — idéale pour démarrer seul sans
+contrainte administrative lourde.
+**Activité 2 :** Vraies : SARL jusqu&#x27;à 100 associés / SAS très flexible.
+Fausses : en EI, la responsabilité est désormais limitée au patrimoine
+professionnel / le capital minimum est 1 euro (pas 10 000).
+**Activité 3 :** SAS — c&#x27;est la structure qui permet le plus facilement
+d&#x27;ouvrir son capital à des investisseurs extérieurs grâce à l&#x27;émission
+d&#x27;actions. La transformation SARL → SAS est possible mais nécessite une
+assemblée générale extraordinaire.</div></details>
+<h2>Auto-évaluation</h2>
+<div class="component-auto-eval" data-auto-eval><p>Où en es-tu ?</p><button data-eval="ok">😊 Compris</button><button data-eval="hesitant">🤔 À revoir</button><button data-eval="bloque">😣 Bloqué</button></div>
+      </section>
+    
+      <section id="section-4" data-section-index="4">
+        <h2>
+          <span class="section-badge">4</span>
+          Les sources du droit appliquées au numérique
+        </h2>
+        
+          <details class="objectifs">
+            <summary>Objectifs de cette section</summary>
+            <ul>
+              <li>Identifier la hiérarchie des normes juridiques (Constitution, loi, règlement)</li><li>Repérer les sources du droit spécifiques au numérique</li><li>Comprendre comment un développeur peut être concerné par ces normes</li>
+            </ul>
+          </details>
+        
+        <h2>Rappel de cours</h2>
+<p>Le droit français s'organise en <strong>hiérarchie des normes</strong> : chaque texte doit respecter ceux qui lui sont supérieurs.</p>
+<pre><code>Constitution (loi fondamentale)
+    ↓
+Traités internationaux et droit européen (ex : RGPD)
+    ↓
+Lois (votées par le Parlement)
+    ↓
+Décrets et arrêtés (écrits par le gouvernement)
+    ↓
+Circulaires et instructions
+</code></pre>
+<h3>Sources importantes en droit du numérique</h3>
+<table>
+<thead>
+<tr>
+<th>Source</th>
+<th>Exemple concret</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Constitution</td>
+<td>Liberté d'expression, droit à la vie privée</td>
+</tr>
+<tr>
+<td>Droit européen</td>
+<td>RGPD (Règlement Général sur la Protection des Données)</td>
+</tr>
+<tr>
+<td>Loi française</td>
+<td>Loi Informatique et Libertés (1978, modifiée), Loi pour la confiance dans l'économie numérique (LCEN 2004)</td>
+</tr>
+<tr>
+<td>Jurisprudence</td>
+<td>Décisions de la CNIL, arrêts de la Cour de cassation sur la cybersurveillance</td>
+</tr>
+<tr>
+<td>Contrats</td>
+<td>CGU, CGV, licences logicielles (ex : MIT, GPL)</td>
+</tr>
+</tbody>
+</table>
+<h3>La jurisprudence</h3>
+<p>La <strong>jurisprudence</strong> est l'ensemble des décisions de justice qui servent de référence pour les affaires futures. Elle <strong>complète</strong> la loi quand celle-ci est silencieuse ou ambiguë. En numérique, les décisions de la CNIL (sanction d'une entreprise pour violation RGPD) font jurisprudence.</p>
+<h3>Textes clés pour un technicien BTS SIO</h3>
+<ul>
+<li><strong>LCEN (2004)</strong> : responsabilité des hébergeurs, commerce électronique, courrier électronique non sollicité</li>
+<li><strong>Loi Informatique et Libertés</strong> : encadre le traitement des données personnelles en France</li>
+<li><strong>RGPD (2018)</strong> : règlement européen, applicable directement dans tous les États membres</li>
+<li><strong>Code du travail</strong> : droit à la déconnexion, télétravail, surveillance informatique des salariés</li>
+</ul>
+<h2>Activité 1 — Hiérarchie des normes</h2>
+<div class="component-quiz-qcm" data-quiz><p class="quiz-question">Quel texte est au sommet de la hiérarchie des normes en France ?</p><div class="quiz-choices"><label><input type="radio" name="q-38" data-correct="false"> Le Code civil</label><label><input type="radio" name="q-38" data-correct="false"> La loi Informatique et Libertés</label><label><input type="radio" name="q-38" data-correct="true"> La Constitution</label><label><input type="radio" name="q-38" data-correct="false"> Les décrets gouvernementaux</label></div><button class="quiz-submit" type="button">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<div class="component-quiz-qcm" data-quiz><p class="quiz-question">Le RGPD est un règlement européen. Quelle affirmation est correcte ?</p><div class="quiz-choices"><label><input type="radio" name="q-39" data-correct="false"> Il s&#x27;applique uniquement si chaque pays le transpose en loi nationale</label><label><input type="radio" name="q-39" data-correct="true"> Il s&#x27;applique directement dans tous les États membres de l&#x27;UE sans transposition</label><label><input type="radio" name="q-39" data-correct="false"> Il est moins fort qu&#x27;une loi française</label><label><input type="radio" name="q-39" data-correct="false"> Il ne concerne que les grandes entreprises</label></div><button class="quiz-submit" type="button">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<h2>Activité 2 — Identifier la source</h2>
+<div class="component-quiz-qcm" data-quiz><p class="quiz-question">Un développeur reçoit une mise en demeure de la CNIL après que son app a collecté des données sans consentement. Quelle(s) source(s) du droit est/sont en cause ?</p><div class="quiz-choices"><label><input type="radio" name="q-40" data-correct="true"> Le RGPD</label><label><input type="radio" name="q-40" data-correct="true"> La loi Informatique et Libertés</label><label><input type="radio" name="q-40" data-correct="false"> Le Code de la route</label><label><input type="radio" name="q-40" data-correct="true"> La Constitution (droit à la vie privée)</label></div><button class="quiz-submit" type="button">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<h2>Activité 3 — Application pratique</h2>
+<p>Une startup développe une application mobile qui géolocalise les utilisateurs en temps réel pour leur proposer des offres commerciales.</p>
+<div class="component-quiz-texte" data-reponse="RGPD"><p class="quiz-question">Quel texte juridique encadre principalement la collecte de la géolocalisation des utilisateurs ?</p><input type="text" class="quiz-input"><button type="button" class="quiz-submit">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<div class="component-quiz-qcm" data-quiz><p class="quiz-question">Parmi ces obligations, lesquelles s&#x27;imposent à la startup pour cette collecte de données ?</p><div class="quiz-choices"><label><input type="radio" name="q-41" data-correct="true"> Informer les utilisateurs de la collecte</label><label><input type="radio" name="q-41" data-correct="true"> Obtenir leur consentement explicite</label><label><input type="radio" name="q-41" data-correct="false"> Publier le code source de l&#x27;application</label><label><input type="radio" name="q-41" data-correct="true"> Permettre aux utilisateurs d&#x27;accéder à leurs données et de les supprimer</label></div><button class="quiz-submit" type="button">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<h2>Aide IA</h2>
+<div class="component-aide-ia"><div class="aide-ia-label">💡 Comment l'IA peut t'aider</div><pre class="aide-ia-prompt">Je suis étudiant en BTS SIO. J&#x27;étudie les sources du droit du numérique.
+Voici la situation : [décris la situation juridique].
+Aide-moi à identifier quelle source du droit s&#x27;applique et pourquoi,
+sans me donner directement la réponse — pose-moi des questions pour
+guider mon raisonnement.</pre><button type="button" class="aide-ia-copy">Copier le prompt</button></div>
+<h2>Solution</h2>
+<details class="component-reveal"><summary>Voir les éléments de correction</summary><div class="reveal-content">**Activité 1 :**
+- La Constitution est au sommet.
+- Le RGPD, en tant que règlement européen, s&#x27;applique directement sans
+  transposition nationale — il est supérieur à la loi française ordinaire.
+**Activité 2 :**
+- RGPD et loi Informatique et Libertés encadrent la collecte de données.
+- La Constitution garantit le droit à la vie privée (art. 9 du Code civil).
+- La CNIL est l&#x27;autorité de contrôle française du RGPD.
+**Activité 3 :**
+- Le RGPD encadre la géolocalisation (donnée personnelle).
+- Obligations : information, consentement explicite, droit d&#x27;accès et de
+  suppression (droit à l&#x27;effacement, art. 17 RGPD).</div></details>
+<h2>Auto-évaluation</h2>
+<div class="component-auto-eval" data-auto-eval><p>Où en es-tu ?</p><button data-eval="ok">😊 Compris</button><button data-eval="hesitant">🤔 À revoir</button><button data-eval="bloque">😣 Bloqué</button></div>
+      </section>
+    
+      <section id="section-5" data-section-index="5">
+        <h2>
+          <span class="section-badge">5</span>
+          RGPD — Principes et obligations pour un développeur
+        </h2>
+        
+          <details class="objectifs">
+            <summary>Objectifs de cette section</summary>
+            <ul>
+              <li>Connaître les 7 principes fondamentaux du RGPD</li><li>Identifier le rôle du DPO (Délégué à la Protection des Données)</li><li>Appliquer le RGPD à des situations concrètes de développement</li>
+            </ul>
+          </details>
+        
+        <h2>Rappel de cours</h2>
+<p>Le <strong>RGPD</strong> (Règlement Général sur la Protection des Données) est entré en application en mai 2018. Il encadre la collecte, le traitement et le stockage de toutes les <strong>données personnelles</strong> (toute information permettant d'identifier directement ou indirectement une personne physique).</p>
+<h3>Les 7 principes du RGPD</h3>
+<ol>
+<li><strong>Licéité, loyauté, transparence</strong> — On ne collecte des données qu'avec une base légale (consentement, contrat, obligation légale...).</li>
+<li><strong>Limitation des finalités</strong> — Les données ne peuvent être utilisées que pour la raison pour laquelle elles ont été collectées.</li>
+<li><strong>Minimisation des données</strong> — On ne collecte que ce qui est strictement nécessaire.</li>
+<li><strong>Exactitude</strong> — Les données doivent être tenues à jour.</li>
+<li><strong>Limitation de la conservation</strong> — Les données ne sont pas gardées indéfiniment.</li>
+<li><strong>Intégrité et confidentialité</strong> — Les données sont sécurisées (chiffrement, accès restreint).</li>
+<li><strong>Responsabilité (accountability)</strong> — L'entreprise doit pouvoir prouver sa conformité.</li>
+</ol>
+<h3>Qui est concerné ?</h3>
+<ul>
+<li><strong>Responsable de traitement</strong> : l'entreprise qui décide pourquoi et comment les données sont utilisées.</li>
+<li><strong>Sous-traitant</strong> : prestataire qui traite les données pour le compte d'un responsable (ex : un hébergeur cloud, une ESN qui développe une app pour un client).</li>
+<li><strong>DPO (Délégué à la Protection des Données)</strong> : obligatoire pour certaines structures (administrations, grandes entreprises traitant des données sensibles à grande échelle). Rôle : conseiller, contrôler, être l'interlocuteur de la CNIL.</li>
+</ul>
+<h3>Droits des personnes</h3>
+<p>Les utilisateurs ont des droits qu'une application doit respecter :
+- Droit d'accès, de rectification, d'effacement (droit à l'oubli)
+- Droit à la portabilité (récupérer ses données dans un format lisible)
+- Droit d'opposition et de limitation du traitement</p>
+<h3>Concrètement pour un développeur</h3>
+<ul>
+<li>Hacher les mots de passe (bcrypt, Argon2 — jamais MD5 en clair)</li>
+<li>Chiffrer les données sensibles en base</li>
+<li>Ne pas logger les données personnelles inutilement</li>
+<li>Mettre une bannière de consentement pour les cookies non essentiels</li>
+<li>Prévoir un formulaire de demande de suppression de compte</li>
+</ul>
+<h2>Activité 1 — Les principes</h2>
+<div class="component-quiz-qcm" data-quiz><p class="quiz-question">Une application collecte l&#x27;adresse IP, le nom, le prénom, la date de naissance ET la couleur préférée de l&#x27;utilisateur pour lui envoyer une newsletter. Quel principe du RGPD est potentiellement violé ?</p><div class="quiz-choices"><label><input type="radio" name="q-42" data-correct="false"> Licéité</label><label><input type="radio" name="q-42" data-correct="true"> Minimisation des données</label><label><input type="radio" name="q-42" data-correct="false"> Exactitude</label><label><input type="radio" name="q-42" data-correct="false"> Limitation de la conservation</label></div><button class="quiz-submit" type="button">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<div class="component-quiz-qcm" data-quiz><p class="quiz-question">Une startup garde indéfiniment les comptes des utilisateurs même après leur désinscription. Quel(s) principe(s) sont violés ?</p><div class="quiz-choices"><label><input type="radio" name="q-43" data-correct="true"> Limitation de la conservation</label><label><input type="radio" name="q-43" data-correct="false"> Intégrité et confidentialité</label><label><input type="radio" name="q-43" data-correct="false"> Exactitude</label><label><input type="radio" name="q-43" data-correct="false"> Minimisation des données</label></div><button class="quiz-submit" type="button">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<h2>Activité 2 — Rôles</h2>
+<div class="component-quiz-qcm" data-quiz><p class="quiz-question">Une ESN développe une application de gestion RH pour le compte d&#x27;une entreprise cliente. Quel est le rôle de l&#x27;ESN vis-à-vis des données des salariés ?</p><div class="quiz-choices"><label><input type="radio" name="q-44" data-correct="false"> Responsable de traitement</label><label><input type="radio" name="q-44" data-correct="true"> Sous-traitant</label><label><input type="radio" name="q-44" data-correct="false"> DPO</label><label><input type="radio" name="q-44" data-correct="false"> Autorité de contrôle</label></div><button class="quiz-submit" type="button">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<div class="component-quiz-texte" data-reponse="CNIL"><p class="quiz-question">Quel est le nom de l&#x27;autorité française chargée de contrôler le respect du RGPD ?</p><input type="text" class="quiz-input"><button type="button" class="quiz-submit">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<h2>Activité 3 — Cas développeur</h2>
+<p>Tu développes une application web pour une PME qui vend des formations en ligne. L'application collecte le nom, l'e-mail, et la progression dans les cours.</p>
+<div class="component-quiz-qcm" data-quiz><p class="quiz-question">Parmi ces bonnes pratiques, lesquelles dois-tu impérativement appliquer ?</p><div class="quiz-choices"><label><input type="radio" name="q-45" data-correct="true"> Hacher les mots de passe avec un algorithme robuste (bcrypt)</label><label><input type="radio" name="q-45" data-correct="true"> Afficher une bannière de consentement pour les cookies analytiques</label><label><input type="radio" name="q-45" data-correct="false"> Stocker les mots de passe en clair dans la base de données</label><label><input type="radio" name="q-45" data-correct="true"> Permettre à chaque utilisateur de télécharger ses données</label><label><input type="radio" name="q-45" data-correct="true"> Prévoir une procédure de suppression de compte</label></div><button class="quiz-submit" type="button">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<div class="component-quiz-texte" data-reponse="minimisation"><p class="quiz-question">Comment appelle-t-on le principe qui oblige à ne collecter que les données strictement nécessaires ?</p><input type="text" class="quiz-input"><button type="button" class="quiz-submit">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<h2>Aide IA</h2>
+<div class="component-aide-ia"><div class="aide-ia-label">💡 Comment l'IA peut t'aider</div><pre class="aide-ia-prompt">Je suis étudiant en BTS SIO et je dois expliquer les obligations RGPD
+d&#x27;un développeur pour une situation précise : [décris l&#x27;application et
+les données collectées].
+Aide-moi à identifier quels principes du RGPD s&#x27;appliquent et quelles
+mesures techniques mettre en place, sans me donner la réponse directe.
+Pose-moi des questions.</pre><button type="button" class="aide-ia-copy">Copier le prompt</button></div>
+<h2>Solution</h2>
+<details class="component-reveal"><summary>Voir les éléments de correction</summary><div class="reveal-content">**Activité 1 :**
+- Collecte de la &quot;couleur préférée&quot; : aucune utilité pour une newsletter
+  → violation du principe de minimisation.
+- Garder des comptes après désinscription sans délai défini → violation
+  du principe de limitation de la conservation.
+**Activité 2 :**
+- L&#x27;ESN est sous-traitant (elle traite les données pour le compte du client).
+- Le client est responsable de traitement.
+- La CNIL est l&#x27;autorité de contrôle française.
+**Activité 3 :**
+- Bonnes pratiques obligatoires : hachage des mots de passe, bannière de
+  consentement pour cookies non essentiels, portabilité des données,
+  procédure de suppression.
+- Ne JAMAIS stocker un mot de passe en clair.
+- Le principe s&#x27;appelle la minimisation des données.</div></details>
+<h2>Auto-évaluation</h2>
+<div class="component-auto-eval" data-auto-eval><p>Où en es-tu ?</p><button data-eval="ok">😊 Compris</button><button data-eval="hesitant">🤔 À revoir</button><button data-eval="bloque">😣 Bloqué</button></div>
+      </section>
+    
+      <section id="section-6" data-section-index="6">
+        <h2>
+          <span class="section-badge">6</span>
+          Analyser un marché IT et la concurrence
+        </h2>
+        
+          <details class="objectifs">
+            <summary>Objectifs de cette section</summary>
+            <ul>
+              <li>Distinguer les différents types de marchés (monopole, oligopole, concurrence)</li><li>Identifier les acteurs d&#39;un marché IT</li><li>Utiliser des outils simples d&#39;analyse concurrentielle</li>
+            </ul>
+          </details>
+        
+        <h2>Rappel de cours</h2>
+<p>Un <strong>marché</strong> est la rencontre entre une offre (entreprises qui vendent) et une demande (clients qui achètent). La structure du marché dépend du nombre d'acteurs.</p>
+<h3>Structures de marché</h3>
+<table>
+<thead>
+<tr>
+<th>Structure</th>
+<th>Caractéristique</th>
+<th>Exemple IT</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Monopole</td>
+<td>Un seul vendeur</td>
+<td>Réseau électrique (pas vraiment IT)</td>
+</tr>
+<tr>
+<td>Oligopole</td>
+<td>Quelques grands acteurs</td>
+<td>Cloud public (AWS, Azure, GCP)</td>
+</tr>
+<tr>
+<td>Concurrence monopolistique</td>
+<td>Beaucoup d'acteurs, produits différenciés</td>
+<td>Agences web, ESN locales</td>
+</tr>
+<tr>
+<td>Concurrence pure et parfaite</td>
+<td>Beaucoup d'acteurs, produits identiques</td>
+<td>Rare en IT</td>
+</tr>
+</tbody>
+</table>
+<h3>Analyser la position concurrentielle</h3>
+<p>La <strong>chaîne de valeur</strong> et les <strong>5 forces de Porter</strong> permettent d'analyser un marché. Pour un BTS SIO, retenons trois questions clés :</p>
+<ol>
+<li><strong>Qui sont les concurrents directs ?</strong> (même offre, même cible)</li>
+<li><strong>Quels sont les produits de substitution ?</strong> (offres alternatives qui répondent au même besoin)</li>
+<li><strong>Quel est le pouvoir de négociation des clients ?</strong> (peuvent-ils facilement changer de prestataire ?)</li>
+</ol>
+<h3>Différenciation et positionnement</h3>
+<p>Pour résister à la concurrence, une entreprise peut se <strong>différencier</strong> :
+- Par le prix (moins cher)
+- Par la qualité / spécialisation (meilleur dans un domaine précis)
+- Par l'innovation (fonctionnalité unique)
+- Par la relation client (service, réactivité)</p>
+<p><strong>Exemple :</strong> Une ESN de 20 salariés spécialisée uniquement en cybersécurité se différencie des grandes ESN généralistes par sa spécialisation — elle est "l'expert cyber" pour les PME locales.</p>
+<h2>Activité 1 — Type de marché</h2>
+<div class="component-quiz-qcm" data-quiz><p class="quiz-question">Le marché du cloud public (hébergement serveur) est dominé par AWS (Amazon), Azure (Microsoft) et Google Cloud. Quelle structure de marché cela représente-t-il ?</p><div class="quiz-choices"><label><input type="radio" name="q-46" data-correct="false"> Monopole</label><label><input type="radio" name="q-46" data-correct="true"> Oligopole</label><label><input type="radio" name="q-46" data-correct="false"> Concurrence pure et parfaite</label><label><input type="radio" name="q-46" data-correct="false"> Concurrence monopolistique</label></div><button class="quiz-submit" type="button">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<div class="component-quiz-qcm" data-quiz><p class="quiz-question">Deux cents agences web indépendantes proposent des sites vitrines pour PME locales, avec des prix et approches différents. Quelle structure de marché ?</p><div class="quiz-choices"><label><input type="radio" name="q-47" data-correct="false"> Monopole</label><label><input type="radio" name="q-47" data-correct="false"> Oligopole</label><label><input type="radio" name="q-47" data-correct="true"> Concurrence monopolistique</label><label><input type="radio" name="q-47" data-correct="false"> Concurrence pure et parfaite</label></div><button class="quiz-submit" type="button">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<h2>Activité 2 — Analyse concurrentielle</h2>
+<p>Une startup propose un logiciel de facturation en ligne (SaaS) pour les artisans. Ses concurrents sont : QuickBooks, Sage, et plusieurs autres SaaS français.</p>
+<div class="component-quiz-qcm" data-quiz><p class="quiz-question">Qu&#x27;est-ce qu&#x27;un produit de substitution pour ce logiciel de facturation ?</p><div class="quiz-choices"><label><input type="radio" name="q-48" data-correct="false"> Un autre logiciel SaaS de facturation concurrent</label><label><input type="radio" name="q-48" data-correct="true"> Un tableau Excel fait maison</label><label><input type="radio" name="q-48" data-correct="true"> Un logiciel de comptabilité complet intégrant la facturation</label><label><input type="radio" name="q-48" data-correct="false"> Un artisan qui n&#x27;émet pas de factures</label></div><button class="quiz-submit" type="button">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<div class="component-quiz-texte" data-reponse="élevé"><p class="quiz-question">Si les artisans peuvent facilement passer d&#x27;un logiciel à un autre en quelques clics, comment qualifie-t-on leur pouvoir de négociation ?</p><input type="text" class="quiz-input"><button type="button" class="quiz-submit">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<h2>Activité 3 — Positionnement</h2>
+<div class="component-quiz-qcm" data-quiz><p class="quiz-question">Une petite ESN (8 personnes) veut se positionner sur un marché local face à des grandes SSII nationales. Quelle stratégie de différenciation est la plus adaptée ?</p><div class="quiz-choices"><label><input type="radio" name="q-49" data-correct="false"> Baisser massivement les prix sous ceux des grandes SSII</label><label><input type="radio" name="q-49" data-correct="true"> {&#x27;Se spécialiser dans un secteur précis (ex&#x27;: &#x27;santé, industrie locale) &#x27;}</label><label><input type="radio" name="q-49" data-correct="false"> Proposer exactement le même catalogue que les grandes SSII</label><label><input type="radio" name="q-49" data-correct="false"> Cibler uniquement les grands comptes nationaux</label></div><button class="quiz-submit" type="button">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<h2>Aide IA</h2>
+<div class="component-aide-ia"><div class="aide-ia-label">💡 Comment l'IA peut t'aider</div><pre class="aide-ia-prompt">Je suis étudiant en BTS SIO. J&#x27;analyse un marché IT : [décris le marché
+et les acteurs].
+Aide-moi à identifier la structure du marché et les stratégies de
+positionnement possibles, en me guidant par des questions, sans me
+donner directement les réponses.</pre><button type="button" class="aide-ia-copy">Copier le prompt</button></div>
+<h2>Solution</h2>
+<details class="component-reveal"><summary>Voir les éléments de correction</summary><div class="reveal-content">**Activité 1 :**
+- AWS / Azure / GCP : oligopole (3 acteurs dominants).
+- Agences web locales : concurrence monopolistique (nombreux acteurs,
+  offres différenciées).
+**Activité 2 :**
+- Substituts : Excel, logiciel comptable complet — ils répondent au même
+  besoin de facturation sans être des concurrents directs SaaS.
+- Pouvoir de négociation élevé = les clients peuvent facilement changer
+  (faible coût de changement).
+**Activité 3 :**
+- Se spécialiser est la meilleure stratégie pour une petite ESN : elle
+  devient &quot;l&#x27;expert&quot; d&#x27;un secteur, ce que les grandes SSII ne peuvent
+  pas offrir avec la même proximité.</div></details>
+<h2>Auto-évaluation</h2>
+<div class="component-auto-eval" data-auto-eval><p>Où en es-tu ?</p><button data-eval="ok">😊 Compris</button><button data-eval="hesitant">🤔 À revoir</button><button data-eval="bloque">😣 Bloqué</button></div>
+      </section>
+    
+      <section id="section-7" data-section-index="7">
+        <h2>
+          <span class="section-badge">7</span>
+          Organisation du travail — hiérarchique, matricielle et agile
+        </h2>
+        
+          <details class="objectifs">
+            <summary>Objectifs de cette section</summary>
+            <ul>
+              <li>Distinguer structure hiérarchique, matricielle et organisation agile</li><li>Identifier l&#39;organisation adaptée à différents contextes IT</li><li>Comprendre le rôle des acteurs dans chaque structure</li>
+            </ul>
+          </details>
+        
+        <h2>Rappel de cours</h2>
+<p><strong>Organiser le travail</strong>, c'est décider qui fait quoi, qui décide, et comment les équipes communiquent. Il existe plusieurs modèles.</p>
+<h3>Structure hiérarchique (linéaire)</h3>
+<p>Chaque salarié a un seul supérieur direct. Les ordres descendent de haut en bas.</p>
+<pre><code>Directeur général
+    └── Responsable technique
+            ├── Dev 1
+            ├── Dev 2
+            └── Dev 3
+</code></pre>
+<ul>
+<li>Avantage : claire, chacun sait à qui rendre des comptes.</li>
+<li>Inconvénient : lente pour décider, peu adaptée aux changements rapides.</li>
+<li>Exemple IT : PME de maintenance informatique bien établie, avec un patron, un responsable technique, des techniciens.</li>
+</ul>
+<h3>Structure matricielle</h3>
+<p>Un salarié a deux responsables : un responsable métier (son chef de département) et un chef de projet.</p>
+<ul>
+<li>Avantage : spécialistes partagés entre plusieurs projets.</li>
+<li>Inconvénient : conflits de priorité possibles entre les deux responsables.</li>
+<li>Exemple IT : Grande ESN où un développeur Python travaille à la fois pour le projet A (client banque) et le projet B (client industrie), avec deux chefs de projet différents.</li>
+</ul>
+<h3>Organisation agile (Scrum, Kanban)</h3>
+<p>Pas vraiment une structure hiérarchique au sens classique. L'équipe s'auto-organise en cycles courts appelés <strong>sprints</strong> (1 à 4 semaines).</p>
+<p>Rôles clés en Scrum :
+- <strong>Product Owner (PO)</strong> : porte la vision du produit, priorise les fonctionnalités.
+- <strong>Scrum Master</strong> : facilite les réunions, lève les obstacles.
+- <strong>Équipe de développement</strong> : réalise le travail, s'engage sur un objectif de sprint.</p>
+<ul>
+<li>Avantage : très réactif aux changements, livraisons fréquentes.</li>
+<li>Inconvénient : demande discipline et maturité de l'équipe, moins adaptée aux projets très réglementés.</li>
+<li>Exemple IT : Startup qui sort une nouvelle fonctionnalité de son SaaS toutes les 2 semaines.</li>
+</ul>
+<h3>Télétravail et droit à la déconnexion</h3>
+<p>La généralisation du télétravail (accélérée par la pandémie) a introduit de nouvelles règles. Le <strong>droit à la déconnexion</strong> (loi El Khomri, 2016) oblige les entreprises à définir des plages où les salariés ne sont pas tenus de répondre aux messages.</p>
+<h2>Activité 1 — Identifier la structure</h2>
+<div class="component-quiz-qcm" data-quiz><p class="quiz-question">Dans une PME de 15 personnes, chaque développeur a un seul responsable technique qui lui assigne toutes ses tâches. Quelle structure est en place ?</p><div class="quiz-choices"><label><input type="radio" name="q-50" data-correct="false"> Matricielle</label><label><input type="radio" name="q-50" data-correct="true"> Hiérarchique</label><label><input type="radio" name="q-50" data-correct="false"> Agile (Scrum)</label><label><input type="radio" name="q-50" data-correct="false"> En réseau</label></div><button class="quiz-submit" type="button">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<div class="component-quiz-qcm" data-quiz><p class="quiz-question">Une ESN de 80 personnes affecte ses consultants à plusieurs projets simultanément, chacun avec un chef de projet différent, tout en appartenant à un département &quot;Infrastructure&quot;. Quelle structure ?</p><div class="quiz-choices"><label><input type="radio" name="q-51" data-correct="false"> Hiérarchique</label><label><input type="radio" name="q-51" data-correct="true"> Matricielle</label><label><input type="radio" name="q-51" data-correct="false"> Agile pure</label><label><input type="radio" name="q-51" data-correct="false"> Fonctionnelle simple</label></div><button class="quiz-submit" type="button">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<h2>Activité 2 — Rôles agiles</h2>
+<div class="component-quiz-qcm" data-quiz><p class="quiz-question">Dans une équipe Scrum, qui est chargé de prioriser les fonctionnalités à développer ?</p><div class="quiz-choices"><label><input type="radio" name="q-52" data-correct="false"> Le Scrum Master</label><label><input type="radio" name="q-52" data-correct="true"> Le Product Owner</label><label><input type="radio" name="q-52" data-correct="false"> Le développeur senior</label><label><input type="radio" name="q-52" data-correct="false"> Le client directement</label></div><button class="quiz-submit" type="button">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<div class="component-quiz-texte" data-reponse="sprint"><p class="quiz-question">Comment appelle-t-on les cycles courts de 1 à 4 semaines utilisés dans les méthodes agiles ?</p><input type="text" class="quiz-input"><button type="button" class="quiz-submit">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<h2>Activité 3 — Choisir la bonne organisation</h2>
+<div class="component-quiz-qcm" data-quiz><p class="quiz-question">Une startup de 6 développeurs lance une application mobile et doit livrer des mises à jour très fréquentes selon les retours utilisateurs. Quelle organisation est la plus adaptée ?</p><div class="quiz-choices"><label><input type="radio" name="q-53" data-correct="false"> Hiérarchique classique</label><label><input type="radio" name="q-53" data-correct="true"> Agile (Scrum ou Kanban)</label><label><input type="radio" name="q-53" data-correct="false"> Matricielle avec deux chefs de projet</label><label><input type="radio" name="q-53" data-correct="false"> Aucune organisation formelle</label></div><button class="quiz-submit" type="button">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<div class="component-quiz-texte" data-reponse="loi El Khomri"><p class="quiz-question">Quel texte de loi a instauré le droit à la déconnexion pour les salariés français ?</p><input type="text" class="quiz-input"><button type="button" class="quiz-submit">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<h2>Aide IA</h2>
+<div class="component-aide-ia"><div class="aide-ia-label">💡 Comment l'IA peut t'aider</div><pre class="aide-ia-prompt">Je suis étudiant en BTS SIO. Je dois analyser l&#x27;organisation du travail
+d&#x27;une entreprise IT fictive : [décris l&#x27;entreprise, sa taille, ses projets].
+Aide-moi à identifier quelle structure organisationnelle est en place
+et si elle est adaptée, en me posant des questions, sans me donner
+la réponse directe.</pre><button type="button" class="aide-ia-copy">Copier le prompt</button></div>
+<h2>Solution</h2>
+<details class="component-reveal"><summary>Voir les éléments de correction</summary><div class="reveal-content">**Activité 1 :**
+- Un seul responsable par développeur → structure hiérarchique.
+- Plusieurs chefs de projet + département métier → structure matricielle.
+**Activité 2 :**
+- Le Product Owner priorise les fonctionnalités (backlog).
+- Les cycles courts s&#x27;appellent des sprints (généralement 2 semaines).
+**Activité 3 :**
+- Livraisons fréquentes + retours utilisateurs rapides → agile.
+  L&#x27;organisation agile est conçue exactement pour ce type de contexte.
+- La loi El Khomri (2016) a créé le droit à la déconnexion.</div></details>
+<h2>Auto-évaluation</h2>
+<div class="component-auto-eval" data-auto-eval><p>Où en es-tu ?</p><button data-eval="ok">😊 Compris</button><button data-eval="hesitant">🤔 À revoir</button><button data-eval="bloque">😣 Bloqué</button></div>
+      </section>
+    
+      <section id="section-8" data-section-index="8">
+        <h2>
+          <span class="section-badge">8</span>
+          Stratégie d&#39;entreprise — diversification et spécialisation
+        </h2>
+        
+          <details class="objectifs">
+            <summary>Objectifs de cette section</summary>
+            <ul>
+              <li>Distinguer stratégie de spécialisation et stratégie de diversification</li><li>Identifier d&#39;autres stratégies de base (coût, différenciation, niche)</li><li>Relier les choix stratégiques à des exemples concrets du secteur IT</li>
+            </ul>
+          </details>
+        
+        <h2>Rappel de cours</h2>
+<p>La <strong>stratégie d'entreprise</strong> désigne l'ensemble des décisions à long terme qui permettent à l'entreprise d'atteindre ses objectifs et de se démarquer de la concurrence.</p>
+<h3>Stratégies génériques (Michael Porter)</h3>
+<p><strong>1. Domination par les coûts</strong>
+L'entreprise vise à produire moins cher que ses concurrents pour attirer les clients sensibles au prix.
+- Exemple IT : hébergeur low-cost qui propose des VPS à 2 €/mois en taillant sur les marges.</p>
+<p><strong>2. Différenciation</strong>
+L'entreprise offre un produit ou service perçu comme unique (qualité, innovation, service).
+- Exemple IT : Apple, qui facture ses appareils plus cher grâce à une image de marque forte.</p>
+<p><strong>3. Focalisation / niche</strong>
+L'entreprise cible un segment très précis du marché.
+- Exemple IT : une ESN spécialisée uniquement dans la sécurité des systèmes industriels (SCADA).</p>
+<h3>Stratégies de croissance (Ansoff)</h3>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>Marchés actuels</th>
+<th>Nouveaux marchés</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Produits actuels</strong></td>
+<td>Pénétration du marché</td>
+<td>Extension de marché</td>
+</tr>
+<tr>
+<td><strong>Nouveaux produits</strong></td>
+<td>Développement produit</td>
+<td>Diversification</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Spécialisation</strong> : l'entreprise concentre toutes ses ressources sur un seul domaine d'activité pour y exceller.
+- Risque : forte dépendance à un seul secteur.
+- Avantage : expertise reconnue, efficacité.
+- Exemple : une startup qui développe uniquement des solutions de cybersécurité pour les hôpitaux.</p>
+<p><strong>Diversification</strong> : l'entreprise développe de nouveaux produits ou s'attaque à de nouveaux marchés.
+- Risque : dispersion des ressources, manque de focus.
+- Avantage : répartition des risques.
+- Exemple : une ESN de développement web qui se lance dans la formation informatique et le conseil RH.</p>
+<h3>Intégration et externalisation</h3>
+<ul>
+<li><strong>Intégration verticale</strong> : l'entreprise prend en charge des activités en amont ou en aval (ex : un éditeur logiciel qui rachète son hébergeur).</li>
+<li><strong>Externalisation (outsourcing)</strong> : on confie une activité à un prestataire extérieur (ex : externaliser le support helpdesk à une ESN spécialisée).</li>
+</ul>
+<h2>Activité 1 — Identifier la stratégie</h2>
+<div class="component-quiz-qcm" data-quiz><p class="quiz-question">Une ESN de développement web décide de se lancer dans la revente de matériel informatique et la formation bureautique. Quelle stratégie adopte-t-elle ?</p><div class="quiz-choices"><label><input type="radio" name="q-54" data-correct="false"> Spécialisation</label><label><input type="radio" name="q-54" data-correct="true"> Diversification</label><label><input type="radio" name="q-54" data-correct="false"> Domination par les coûts</label><label><input type="radio" name="q-54" data-correct="false"> Intégration verticale</label></div><button class="quiz-submit" type="button">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<div class="component-quiz-qcm" data-quiz><p class="quiz-question">Une startup SaaS décide de concentrer toute son équipe sur un unique logiciel de gestion de chantier pour les artisans du bâtiment. Quelle(s) stratégie(s) identifie-t-on ?</p><div class="quiz-choices"><label><input type="radio" name="q-55" data-correct="true"> Spécialisation</label><label><input type="radio" name="q-55" data-correct="true"> Focalisation sur une niche</label><label><input type="radio" name="q-55" data-correct="false"> Diversification</label><label><input type="radio" name="q-55" data-correct="false"> Extension de marché</label></div><button class="quiz-submit" type="button">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<h2>Activité 2 — Avantages et risques</h2>
+<div class="component-quiz-qcm" data-quiz><p class="quiz-question">Quels sont les risques de la stratégie de spécialisation ?</p><div class="quiz-choices"><label><input type="radio" name="q-56" data-correct="false"> Dispersion des ressources sur trop de domaines</label><label><input type="radio" name="q-56" data-correct="true"> Forte dépendance à un seul secteur d&#x27;activité</label><label><input type="radio" name="q-56" data-correct="false"> Perte de l&#x27;expertise dans le domaine principal</label><label><input type="radio" name="q-56" data-correct="false"> Manque de reconnaissance sur le marché</label></div><button class="quiz-submit" type="button">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<div class="component-quiz-texte" data-reponse="externalisation"><p class="quiz-question">Comment appelle-t-on la stratégie consistant à confier à un prestataire extérieur une activité non stratégique de l&#x27;entreprise ?</p><input type="text" class="quiz-input"><button type="button" class="quiz-submit">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<h2>Activité 3 — Cas stratégique</h2>
+<p>Une PME de 25 personnes propose de l'infogérance (maintenance des serveurs et postes) pour des entreprises locales. Elle envisage soit de se spécialiser dans la cybersécurité, soit de proposer aussi du développement web.</p>
+<div class="component-quiz-qcm" data-quiz><p class="quiz-question">Quels arguments plaident pour la stratégie de spécialisation cybersécurité ?</p><div class="quiz-choices"><label><input type="radio" name="q-57" data-correct="true"> La cybersécurité est un marché en forte croissance</label><label><input type="radio" name="q-57" data-correct="true"> L&#x27;entreprise capitalise sur une expertise existante en systèmes</label><label><input type="radio" name="q-57" data-correct="false"> Cela diversifie le risque financier</label><label><input type="radio" name="q-57" data-correct="false"> Cela élargit immédiatement la clientèle potentielle</label></div><button class="quiz-submit" type="button">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<div class="component-quiz-qcm" data-quiz><p class="quiz-question">Quels arguments plaident pour la diversification vers le développement web ?</p><div class="quiz-choices"><label><input type="radio" name="q-58" data-correct="true"> Répartir les risques si l&#x27;infogérance ralentit</label><label><input type="radio" name="q-58" data-correct="true"> Proposer un service complet aux clients existants</label><label><input type="radio" name="q-58" data-correct="false"> Renforcer l&#x27;expertise en sécurité</label><label><input type="radio" name="q-58" data-correct="false"> Réduire les coûts de fonctionnement</label></div><button class="quiz-submit" type="button">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<h2>Aide IA</h2>
+<div class="component-aide-ia"><div class="aide-ia-label">💡 Comment l'IA peut t'aider</div><pre class="aide-ia-prompt">Je suis étudiant en BTS SIO. Je dois analyser la stratégie d&#x27;une
+entreprise IT : [décris l&#x27;entreprise, ses activités actuelles et
+son projet de développement].
+Aide-moi à identifier la stratégie mise en oeuvre et ses avantages
+et inconvénients, en me posant des questions pour guider ma réflexion.</pre><button type="button" class="aide-ia-copy">Copier le prompt</button></div>
+<h2>Solution</h2>
+<details class="component-reveal"><summary>Voir les éléments de correction</summary><div class="reveal-content">**Activité 1 :**
+- L&#x27;ESN qui ajoute du matériel et de la formation → diversification
+  (nouveaux produits sur de nouveaux marchés).
+**Activité 2 :**
+- Spécialisation : risque principal = dépendance à un seul secteur.
+  Si ce secteur ralentit, l&#x27;entreprise est vulnérable.
+- Externalisation = outsourcing.
+**Activité 3 :**
+- Arguments pour la spécialisation cyber : marché porteur, expertise
+  systèmes existante valorisable, positionnement clair.
+- Arguments pour la diversification web : répartition du risque,
+  offre complète pour les clients actuels.
+- Il n&#x27;y a pas de &quot;bonne réponse&quot; unique — l&#x27;arbitrage dépend
+  des ressources humaines disponibles et de la vision du dirigeant.</div></details>
+<h2>Auto-évaluation</h2>
+<div class="component-auto-eval" data-auto-eval><p>Où en es-tu ?</p><button data-eval="ok">😊 Compris</button><button data-eval="hesitant">🤔 À revoir</button><button data-eval="bloque">😣 Bloqué</button></div>
+      </section>
+    
+      <section id="section-9" data-section-index="9">
+        <h2>
+          <span class="section-badge">9</span>
+          Mini-cas — Analyse de TechSud Solutions
+        </h2>
+        
+          <details class="objectifs">
+            <summary>Objectifs de cette section</summary>
+            <ul>
+              <li>Mobiliser les concepts CEJM sur un cas réel inventé</li><li>Identifier parties prenantes, structure juridique, stratégie et organisation</li><li>Rédiger une analyse argumentée courte</li>
+            </ul>
+          </details>
+        
+        <h2>Présentation du cas</h2>
+<p><strong>TechSud Solutions</strong> est une PME informatique basée à Montpellier, créée en 2018 sous forme de SAS par deux associés : Mia (directrice technique, ancienne ingénieure réseaux) et Romain (directeur commercial, ex-commercial SSII).</p>
+<p><strong>Activités principales :</strong>
+- Infogérance pour PME locales (maintenance des serveurs et postes de travail)
+- Développement d'une application SaaS de gestion d'intervention (commercialisée depuis 2021)</p>
+<p><strong>Quelques chiffres :</strong>
+- 18 salariés (8 techniciens infogérance, 5 développeurs, 3 commerciaux, 1 assistante, 1 DPO à mi-temps)
+- CA 2023 : 1,8 million d'euros
+- 60 clients PME en infogérance, 120 abonnés SaaS
+- Hébergement du SaaS confié à un prestataire cloud français (OVHcloud)</p>
+<p><strong>Enjeux actuels :</strong>
+- Un grand concurrent national vient de proposer ses services dans la région avec des tarifs 20 % inférieurs.
+- TechSud envisage de se spécialiser en cybersécurité pour les PME de santé, un marché peu adressé localement.
+- Trois développeurs demandent à passer en full télétravail ; deux clients exigent des interventions physiques.</p>
+<h2>Activité 1 — Parties prenantes</h2>
+<div class="component-quiz-qcm" data-quiz><p class="quiz-question">Parmi ces acteurs, lesquels sont des parties prenantes INTERNES de TechSud Solutions ?</p><div class="quiz-choices"><label><input type="radio" name="q-59" data-correct="true"> Mia et Romain (associés-dirigeants)</label><label><input type="radio" name="q-59" data-correct="true"> Les 18 salariés</label><label><input type="radio" name="q-59" data-correct="false"> Les 60 clients PME en infogérance</label><label><input type="radio" name="q-59" data-correct="false"> OVHcloud (hébergeur)</label><label><input type="radio" name="q-59" data-correct="true"> Le DPO à mi-temps</label></div><button class="quiz-submit" type="button">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<div class="component-quiz-qcm" data-quiz><p class="quiz-question">Quelle(s) attente(s) ont probablement les développeurs qui réclament le full télétravail ?</p><div class="quiz-choices"><label><input type="radio" name="q-60" data-correct="true"> Meilleur équilibre vie professionnelle et personnelle</label><label><input type="radio" name="q-60" data-correct="true"> Réduction du temps de trajet</label><label><input type="radio" name="q-60" data-correct="false"> Augmentation de salaire</label><label><input type="radio" name="q-60" data-correct="false"> Accès à plus de projets clients</label></div><button class="quiz-submit" type="button">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<h2>Activité 2 — Structure juridique et organisation</h2>
+<div class="component-quiz-qcm" data-quiz><p class="quiz-question">TechSud a été créée en SAS. Quel avantage principal leur a offert ce statut depuis 2018 ?</p><div class="quiz-choices"><label><input type="radio" name="q-61" data-correct="false"> Capital minimum obligatoire faible</label><label><input type="radio" name="q-61" data-correct="true"> Flexibilité statutaire et possibilité future d&#x27;ouvrir le capital à des investisseurs</label><label><input type="radio" name="q-61" data-correct="false"> Limitation stricte à deux associés</label><label><input type="radio" name="q-61" data-correct="false"> Exonération de charges sociales</label></div><button class="quiz-submit" type="button">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<div class="component-quiz-texte" data-reponse="Scrum"><p class="quiz-question">Les développeurs travaillent en sprints de 2 semaines avec un Product Owner qui priorise les fonctionnalités du SaaS. Comment s&#x27;appelle cette méthode de travail ?</p><input type="text" class="quiz-input"><button type="button" class="quiz-submit">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<h2>Activité 3 — RGPD et droit</h2>
+<p>TechSud héberge les données de ses clients PME (données salariés, données de maintenance). Elle a recruté un DPO à mi-temps.</p>
+<div class="component-quiz-qcm" data-quiz><p class="quiz-question">Quel est le rôle du DPO chez TechSud ?</p><div class="quiz-choices"><label><input type="radio" name="q-62" data-correct="false"> Développer le SaaS</label><label><input type="radio" name="q-62" data-correct="true"> Assurer la conformité RGPD et être l&#x27;interlocuteur de la CNIL</label><label><input type="radio" name="q-62" data-correct="false"> Gérer les contrats commerciaux</label><label><input type="radio" name="q-62" data-correct="false"> Superviser les techniciens</label></div><button class="quiz-submit" type="button">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<div class="component-quiz-qcm" data-quiz><p class="quiz-question">TechSud sous-traite l&#x27;hébergement du SaaS à OVHcloud. Quel est le rôle de TechSud vis-à-vis des données des abonnés SaaS ?</p><div class="quiz-choices"><label><input type="radio" name="q-63" data-correct="false"> Sous-traitant (elle traite les données pour le compte d&#x27;OVHcloud)</label><label><input type="radio" name="q-63" data-correct="true"> Responsable de traitement</label><label><input type="radio" name="q-63" data-correct="false"> Simple hébergeur</label><label><input type="radio" name="q-63" data-correct="false"> Autorité de contrôle</label></div><button class="quiz-submit" type="button">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<h2>Activité 4 — Stratégie et concurrence</h2>
+<div class="component-quiz-qcm" data-quiz><p class="quiz-question">Le grand concurrent arrive avec des tarifs 20 % inférieurs. Quelle stratégie applique-t-il ?</p><div class="quiz-choices"><label><input type="radio" name="q-64" data-correct="false"> Différenciation par la qualité</label><label><input type="radio" name="q-64" data-correct="true"> Domination par les coûts</label><label><input type="radio" name="q-64" data-correct="false"> Focalisation sur une niche</label><label><input type="radio" name="q-64" data-correct="false"> Diversification</label></div><button class="quiz-submit" type="button">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<div class="component-quiz-qcm" data-quiz><p class="quiz-question">TechSud envisage de se spécialiser dans la cybersécurité pour les PME de santé. Quels arguments soutiennent cette décision ?</p><div class="quiz-choices"><label><input type="radio" name="q-65" data-correct="true"> Les données de santé sont des données sensibles très réglementées, créant un fort besoin</label><label><input type="radio" name="q-65" data-correct="true"> La compétition est faible localement sur ce créneau</label><label><input type="radio" name="q-65" data-correct="false"> Cela leur permet de réduire leurs tarifs d&#x27;infogérance</label><label><input type="radio" name="q-65" data-correct="true"> TechSud a déjà des compétences systèmes valorisables en sécurité</label></div><button class="quiz-submit" type="button">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<h2>Activité 5 — Synthèse (réponse courte)</h2>
+<div class="component-quiz-texte" data-reponse="se différencier par la spécialisation"><p class="quiz-question">En une phrase, quelle stratégie recommandes-tu à TechSud pour répondre au concurrent low-cost ?</p><input type="text" class="quiz-input"><button type="button" class="quiz-submit">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<h2>Aide IA</h2>
+<div class="component-aide-ia"><div class="aide-ia-label">💡 Comment l'IA peut t'aider</div><pre class="aide-ia-prompt">Je suis étudiant en BTS SIO. Je dois analyser le cas TechSud Solutions.
+Je bloque sur [explique ce qui te pose problème : parties prenantes,
+stratégie, RGPD...].
+Aide-moi à structurer mon analyse en me posant des questions, sans
+me donner la réponse directe. Le cas est : une PME informatique de 18
+personnes à Montpellier, avec deux activités (infogérance + SaaS),
+qui fait face à un concurrent low-cost et envisage une spécialisation
+cybersécurité santé.</pre><button type="button" class="aide-ia-copy">Copier le prompt</button></div>
+<h2>Solution</h2>
+<details class="component-reveal"><summary>Voir les éléments de correction</summary><div class="reveal-content">**Activité 1 — Parties prenantes internes :**
+Mia, Romain, les 18 salariés (dont le DPO). Les clients et OVHcloud
+sont externes.
+Les développeurs veulent le full télétravail pour équilibre vie pro/perso
+et réduction des trajets.
+**Activité 2 :**
+La SAS offre une flexibilité statutaire et la facilité d&#x27;ouvrir le
+capital à des investisseurs.
+La méthode de travail en sprints avec Product Owner = Scrum.
+**Activité 3 — RGPD :**
+Le DPO assure la conformité RGPD et est l&#x27;interlocuteur de la CNIL.
+TechSud est responsable de traitement (elle décide pourquoi et comment
+les données sont traitées). OVHcloud est sous-traitant.
+**Activité 4 — Stratégie :**
+Le concurrent applique une domination par les coûts.
+La spécialisation santé est pertinente car : données sensibles très
+réglementées (RGPD renforcé), faible concurrence locale, compétences
+systèmes existantes.
+**Activité 5 :**
+Réponse possible : se différencier par la spécialisation (cybersécurité
+santé) plutôt que de s&#x27;aligner sur les prix du concurrent. La guerre
+des prix est rarement gagnée par les PME face aux grandes SSII.</div></details>
+<h2>Auto-évaluation</h2>
+<div class="component-auto-eval" data-auto-eval><p>Où en es-tu ?</p><button data-eval="ok">😊 Compris</button><button data-eval="hesitant">🤔 À revoir</button><button data-eval="bloque">😣 Bloqué</button></div>
+      </section>
+    
+      <section id="section-10" data-section-index="10">
+        <h2>
+          <span class="section-badge">10</span>
+          Bilan final — CEJM
+        </h2>
+        
+          <details class="objectifs">
+            <summary>Objectifs de cette section</summary>
+            <ul>
+              <li>Faire le point sur les notions clés du cahier</li><li>Identifier les points à revoir avant la rentrée</li>
+            </ul>
+          </details>
+        
+        <h2>Ce que tu as travaillé dans ce cahier</h2>
+<p>Bravo d'être arrivé jusqu'ici ! Voici un récapitulatif des 8 notions clés abordées.</p>
+<table>
+<thead>
+<tr>
+<th>Thème</th>
+<th>Notion essentielle à retenir</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Parties prenantes</td>
+<td>Internes (salariés, dirigeants, actionnaires) vs externes (clients, État, banques)</td>
+</tr>
+<tr>
+<td>Structures juridiques</td>
+<td>EI = solo ; SARL = PME stable ; SAS = startup / levée de fonds</td>
+</tr>
+<tr>
+<td>Sources du droit</td>
+<td>Constitution &gt; droit européen (RGPD) &gt; loi &gt; décret</td>
+</tr>
+<tr>
+<td>RGPD</td>
+<td>7 principes, rôle DPO, droits des personnes, obligations développeur</td>
+</tr>
+<tr>
+<td>Marché et concurrence</td>
+<td>Oligopole, concurrence monopolistique, différenciation</td>
+</tr>
+<tr>
+<td>Organisation du travail</td>
+<td>Hiérarchique, matricielle, agile (Scrum/Kanban)</td>
+</tr>
+<tr>
+<td>Stratégie</td>
+<td>Spécialisation vs diversification, domination coûts vs différenciation</td>
+</tr>
+<tr>
+<td>Mini-cas</td>
+<td>Mobiliser tous les concepts sur une entreprise réelle inventée</td>
+</tr>
+</tbody>
+</table>
+<h2>Quiz de bilan</h2>
+<div class="component-quiz-qcm" data-quiz><p class="quiz-question">Lesquelles de ces propositions sont correctes concernant le RGPD ?</p><div class="quiz-choices"><label><input type="radio" name="q-66" data-correct="true"> Il s&#x27;applique directement dans toute l&#x27;UE sans transposition nationale</label><label><input type="radio" name="q-66" data-correct="true"> Il impose de minimiser les données collectées</label><label><input type="radio" name="q-66" data-correct="false"> Il concerne uniquement les grandes entreprises de plus de 250 salariés</label><label><input type="radio" name="q-66" data-correct="false"> Le DPO est obligatoire dans toutes les entreprises sans exception</label></div><button class="quiz-submit" type="button">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<div class="component-quiz-qcm" data-quiz><p class="quiz-question">Une startup qui développe un seul produit SaaS très pointu pour un secteur précis applique quelle(s) stratégie(s) ?</p><div class="quiz-choices"><label><input type="radio" name="q-67" data-correct="true"> Spécialisation</label><label><input type="radio" name="q-67" data-correct="true"> Focalisation sur une niche</label><label><input type="radio" name="q-67" data-correct="false"> Diversification</label><label><input type="radio" name="q-67" data-correct="false"> Domination par les coûts</label></div><button class="quiz-submit" type="button">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<div class="component-quiz-texte" data-reponse="SAS"><p class="quiz-question">Quel statut juridique permet le plus facilement d&#x27;ouvrir son capital à des investisseurs externes ?</p><input type="text" class="quiz-input"><button type="button" class="quiz-submit">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<h2>Points à revoir</h2>
+<p>Si tu as eu des difficultés sur certaines activités, voici comment les consolider avant la rentrée :</p>
+<ul>
+<li><strong>Parties prenantes</strong> : relis l'activité 1 et fais l'exercice de classer les acteurs d'une entreprise que tu connais.</li>
+<li><strong>Structures juridiques</strong> : compare les statuts en faisant un tableau de ta propre conception.</li>
+<li><strong>RGPD</strong> : essaie de lister les données personnelles qu'une app mobile collecte et vérifie si elles sont justifiées.</li>
+<li><strong>Stratégie</strong> : analyse une entreprise IT que tu utilises (Spotify, GitHub, OVHcloud) et identifie sa stratégie.</li>
+</ul>
+<h2>Ton bilan personnel</h2>
+<p>Prends quelques minutes pour noter tes réflexions : qu'est-ce qui était nouveau ? Qu'est-ce que tu avais déjà vu ? Qu'est-ce que tu veux approfondir à la rentrée ?</p>
+<div class="component-bilan" data-bilan><p>Mon bilan personnel (sauvegardé en local, exportable)</p><textarea rows="8" placeholder="Ce que j'ai appris, ce qui reste flou…"></textarea><button type="button" class="bilan-export">Exporter en .txt</button></div>
+<h2>Auto-évaluation finale</h2>
+<div class="component-auto-eval" data-auto-eval><p>Où en es-tu ?</p><button data-eval="ok">😊 Compris</button><button data-eval="hesitant">🤔 À revoir</button><button data-eval="bloque">😣 Bloqué</button></div>
+      </section>
+    
+  </main>
+
+</div>
+
+<footer>
+  <p>Cahier de vacances BTS SIO · Travail autonome estival · Bonne continuation !</p>
+</footer>
+
+<script>/* 00-progress.js */
+/* Storage core — shared by quiz, auto-eval, bilan, progress-bar */
+(function () {
+  const KEY_PREFIX = "c2v:";
+
+  function cahierKey() {
+    // derive a stable key from the document title
+    return KEY_PREFIX + (document.title || "default").replace(/\s+/g, "_");
+  }
+
+  function load() {
+    try {
+      return JSON.parse(localStorage.getItem(cahierKey()) || "{}");
+    } catch {
+      return {};
+    }
+  }
+
+  function save(state) {
+    try {
+      localStorage.setItem(cahierKey(), JSON.stringify(state));
+    } catch (e) {
+      console.warn("storage failed", e);
+    }
+  }
+
+  function update(path, value) {
+    const state = load();
+    state[path] = value;
+    save(state);
+    window.dispatchEvent(new CustomEvent("c2v:update"));
+  }
+
+  function get(path) {
+    return load()[path];
+  }
+
+  window.C2V = { load, save, update, get };
+})();
+
+
+/* 10-quiz-qcm.js */
+/* Quiz QCM — single/multi choice with feedback */
+(function () {
+  function init(root) {
+    const submit = root.querySelector(".quiz-submit");
+    const feedback = root.querySelector(".quiz-feedback");
+    if (!submit || !feedback) return;
+
+    submit.addEventListener("click", () => {
+      const inputs = root.querySelectorAll('input[type="radio"], input[type="checkbox"]');
+      let allCorrect = true;
+      let anyChecked = false;
+      inputs.forEach((inp) => {
+        if (inp.checked) {
+          anyChecked = true;
+          if (inp.dataset.correct !== "true") allCorrect = false;
+        } else {
+          if (inp.dataset.correct === "true") allCorrect = false;
+        }
+      });
+      if (!anyChecked) {
+        feedback.textContent = "Choisis au moins une réponse.";
+        feedback.className = "quiz-feedback ko";
+        return;
+      }
+      if (allCorrect) {
+        feedback.textContent = "✅ Correct !";
+        feedback.className = "quiz-feedback ok";
+      } else {
+        feedback.textContent = "❌ Pas tout à fait — réessaie ou consulte le rappel de cours.";
+        feedback.className = "quiz-feedback ko";
+      }
+    });
+  }
+
+  document.addEventListener("DOMContentLoaded", () => {
+    document.querySelectorAll(".component-quiz-qcm").forEach(init);
+  });
+})();
+
+
+/* 11-quiz-texte.js */
+/* Quiz texte — tolerant comparison */
+(function () {
+  function normalise(s) {
+    return s
+      .toLowerCase()
+      .normalize("NFD")
+      .replace(/[̀-ͯ]/g, "")
+      .replace(/\s+/g, " ")
+      .trim();
+  }
+
+  function init(root) {
+    const expected = root.dataset.reponse || "";
+    const input = root.querySelector(".quiz-input");
+    const submit = root.querySelector(".quiz-submit");
+    const feedback = root.querySelector(".quiz-feedback");
+    if (!input || !submit || !feedback) return;
+
+    submit.addEventListener("click", () => {
+      if (normalise(input.value) === normalise(expected)) {
+        feedback.textContent = "✅ Correct !";
+        feedback.className = "quiz-feedback ok";
+      } else {
+        feedback.textContent = "❌ Pas la bonne réponse — réessaie.";
+        feedback.className = "quiz-feedback ko";
+      }
+    });
+  }
+
+  document.addEventListener("DOMContentLoaded", () => {
+    document.querySelectorAll(".component-quiz-texte").forEach(init);
+  });
+})();
+
+
+/* 20-auto-eval.js */
+/* Auto-eval — 3 buttons, saves to storage, drives progress-bar */
+(function () {
+  function init(root) {
+    const section = root.closest("section[data-section-index]");
+    const sectionIdx = section ? section.dataset.sectionIndex : "0";
+    const key = "eval:section-" + sectionIdx;
+
+    const current = window.C2V.get(key);
+    if (current) {
+      const btn = root.querySelector(`button[data-eval="${current}"]`);
+      if (btn) btn.classList.add("selected");
+    }
+
+    root.querySelectorAll("button[data-eval]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        root.querySelectorAll("button").forEach((b) => b.classList.remove("selected"));
+        btn.classList.add("selected");
+        window.C2V.update(key, btn.dataset.eval);
+      });
+    });
+  }
+
+  document.addEventListener("DOMContentLoaded", () => {
+    document.querySelectorAll(".component-auto-eval").forEach(init);
+  });
+})();
+
+
+/* 30-progress-bar.js */
+/* Progress-bar component — now handled by sidebar (50-sidebar-nav.js).
+   This stub keeps the component-progress-bar div harmless. */
+(function () {
+  document.addEventListener("DOMContentLoaded", () => {
+    document.querySelectorAll(".component-progress-bar").forEach((el) => {
+      el.style.display = "none";
+    });
+  });
+})();
+
+
+/* 40-bilan.js */
+/* Bilan — autosave + export .txt */
+(function () {
+  function init(root) {
+    const textarea = root.querySelector("textarea");
+    const exportBtn = root.querySelector(".bilan-export");
+    if (!textarea) return;
+
+    textarea.value = window.C2V.get("bilan") || "";
+    textarea.addEventListener("input", () => {
+      window.C2V.update("bilan", textarea.value);
+    });
+
+    if (exportBtn) {
+      exportBtn.addEventListener("click", () => {
+        const title = document.title.replace(/[^\w-]+/g, "_");
+        const content = "Bilan — " + document.title + "\n\n" + (textarea.value || "");
+        const blob = new Blob([content], { type: "text/plain;charset=utf-8" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = `bilan-${title}.txt`;
+        a.click();
+        URL.revokeObjectURL(url);
+      });
+    }
+  }
+
+  document.addEventListener("DOMContentLoaded", () => {
+    document.querySelectorAll(".component-bilan").forEach(init);
+  });
+})();
+
+
+/* 41-aide-ia.js */
+/* Aide IA — copy prompt to clipboard */
+(function () {
+  function init(root) {
+    const btn = root.querySelector(".aide-ia-copy");
+    const pre = root.querySelector(".aide-ia-prompt");
+    if (!btn || !pre) return;
+
+    btn.addEventListener("click", async () => {
+      try {
+        await navigator.clipboard.writeText(pre.textContent);
+        btn.textContent = "Copié ✓";
+        setTimeout(() => (btn.textContent = "Copier le prompt"), 2000);
+      } catch {
+        btn.textContent = "Sélectionne le texte et copie manuellement";
+      }
+    });
+  }
+
+  document.addEventListener("DOMContentLoaded", () => {
+    document.querySelectorAll(".component-aide-ia").forEach(init);
+  });
+})();
+
+
+/* 42-code-copy.js */
+/* Code-block — copy button */
+(function () {
+  function init(root) {
+    const btn = root.querySelector(".code-copy");
+    const code = root.querySelector("code");
+    if (!btn || !code) return;
+    btn.addEventListener("click", async () => {
+      try {
+        await navigator.clipboard.writeText(code.textContent);
+        btn.textContent = "Copié ✓";
+        setTimeout(() => (btn.textContent = "Copier"), 2000);
+      } catch {
+        btn.textContent = "Sélectionne et copie manuellement";
+      }
+    });
+  }
+  document.addEventListener("DOMContentLoaded", () => {
+    document.querySelectorAll(".component-code").forEach(init);
+  });
+})();
+
+
+/* 50-sidebar-nav.js */
+/* Sidebar nav — active section highlight + progress */
+(function () {
+  const sections = document.querySelectorAll("main section[data-section-index]");
+  const navLinks = document.querySelectorAll("nav.sommaire a[data-nav-index]");
+  const fill     = document.querySelector(".nav-progress-fill");
+  const label    = document.querySelector(".nav-progress-text");
+  const total    = sections.length;
+
+  if (!sections.length || !navLinks.length) return;
+
+  let visited = new Set();
+
+  function updateProgress() {
+    const pct = total > 0 ? Math.round((visited.size / total) * 100) : 0;
+    if (fill)  fill.style.width = pct + "%";
+    if (label) label.textContent = visited.size + " / " + total;
+  }
+
+  const observer = new IntersectionObserver(
+    (entries) => {
+      let topVisible = null;
+      entries.forEach((e) => {
+        if (e.isIntersecting) {
+          const idx = e.target.dataset.sectionIndex;
+          visited.add(idx);
+          if (!topVisible || e.boundingClientRect.top < topVisible.top) {
+            topVisible = { idx, top: e.boundingClientRect.top };
+          }
+        }
+      });
+
+      if (topVisible) {
+        navLinks.forEach((a) => {
+          a.classList.toggle("active", a.dataset.navIndex === topVisible.idx);
+        });
+      }
+
+      updateProgress();
+    },
+    { threshold: 0.15 }
+  );
+
+  sections.forEach((s) => observer.observe(s));
+})();
+</script>
+</body>
+</html>

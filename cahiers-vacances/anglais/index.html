@@ -1,0 +1,2450 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Anglais — IT English revival</title>
+<style>/* ============================================================
+   Cahiers de Vacances BTS SIO — Thème Estival ☀️
+   ============================================================ */
+
+:root {
+  --color-bg:           #fffcf0;
+  --color-text:         #1c1917;
+  --color-muted:        #78716c;
+  --color-primary:      #f97316;
+  --color-primary-dark: #c2410c;
+  --color-primary-soft: #ffedd5;
+  --color-secondary:    #0891b2;
+  --color-success:      #16a34a;
+  --color-success-soft: #dcfce7;
+  --color-warning:      #d97706;
+  --color-warning-soft: #fef3c7;
+  --color-danger:       #dc2626;
+  --color-danger-soft:  #fee2e2;
+  --color-border:       #fed7aa;
+  --color-card:         #ffffff;
+  --radius:             14px;
+  --radius-sm:          10px;
+  --radius-xs:          6px;
+  --shadow:             0 2px 6px rgba(249,115,22,.08), 0 6px 24px rgba(0,0,0,.06);
+  --shadow-sm:          0 1px 4px rgba(0,0,0,.08);
+  --sidebar-w:          240px;
+  --font-base:          -apple-system, BlinkMacSystemFont, &#34;Segoe UI&#34;, Roboto, &#34;Helvetica Neue&#34;, Arial, sans-serif;
+  --font-mono:          ui-monospace, SFMono-Regular, &#34;SF Mono&#34;, Menlo, Consolas, monospace;
+  --transition:         0.15s ease;
+}
+
+/* ── Reset ── */
+*, *::before, *::after { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+
+body {
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-base);
+  font-size: 16px;
+  line-height: 1.7;
+}
+
+/* ── Header ── */
+.cahier-header {
+  background: linear-gradient(135deg, #f97316 0%, #fb923c 35%, #fbbf24 70%, #f59e0b 100%);
+  color: #fff;
+  padding: 2.5rem 2rem 3.5rem;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Wavy bottom border */
+.cahier-header::after {
+  content: &#34;&#34;;
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  right: 0;
+  height: 40px;
+  background: var(--color-bg);
+  clip-path: ellipse(55% 100% at 50% 100%);
+}
+
+/* Decorative sunrays */
+.cahier-header::before {
+  content: &#34;&#34;;
+  position: absolute;
+  top: -60px;
+  right: -60px;
+  width: 220px;
+  height: 220px;
+  background: rgba(255,255,255,.1);
+  border-radius: 50%;
+}
+
+.cahier-header-inner {
+  max-width: calc(var(--sidebar-w) + 860px + 3rem);
+  margin: 0 auto;
+  position: relative;
+  z-index: 1;
+}
+
+.cahier-header h1 {
+  font-size: 2rem;
+  font-weight: 800;
+  margin: 0 0 0.4rem;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+  text-shadow: 0 1px 3px rgba(0,0,0,.15);
+}
+
+.cahier-meta {
+  opacity: 0.92;
+  font-size: 0.95rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.25rem;
+  margin: 0;
+}
+
+.cahier-meta-badge {
+  background: rgba(255,255,255,.22);
+  border-radius: 20px;
+  padding: 0.2rem 0.8rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  border: 1px solid rgba(255,255,255,.35);
+}
+
+/* ── Page body (sidebar + content) ── */
+.page-body {
+  display: grid;
+  grid-template-columns: var(--sidebar-w) 1fr;
+  gap: 2rem;
+  max-width: calc(var(--sidebar-w) + 860px + 3rem);
+  margin: 0 auto;
+  padding: 1.5rem 1rem 3rem;
+  align-items: start;
+}
+
+/* ── Sidebar ── */
+nav.sommaire {
+  position: sticky;
+  top: 1.5rem;
+  background: var(--color-card);
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+  padding: 1.25rem;
+  max-height: calc(100vh - 3rem);
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-border) transparent;
+}
+
+nav.sommaire h2 {
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--color-muted);
+  margin: 0 0 0.75rem;
+}
+
+nav.sommaire ol {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+nav.sommaire li { margin: 0; }
+
+nav.sommaire a {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  padding: 0.35rem 0.5rem;
+  border-radius: var(--radius-xs);
+  color: var(--color-muted);
+  text-decoration: none;
+  font-size: 0.82rem;
+  line-height: 1.35;
+  transition: background var(--transition), color var(--transition);
+}
+
+nav.sommaire a:hover {
+  background: var(--color-primary-soft);
+  color: var(--color-primary-dark);
+}
+
+nav.sommaire a.active {
+  background: var(--color-primary-soft);
+  color: var(--color-primary-dark);
+  font-weight: 600;
+}
+
+nav.sommaire .nav-num {
+  flex-shrink: 0;
+  background: var(--color-primary-soft);
+  color: var(--color-primary);
+  font-size: 0.68rem;
+  font-weight: 700;
+  border-radius: 4px;
+  padding: 0.1rem 0.35rem;
+  min-width: 1.4rem;
+  text-align: center;
+}
+
+nav.sommaire a.active .nav-num {
+  background: var(--color-primary);
+  color: #fff;
+}
+
+.nav-duree {
+  color: var(--color-muted);
+  font-size: 0.72rem;
+  margin-left: auto;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+/* Progress in sidebar */
+.nav-progress {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--color-border);
+}
+
+.nav-progress-label {
+  font-size: 0.72rem;
+  color: var(--color-muted);
+  margin-bottom: 0.4rem;
+  display: flex;
+  justify-content: space-between;
+}
+
+.nav-progress-track {
+  height: 6px;
+  background: var(--color-border);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.nav-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--color-primary), #fbbf24);
+  border-radius: 4px;
+  width: 0%;
+  transition: width 0.4s ease;
+}
+
+/* ── Main content ── */
+main { min-width: 0; }
+
+main section {
+  background: var(--color-card);
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 1.75rem 2rem;
+  margin-bottom: 1.5rem;
+  scroll-margin-top: 1.5rem;
+  position: relative;
+}
+
+/* Subtle left accent per section */
+main section::before {
+  content: &#34;&#34;;
+  position: absolute;
+  top: 1rem;
+  bottom: 1rem;
+  left: 0;
+  width: 4px;
+  background: linear-gradient(180deg, var(--color-primary) 0%, #fbbf24 100%);
+  border-radius: 0 2px 2px 0;
+  opacity: 0.6;
+}
+
+main section h2 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin: 0 0 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  color: var(--color-text);
+}
+
+.section-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 8px;
+  background: linear-gradient(135deg, var(--color-primary), #fbbf24);
+  color: #fff;
+  font-size: 0.8rem;
+  font-weight: 700;
+  flex-shrink: 0;
+  box-shadow: 0 2px 6px rgba(249,115,22,.35);
+}
+
+/* ── Typography ── */
+h1 { font-size: 1.9rem; font-weight: 800; margin: 0 0 0.75rem; }
+h2 { font-size: 1.25rem; font-weight: 700; margin: 1.75rem 0 0.75rem; }
+h3 { font-size: 1.05rem; font-weight: 600; margin: 1.25rem 0 0.5rem; color: var(--color-primary-dark); }
+p  { margin: 0 0 1rem; }
+a  { color: var(--color-secondary); }
+
+ul, ol { margin: 0 0 1rem; padding-left: 1.5rem; }
+li { margin: 0.2rem 0; }
+strong { font-weight: 600; }
+
+/* ── Objectifs block ── */
+details.objectifs {
+  background: linear-gradient(135deg, #fff7ed, #ffedd5);
+  border-left: 3px solid var(--color-primary);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  padding: 0.6rem 1rem;
+  margin-bottom: 1.25rem;
+}
+
+details.objectifs summary {
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: var(--color-primary-dark);
+  list-style: none;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+details.objectifs summary::before {
+  content: &#34;▶&#34;;
+  font-size: 0.6rem;
+  transition: transform var(--transition);
+}
+
+details.objectifs[open] summary::before { transform: rotate(90deg); }
+details.objectifs ul { margin: 0.5rem 0 0; }
+
+/* ── Quiz QCM ── */
+.component-quiz-qcm {
+  background: linear-gradient(135deg, #fff9f0, #fff7ed);
+  border: 1.5px solid #fed7aa;
+  border-radius: var(--radius-sm);
+  padding: 1.25rem 1.5rem;
+  margin: 1.25rem 0;
+}
+
+.quiz-question {
+  font-weight: 600;
+  margin: 0 0 0.9rem;
+  line-height: 1.45;
+}
+
+.quiz-choices {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  margin-bottom: 0.9rem;
+}
+
+.quiz-choices label {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.55rem 0.9rem;
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-xs);
+  cursor: pointer;
+  transition: border-color var(--transition), background var(--transition);
+  font-size: 0.95rem;
+  line-height: 1.35;
+  background: var(--color-card);
+}
+
+.quiz-choices label:hover {
+  border-color: var(--color-primary);
+  background: var(--color-primary-soft);
+}
+
+.quiz-choices input[type=&#34;radio&#34;] {
+  accent-color: var(--color-primary);
+  width: 1rem;
+  height: 1rem;
+  flex-shrink: 0;
+}
+
+/* ── Quiz texte ── */
+.component-quiz-texte {
+  background: linear-gradient(135deg, #fff9f0, #fff7ed);
+  border: 1.5px solid #fed7aa;
+  border-radius: var(--radius-sm);
+  padding: 1.25rem 1.5rem;
+  margin: 1.25rem 0;
+}
+
+.quiz-input {
+  display: block;
+  width: 100%;
+  max-width: 22rem;
+  padding: 0.5rem 0.75rem;
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-xs);
+  font-family: var(--font-base);
+  font-size: 1rem;
+  margin: 0.5rem 0 0.9rem;
+  transition: border-color var(--transition);
+  background: var(--color-card);
+}
+
+.quiz-input:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(249,115,22,.15);
+}
+
+/* ── Shared button ── */
+.quiz-submit, .code-copy, .aide-ia-copy, .bilan-export {
+  background: var(--color-primary);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius-xs);
+  padding: 0.45rem 1.1rem;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-family: var(--font-base);
+  font-weight: 600;
+  transition: background var(--transition), transform var(--transition), box-shadow var(--transition);
+  box-shadow: 0 2px 6px rgba(249,115,22,.3);
+}
+
+.quiz-submit:hover, .code-copy:hover, .aide-ia-copy:hover, .bilan-export:hover {
+  background: var(--color-primary-dark);
+  box-shadow: 0 3px 10px rgba(249,115,22,.4);
+}
+
+.quiz-submit:active { transform: scale(0.97); }
+
+/* ── Quiz feedback ── */
+.quiz-feedback {
+  margin-top: 0.6rem;
+  font-weight: 600;
+  font-size: 0.95rem;
+  min-height: 1.4em;
+}
+.quiz-feedback.ok { color: var(--color-success); }
+.quiz-feedback.ko { color: var(--color-danger); }
+
+/* ── Code block ── */
+.component-code {
+  position: relative;
+  background: #1c1917;
+  color: #fef3c7;
+  border-radius: var(--radius-sm);
+  padding: 1.1rem 1.25rem;
+  font-family: var(--font-mono);
+  font-size: 0.88rem;
+  line-height: 1.6;
+  overflow-x: auto;
+  margin: 1.25rem 0;
+  border: 1px solid #292524;
+}
+
+.component-code pre { margin: 0; }
+.component-code code { background: none; padding: 0; color: inherit; }
+
+.code-copy {
+  position: absolute;
+  top: 0.6rem;
+  right: 0.6rem;
+  font-size: 0.78rem;
+  padding: 0.25rem 0.6rem;
+  opacity: 0.65;
+  box-shadow: none;
+}
+.code-copy:hover { opacity: 1; box-shadow: none; }
+
+/* ── Reveal / correction ── */
+.component-reveal {
+  border: 1.5px solid #fdba74;
+  background: linear-gradient(135deg, #fff7ed, #ffedd5);
+  border-radius: var(--radius-sm);
+  margin: 1.25rem 0;
+  overflow: hidden;
+}
+
+.component-reveal summary {
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.92rem;
+  color: var(--color-primary-dark);
+  padding: 0.7rem 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  list-style: none;
+  user-select: none;
+}
+
+.component-reveal summary::before {
+  content: &#34;▶&#34;;
+  font-size: 0.6rem;
+  transition: transform var(--transition);
+}
+
+.component-reveal[open] summary::before { transform: rotate(90deg); }
+
+.reveal-content {
+  padding: 0 1rem 0.9rem;
+  white-space: pre-wrap;
+  font-size: 0.95rem;
+  color: var(--color-primary-dark);
+  border-top: 1px solid #fdba74;
+}
+
+/* ── Aide IA ── */
+.component-aide-ia {
+  background: linear-gradient(135deg, #f0fdf4, #dcfce7);
+  border: 1.5px solid #86efac;
+  border-radius: var(--radius-sm);
+  padding: 1rem 1.25rem;
+  margin: 1.25rem 0;
+}
+
+.aide-ia-label {
+  font-weight: 700;
+  font-size: 0.88rem;
+  color: #14532d;
+  margin-bottom: 0.5rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.aide-ia-prompt {
+  background: rgba(255,255,255,.75);
+  border: 1px solid #86efac;
+  border-radius: var(--radius-xs);
+  padding: 0.75rem 1rem;
+  white-space: pre-wrap;
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  color: #14532d;
+  margin: 0 0 0.75rem;
+}
+
+.aide-ia-copy { background: #16a34a; font-size: 0.82rem; padding: 0.3rem 0.75rem; box-shadow: 0 2px 6px rgba(22,163,74,.3); }
+.aide-ia-copy:hover { background: #15803d; }
+
+/* ── Auto-eval ── */
+.component-auto-eval {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem 0.75rem;
+  background: linear-gradient(135deg, #fff9f0, #fef3c7);
+  border: 1.5px solid #fed7aa;
+  border-radius: var(--radius-sm);
+  padding: 0.85rem 1.1rem;
+  margin: 1.25rem 0;
+}
+
+.component-auto-eval p {
+  margin: 0;
+  font-weight: 600;
+  font-size: 0.9rem;
+  flex-basis: 100%;
+  color: var(--color-muted);
+}
+
+.component-auto-eval button {
+  background: var(--color-card);
+  border: 1.5px solid var(--color-border);
+  border-radius: 20px;
+  padding: 0.35rem 1rem;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-family: var(--font-base);
+  transition: border-color var(--transition), background var(--transition);
+}
+
+.component-auto-eval button:hover { border-color: var(--color-primary); }
+
+.component-auto-eval button[data-eval=&#34;ok&#34;].selected {
+  background: var(--color-success-soft);
+  border-color: var(--color-success);
+  color: #14532d;
+  font-weight: 600;
+}
+
+.component-auto-eval button[data-eval=&#34;hesitant&#34;].selected {
+  background: var(--color-warning-soft);
+  border-color: var(--color-warning);
+  color: #78350f;
+  font-weight: 600;
+}
+
+.component-auto-eval button[data-eval=&#34;bloque&#34;].selected {
+  background: var(--color-danger-soft);
+  border-color: var(--color-danger);
+  color: #7f1d1d;
+  font-weight: 600;
+}
+
+/* ── Progress bar (inside sidebar, managed by JS) ── */
+.component-progress-bar { display: none; }
+
+/* ── Bilan ── */
+.component-bilan {
+  background: linear-gradient(135deg, #f0fdf4, #dcfce7);
+  border: 1.5px solid #86efac;
+  border-radius: var(--radius-sm);
+  padding: 1.25rem 1.5rem;
+  margin: 1.5rem 0;
+}
+
+.component-bilan &gt; p { font-weight: 600; color: #14532d; margin-bottom: 0.6rem; }
+
+.component-bilan textarea {
+  width: 100%;
+  font-family: var(--font-base);
+  font-size: 0.95rem;
+  padding: 0.6rem 0.75rem;
+  border: 1.5px solid #86efac;
+  border-radius: var(--radius-xs);
+  background: rgba(255,255,255,.75);
+  resize: vertical;
+  min-height: 8rem;
+  margin-bottom: 0.75rem;
+  line-height: 1.6;
+}
+
+.component-bilan textarea:focus {
+  outline: none;
+  border-color: var(--color-success);
+  box-shadow: 0 0 0 3px rgba(22,163,74,.15);
+}
+
+.bilan-export { background: var(--color-success); box-shadow: 0 2px 6px rgba(22,163,74,.3); }
+.bilan-export:hover { background: #15803d; }
+
+/* ── Ressources externes ── */
+.component-ressources {
+  background: linear-gradient(135deg, #ecfeff, #cffafe);
+  border: 1.5px solid #67e8f9;
+  border-radius: var(--radius-sm);
+  padding: 1rem 1.25rem;
+  margin: 1.25rem 0;
+}
+
+.ressources-label {
+  font-weight: 700;
+  font-size: 0.88rem;
+  color: #0e7490;
+  margin-bottom: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.ressources-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
+.ressource-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.5rem 0.75rem;
+  background: rgba(255,255,255,.7);
+  border: 1px solid #a5f3fc;
+  border-radius: var(--radius-xs);
+  text-decoration: none;
+  color: var(--color-text);
+  transition: background var(--transition), border-color var(--transition), transform var(--transition);
+}
+
+.ressource-item:hover {
+  background: #fff;
+  border-color: #0891b2;
+  transform: translateX(3px);
+  color: var(--color-text);
+}
+
+.ressource-icon {
+  font-size: 1rem;
+  width: 2rem;
+  height: 2rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  flex-shrink: 0;
+}
+
+.ressource-badge-video {
+  background: #fee2e2;
+  color: #dc2626;
+}
+
+.ressource-badge-doc {
+  background: var(--color-primary-soft);
+  color: var(--color-primary-dark);
+}
+
+.ressource-badge-lien {
+  background: #e0f2fe;
+  color: #0369a1;
+}
+
+.ressource-text {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  min-width: 0;
+}
+
+.ressource-titre {
+  font-weight: 600;
+  font-size: 0.92rem;
+  line-height: 1.3;
+}
+
+.ressource-meta {
+  font-size: 0.78rem;
+  color: var(--color-muted);
+}
+
+/* ── Unknown component ── */
+.component-unknown {
+  background: var(--color-danger-soft);
+  border: 1px dashed var(--color-danger);
+  padding: 0.5rem 0.75rem;
+  border-radius: var(--radius-xs);
+  color: #7f1d1d;
+  font-size: 0.9rem;
+  margin: 1rem 0;
+}
+
+/* ── Footer ── */
+footer {
+  text-align: center;
+  color: var(--color-muted);
+  padding: 2rem 0 2.5rem;
+  font-size: 0.85rem;
+  border-top: 1px solid var(--color-border);
+  margin-top: 1rem;
+}
+
+/* ── Tables ── */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1rem 0;
+  font-size: 0.93rem;
+}
+th, td {
+  border: 1px solid var(--color-border);
+  padding: 0.5rem 0.75rem;
+  text-align: left;
+}
+th {
+  background: var(--color-primary-soft);
+  font-weight: 600;
+  color: var(--color-primary-dark);
+}
+tr:nth-child(even) td { background: #fffbf5; }
+
+/* ── Inline code ── */
+code {
+  font-family: var(--font-mono);
+  font-size: 0.88em;
+  background: #fff7ed;
+  border: 1px solid #fed7aa;
+  border-radius: 4px;
+  padding: 0.1em 0.35em;
+  color: var(--color-primary-dark);
+}
+
+pre code { background: none; border: none; padding: 0; font-size: inherit; color: inherit; }
+
+/* ── Responsive ── */
+@media (max-width: 768px) {
+  .page-body {
+    grid-template-columns: 1fr;
+    padding: 1rem 0.75rem 2rem;
+  }
+
+  nav.sommaire {
+    position: static;
+    max-height: none;
+  }
+
+  .cahier-header { padding: 1.5rem 1rem 2.5rem; }
+  .cahier-header h1 { font-size: 1.5rem; }
+
+  main section { padding: 1.25rem 1rem; }
+}
+</style>
+</head>
+<body>
+
+<header class="cahier-header">
+  <div class="cahier-header-inner">
+    <h1>Anglais — IT English revival</h1>
+    <p class="cahier-meta">
+      <span class="cahier-meta-badge">BTS SIO</span>
+      <span class="cahier-meta-badge">anglais</span>
+      <span class="cahier-meta-badge">⏱ 10h estimées</span>
+    </p>
+  </div>
+</header>
+
+<div class="page-body">
+
+  <nav class="sommaire" aria-label="Sommaire">
+    <h2>Plan du cahier</h2>
+    <ol>
+      
+        <li>
+          <a href="#section-1" data-nav-index="1">
+            <span class="nav-num">1</span>
+            <span>Introduction — Bienvenue dans ton cahier Anglais IT</span>
+            <span class="nav-duree">15min</span>
+          </a>
+        </li>
+      
+        <li>
+          <a href="#section-2" data-nav-index="2">
+            <span class="nav-num">2</span>
+            <span>IT vocabulary — networks and hardware</span>
+            <span class="nav-duree">45min</span>
+          </a>
+        </li>
+      
+        <li>
+          <a href="#section-3" data-nav-index="3">
+            <span class="nav-num">3</span>
+            <span>IT vocabulary — software development</span>
+            <span class="nav-duree">45min</span>
+          </a>
+        </li>
+      
+        <li>
+          <a href="#section-4" data-nav-index="4">
+            <span class="nav-num">4</span>
+            <span>Reading short technical docs</span>
+            <span class="nav-duree">60min</span>
+          </a>
+        </li>
+      
+        <li>
+          <a href="#section-5" data-nav-index="5">
+            <span class="nav-num">5</span>
+            <span>Writing a clear bug report in English</span>
+            <span class="nav-duree">60min</span>
+          </a>
+        </li>
+      
+        <li>
+          <a href="#section-6" data-nav-index="6">
+            <span class="nav-num">6</span>
+            <span>Listening : comprendre un dialogue technique</span>
+            <span class="nav-duree">60min</span>
+          </a>
+        </li>
+      
+        <li>
+          <a href="#section-7" data-nav-index="7">
+            <span class="nav-num">7</span>
+            <span>Speaking : présenter un concept technique en 1 minute</span>
+            <span class="nav-duree">60min</span>
+          </a>
+        </li>
+      
+        <li>
+          <a href="#section-8" data-nav-index="8">
+            <span class="nav-num">8</span>
+            <span>Idiomes et faux amis en IT</span>
+            <span class="nav-duree">45min</span>
+          </a>
+        </li>
+      
+        <li>
+          <a href="#section-9" data-nav-index="9">
+            <span class="nav-num">9</span>
+            <span>Mini-projet : rédiger un README en anglais</span>
+            <span class="nav-duree">90min</span>
+          </a>
+        </li>
+      
+        <li>
+          <a href="#section-10" data-nav-index="10">
+            <span class="nav-num">10</span>
+            <span>Bilan final — Anglais IT</span>
+            <span class="nav-duree">30min</span>
+          </a>
+        </li>
+      
+    </ol>
+    <div class="nav-progress">
+      <div class="nav-progress-label">
+        <span>Progression</span>
+        <span class="nav-progress-text">0 / 10</span>
+      </div>
+      <div class="nav-progress-track">
+        <div class="nav-progress-fill"></div>
+      </div>
+    </div>
+  </nav>
+
+  <main>
+    
+      <section id="section-1" data-section-index="1">
+        <h2>
+          <span class="section-badge">1</span>
+          Introduction — Bienvenue dans ton cahier Anglais IT
+        </h2>
+        
+        <h1>Bienvenue dans ton cahier d'anglais IT</h1>
+<h2>Pourquoi ce cahier existe</h2>
+<p>En BTS SIO, tu vas lire des documentations techniques, des messages d'erreur, des tutoriels, des READMEs — <strong>presque tous en anglais</strong>. Ce n'est pas de l'anglais scolaire : c'est de l'anglais fonctionnel, pratique, directement utile dans ton futur métier.</p>
+<p>Ce cahier n'est pas un cours d'anglais classique. C'est un <strong>entraînement progressif à l'anglais technique IT</strong> : vocabulaire, lecture, écriture, compréhension orale, expression.</p>
+<h2>Ce que tu vas travailler</h2>
+<table>
+<thead>
+<tr>
+<th>Activité</th>
+<th>Durée</th>
+<th>Compétence</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>01 — Vocab réseaux et matériel</td>
+<td>45 min</td>
+<td>Lire la doc réseau</td>
+</tr>
+<tr>
+<td>02 — Vocab développement logiciel</td>
+<td>45 min</td>
+<td>Lire la doc dev</td>
+</tr>
+<tr>
+<td>03 — Lire une doc technique</td>
+<td>60 min</td>
+<td>Comprendre Stack Overflow, MDN</td>
+</tr>
+<tr>
+<td>04 — Rédiger un bug report</td>
+<td>60 min</td>
+<td>Écrire en anglais professionnel</td>
+</tr>
+<tr>
+<td>05 — Compréhension d'un dialogue</td>
+<td>60 min</td>
+<td>Comprendre l'anglais technique oral</td>
+</tr>
+<tr>
+<td>06 — Présenter en 1 minute</td>
+<td>60 min</td>
+<td>Parler anglais technique</td>
+</tr>
+<tr>
+<td>07 — Idiomes et faux amis</td>
+<td>45 min</td>
+<td>Éviter les erreurs classiques</td>
+</tr>
+<tr>
+<td>08 — Mini-projet README</td>
+<td>90 min</td>
+<td>Rédiger un README professionnel</td>
+</tr>
+</tbody>
+</table>
+<h2>Comment fonctionne ce cahier</h2>
+<ul>
+<li>Les <strong>consignes et rappels</strong> sont en français : tu sais ce qu'on attend de toi.</li>
+<li>Les <strong>textes, dialogues et exemples</strong> sont en anglais : c'est volontaire, c'est l'immersion.</li>
+<li>Tu peux utiliser un dictionnaire. Google Translate pour un mot, c'est OK. Pour une phrase entière, moins utile : l'objectif est de comprendre, pas de copier.</li>
+<li>Les encarts <strong>Aide IA</strong> te proposent un prompt pour demander de l'aide à Claude ou ChatGPT — sans te donner la réponse directement.</li>
+</ul>
+<h2>Avant de commencer</h2>
+<p>Prends 2 minutes pour évaluer honnêtement ton niveau actuel :</p>
+<div class="component-quiz-qcm" data-quiz><p class="quiz-question">Honnêtement, mon niveau d&#x27;anglais technique en ce moment c&#x27;est plutôt...</p><div class="quiz-choices"><label><input type="radio" name="q-0" data-correct="true"> Je lis facilement un message d&#x27;erreur ou une doc en anglais</label><label><input type="radio" name="q-0" data-correct="true"> Je comprends le sens général mais je dois chercher beaucoup de mots</label><label><input type="radio" name="q-0" data-correct="true"> Je bloque souvent, je passe en mode traduction automatique systématique</label><label><input type="radio" name="q-0" data-correct="true"> Je n&#x27;essaie généralement pas de lire en anglais</label></div><button class="quiz-submit" type="button">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<blockquote>
+<p>Toutes les réponses sont correctes — c'est une question d'auto-positionnement, pas un test. L'honnêteté avec toi-même est la première étape.</p>
+</blockquote>
+<p>Bonne révision, et <strong>good luck!</strong></p>
+<div class="component-auto-eval" data-auto-eval><p>Où en es-tu ?</p><button data-eval="ok">😊 Compris</button><button data-eval="hesitant">🤔 À revoir</button><button data-eval="bloque">😣 Bloqué</button></div>
+      </section>
+    
+      <section id="section-2" data-section-index="2">
+        <h2>
+          <span class="section-badge">2</span>
+          IT vocabulary — networks and hardware
+        </h2>
+        
+          <details class="objectifs">
+            <summary>Objectifs de cette section</summary>
+            <ul>
+              <li>Reconnaître le vocabulaire de base des réseaux et du matériel en anglais</li><li>Comprendre une phrase technique courte sans dictionnaire</li><li>Traduire une consigne technique réseau vers le français</li>
+            </ul>
+          </details>
+        
+        <h2>Rappel de cours</h2>
+<p>Voici les termes que tu rencontreras dans toute documentation technique réseau :</p>
+<table>
+<thead>
+<tr>
+<th>Anglais</th>
+<th>Français</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>network</td>
+<td>réseau</td>
+</tr>
+<tr>
+<td>device</td>
+<td>appareil / équipement</td>
+</tr>
+<tr>
+<td>router</td>
+<td>routeur</td>
+</tr>
+<tr>
+<td>switch</td>
+<td>commutateur</td>
+</tr>
+<tr>
+<td>firewall</td>
+<td>pare-feu</td>
+</tr>
+<tr>
+<td>bandwidth</td>
+<td>bande passante</td>
+</tr>
+<tr>
+<td>packet</td>
+<td>paquet</td>
+</tr>
+<tr>
+<td>address (IP address)</td>
+<td>adresse (adresse IP)</td>
+</tr>
+<tr>
+<td>port</td>
+<td>port</td>
+</tr>
+<tr>
+<td>layer</td>
+<td>couche (modèle OSI)</td>
+</tr>
+<tr>
+<td>gateway</td>
+<td>passerelle</td>
+</tr>
+<tr>
+<td>subnet mask</td>
+<td>masque de sous-réseau</td>
+</tr>
+<tr>
+<td>latency</td>
+<td>latence</td>
+</tr>
+<tr>
+<td>throughput</td>
+<td>débit réel</td>
+</tr>
+<tr>
+<td>cable / wireless</td>
+<td>câble / sans fil</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Astuce :</strong> beaucoup de verbes techniques ressemblent à leur équivalent français : <code>configure</code>, <code>connect</code>, <code>transmit</code>, <code>route</code>, <code>filter</code>, <code>block</code>.</p>
+<hr />
+<h2>Activité 1 — Comprendre le sens</h2>
+<div class="component-quiz-qcm" data-quiz><p class="quiz-question">What does &quot;bandwidth&quot; mean in a networking context?</p><div class="quiz-choices"><label><input type="radio" name="q-1" data-correct="true"> Bande passante — la quantité maximale de données transmissibles</label><label><input type="radio" name="q-1" data-correct="false"> La largeur physique d&#x27;un câble réseau</label><label><input type="radio" name="q-1" data-correct="false"> La vitesse du processeur</label><label><input type="radio" name="q-1" data-correct="false"> La quantité de RAM disponible</label></div><button class="quiz-submit" type="button">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<div class="component-quiz-qcm" data-quiz><p class="quiz-question">A &quot;gateway&quot; is...</p><div class="quiz-choices"><label><input type="radio" name="q-2" data-correct="false"> Un pare-feu uniquement</label><label><input type="radio" name="q-2" data-correct="true"> Une passerelle qui relie deux réseaux différents</label><label><input type="radio" name="q-2" data-correct="false"> Un type de câble réseau</label><label><input type="radio" name="q-2" data-correct="false"> Un protocole de routage</label></div><button class="quiz-submit" type="button">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<hr />
+<h2>Activité 2 — Traduire des phrases techniques</h2>
+<p>Traduis ces phrases en français. Les réponses sont approximatives : le sens général compte plus que la formulation exacte.</p>
+<div class="component-quiz-texte" data-reponse="le pare-feu bloque tout le trafic entrant sur le port 80"><p class="quiz-question">Translate into French — &quot;The firewall blocks all incoming traffic on port 80.&quot;</p><input type="text" class="quiz-input"><button type="button" class="quiz-submit">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<div class="component-quiz-texte" data-reponse="le routeur attribue une adresse IP a chaque appareil du reseau"><p class="quiz-question">Translate into French — &quot;The router assigns an IP address to each device on the network.&quot;</p><input type="text" class="quiz-input"><button type="button" class="quiz-submit">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<hr />
+<h2>Activité 3 — Lire et comprendre</h2>
+<p>Read this short paragraph:</p>
+<blockquote>
+<p>The switch receives an Ethernet frame and checks the destination MAC address
+against its forwarding table. If the address is known, it forwards the frame
+only to the relevant port. If it's unknown, the switch floods the frame to
+all ports except the one it came from.</p>
+</blockquote>
+<div class="component-quiz-qcm" data-quiz><p class="quiz-question">What does the switch do when it doesn&#x27;t recognize the destination MAC address?</p><div class="quiz-choices"><label><input type="radio" name="q-3" data-correct="false"> It drops the frame</label><label><input type="radio" name="q-3" data-correct="false"> It sends the frame back to the sender</label><label><input type="radio" name="q-3" data-correct="true"> It floods the frame to all other ports</label><label><input type="radio" name="q-3" data-correct="false"> It asks the router for help</label></div><button class="quiz-submit" type="button">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<div class="component-quiz-qcm" data-quiz><p class="quiz-question">When the destination MAC address IS known, the switch...</p><div class="quiz-choices"><label><input type="radio" name="q-4" data-correct="false"> Sends the frame to all ports</label><label><input type="radio" name="q-4" data-correct="true"> Forwards the frame only to the correct port</label><label><input type="radio" name="q-4" data-correct="false"> Drops the frame</label><label><input type="radio" name="q-4" data-correct="false"> Stores the frame for later</label></div><button class="quiz-submit" type="button">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<hr />
+<h2>Aide IA</h2>
+<div class="component-aide-ia"><div class="aide-ia-label">💡 Comment l'IA peut t'aider</div><pre class="aide-ia-prompt">I&#x27;m a French BTS SIO student revising English network vocabulary.
+Here is a sentence I don&#x27;t fully understand: [paste the sentence].
+Please explain the meaning of each technical word, one by one,
+and help me understand the sentence structure — without giving me
+a direct French translation of the whole sentence.</pre><button type="button" class="aide-ia-copy">Copier le prompt</button></div>
+<hr />
+<h2>Solution</h2>
+<details class="component-reveal"><summary>Voir les traductions et explications</summary><div class="reveal-content">Traductions des phrases :
+- &quot;The firewall blocks all incoming traffic on port 80.&quot;
+  → Le pare-feu bloque tout le trafic entrant sur le port 80.
+- &quot;The router assigns an IP address to each device on the network.&quot;
+  → Le routeur attribue une adresse IP à chaque appareil du réseau.
+Vocabulaire clé du paragraphe switch :
+- frame = trame
+- forwarding table = table de transfert / table MAC
+- floods = inonde (envoie sur tous les ports)
+- relevant port = le port concerné</div></details>
+<hr />
+<h2>Auto-évaluation</h2>
+<div class="component-auto-eval" data-auto-eval><p>Où en es-tu ?</p><button data-eval="ok">😊 Compris</button><button data-eval="hesitant">🤔 À revoir</button><button data-eval="bloque">😣 Bloqué</button></div>
+      </section>
+    
+      <section id="section-3" data-section-index="3">
+        <h2>
+          <span class="section-badge">3</span>
+          IT vocabulary — software development
+        </h2>
+        
+          <details class="objectifs">
+            <summary>Objectifs de cette section</summary>
+            <ul>
+              <li>Reconnaître le vocabulaire de base du développement logiciel en anglais</li><li>Lire un message d&#39;erreur ou un commentaire de code en anglais</li><li>Traduire une description de fonction ou de variable</li>
+            </ul>
+          </details>
+        
+        <h2>Rappel de cours</h2>
+<p>Le vocabulaire du développement est omniprésent : dans les messages d'erreur, les commentaires de code, la documentation, et les messages Git.</p>
+<table>
+<thead>
+<tr>
+<th>Anglais</th>
+<th>Français</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>bug</td>
+<td>bogue / erreur</td>
+</tr>
+<tr>
+<td>feature</td>
+<td>fonctionnalité</td>
+</tr>
+<tr>
+<td>repository (repo)</td>
+<td>dépôt</td>
+</tr>
+<tr>
+<td>branch</td>
+<td>branche</td>
+</tr>
+<tr>
+<td>commit</td>
+<td>commit (enregistrement de modifications)</td>
+</tr>
+<tr>
+<td>merge</td>
+<td>fusionner</td>
+</tr>
+<tr>
+<td>pull request (PR)</td>
+<td>demande de fusion</td>
+</tr>
+<tr>
+<td>deploy</td>
+<td>déployer</td>
+</tr>
+<tr>
+<td>build</td>
+<td>construire / compiler</td>
+</tr>
+<tr>
+<td>dependency</td>
+<td>dépendance</td>
+</tr>
+<tr>
+<td>function / method</td>
+<td>fonction / méthode</td>
+</tr>
+<tr>
+<td>return value</td>
+<td>valeur de retour</td>
+</tr>
+<tr>
+<td>parameter</td>
+<td>paramètre</td>
+</tr>
+<tr>
+<td>loop</td>
+<td>boucle</td>
+</tr>
+<tr>
+<td>condition</td>
+<td>condition</td>
+</tr>
+<tr>
+<td>debug</td>
+<td>déboguer</td>
+</tr>
+<tr>
+<td>stack trace</td>
+<td>trace de la pile d'appels</td>
+</tr>
+<tr>
+<td>breakpoint</td>
+<td>point d'arrêt</td>
+</tr>
+<tr>
+<td>refactor</td>
+<td>remanier le code</td>
+</tr>
+<tr>
+<td>deprecated</td>
+<td>obsolète / déconseillé</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Astuce :</strong> Les messages d'erreur Python, PHP ou JavaScript sont presque toujours en anglais. Savoir les lire, c'est déjà 50% du débogage.</p>
+<hr />
+<h2>Activité 1 — Messages d'erreur</h2>
+<p>Read these error messages and answer the questions.</p>
+<p><strong>Message A :</strong></p>
+<pre><code>NameError: name 'utilisateur' is not defined
+</code></pre>
+<div class="component-quiz-qcm" data-quiz><p class="quiz-question">What does this error message mean?</p><div class="quiz-choices"><label><input type="radio" name="q-5" data-correct="false"> Le fichier n&#x27;existe pas</label><label><input type="radio" name="q-5" data-correct="true"> La variable &quot;utilisateur&quot; n&#x27;est pas définie</label><label><input type="radio" name="q-5" data-correct="false"> La fonction est mal nommée</label><label><input type="radio" name="q-5" data-correct="false"> Le module est introuvable</label></div><button class="quiz-submit" type="button">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<p><strong>Message B :</strong></p>
+<pre><code>TypeError: unsupported operand type(s) for +: 'int' and 'str'
+</code></pre>
+<div class="component-quiz-qcm" data-quiz><p class="quiz-question">What is the problem described in message B?</p><div class="quiz-choices"><label><input type="radio" name="q-6" data-correct="true"> On essaie d&#x27;additionner un entier et une chaîne de caractères</label><label><input type="radio" name="q-6" data-correct="false"> La variable n&#x27;existe pas</label><label><input type="radio" name="q-6" data-correct="false"> La fonction + n&#x27;est pas définie</label><label><input type="radio" name="q-6" data-correct="false"> Le fichier est corrompu</label></div><button class="quiz-submit" type="button">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<hr />
+<h2>Activité 2 — Lire un commentaire de code</h2>
+<p>Read this Python function with English comments:</p>
+<pre><code class="language-python">def calculate_discount(price, discount_rate):
+    # Check that the discount rate is between 0 and 1
+    if discount_rate &lt; 0 or discount_rate &gt; 1:
+        raise ValueError(&quot;Discount rate must be between 0 and 1&quot;)
+    # Return the discounted price
+    return price * (1 - discount_rate)
+</code></pre>
+<div class="component-quiz-qcm" data-quiz><p class="quiz-question">What does this function return?</p><div class="quiz-choices"><label><input type="radio" name="q-7" data-correct="false"> Le prix original</label><label><input type="radio" name="q-7" data-correct="false"> Le taux de remise</label><label><input type="radio" name="q-7" data-correct="true"> Le prix après application de la remise</label><label><input type="radio" name="q-7" data-correct="false"> Le montant de la remise uniquement</label></div><button class="quiz-submit" type="button">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<div class="component-quiz-texte" data-reponse="verifier que le taux de remise est entre 0 et 1"><p class="quiz-question">Translate the comment &quot;Check that the discount rate is between 0 and 1&quot; into French.</p><input type="text" class="quiz-input"><button type="button" class="quiz-submit">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<hr />
+<h2>Activité 3 — Vocabulaire Git</h2>
+<p>Read this Git log output:</p>
+<pre><code>commit a3f8d12
+Author: Marie Dupont &lt;marie@example.com&gt;
+Date:   Mon Jun 10 14:32:01 2024
+
+    fix: prevent crash when user input is empty
+
+commit b7e2c45
+Author: Thomas Martin &lt;thomas@example.com&gt;
+Date:   Fri Jun 7 10:15:44 2024
+
+    feat: add user authentication with JWT
+
+commit c1a9f03
+Author: Marie Dupont &lt;marie@example.com&gt;
+Date:   Thu Jun 6 09:00:12 2024
+
+    refactor: extract validation logic into separate module
+</code></pre>
+<div class="component-quiz-qcm" data-quiz><p class="quiz-question">What did Marie Dupont fix in her most recent commit?</p><div class="quiz-choices"><label><input type="radio" name="q-8" data-correct="false"> Une erreur d&#x27;authentification</label><label><input type="radio" name="q-8" data-correct="true"> Un crash qui survenait quand la saisie utilisateur est vide</label><label><input type="radio" name="q-8" data-correct="false"> Un problème de performance</label><label><input type="radio" name="q-8" data-correct="false"> Un bug dans le module de validation</label></div><button class="quiz-submit" type="button">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<div class="component-quiz-qcm" data-quiz><p class="quiz-question">What does the &quot;feat:&quot; prefix in a commit message conventionally indicate?</p><div class="quiz-choices"><label><input type="radio" name="q-9" data-correct="false"> Une correction de bug</label><label><input type="radio" name="q-9" data-correct="false"> Un remaniement du code</label><label><input type="radio" name="q-9" data-correct="true"> Une nouvelle fonctionnalité</label><label><input type="radio" name="q-9" data-correct="false"> Une mise à jour de documentation</label></div><button class="quiz-submit" type="button">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<hr />
+<h2>Aide IA</h2>
+<div class="component-aide-ia"><div class="aide-ia-label">💡 Comment l'IA peut t'aider</div><pre class="aide-ia-prompt">I&#x27;m a French BTS SIO student. I have this error message from my program:
+[paste the error message].
+I don&#x27;t fully understand what it means. Can you explain each part of
+this error message to me in simple terms, without giving me the fix directly?
+I want to understand the cause first.</pre><button type="button" class="aide-ia-copy">Copier le prompt</button></div>
+<hr />
+<h2>Solution</h2>
+<details class="component-reveal"><summary>Voir les réponses</summary><div class="reveal-content">Messages d&#x27;erreur :
+- Message A : NameError = erreur de nom. La variable &quot;utilisateur&quot;
+  est utilisée mais n&#x27;a jamais été déclarée.
+- Message B : TypeError = erreur de type. On ne peut pas additionner
+  directement un entier (int) et une chaîne (str) en Python.
+Commentaire Python :
+- &quot;Check that the discount rate is between 0 and 1&quot;
+  → Vérifier que le taux de remise est entre 0 et 1.
+- La fonction retourne price * (1 - discount_rate) = le prix remisé.
+Git log :
+- Marie a corrigé un crash quand l&#x27;utilisateur laisse le champ vide.
+- &quot;feat:&quot; = nouvelle fonctionnalité (feature), convention Conventional Commits.</div></details>
+<hr />
+<h2>Auto-évaluation</h2>
+<div class="component-auto-eval" data-auto-eval><p>Où en es-tu ?</p><button data-eval="ok">😊 Compris</button><button data-eval="hesitant">🤔 À revoir</button><button data-eval="bloque">😣 Bloqué</button></div>
+      </section>
+    
+      <section id="section-4" data-section-index="4">
+        <h2>
+          <span class="section-badge">4</span>
+          Reading short technical docs
+        </h2>
+        
+          <details class="objectifs">
+            <summary>Objectifs de cette section</summary>
+            <ul>
+              <li>Comprendre un extrait de documentation technique en anglais (MDN, Stack Overflow)</li><li>Identifier l&#39;information utile sans tout traduire</li><li>Répondre à une question technique à partir d&#39;un texte en anglais</li>
+            </ul>
+          </details>
+        
+        <h2>Rappel de cours</h2>
+<p>Lire une doc technique en anglais ne veut pas dire tout comprendre mot à mot. La stratégie efficace c'est :</p>
+<ol>
+<li><strong>Parcourir</strong> (skim) : lire les titres, les mots en gras, les exemples de code.</li>
+<li><strong>Cibler</strong> : identifier le paragraphe qui répond à ta question.</li>
+<li><strong>Lire attentivement</strong> ce paragraphe précis.</li>
+<li><strong>Ignorer</strong> le reste pour l'instant.</li>
+</ol>
+<p>Les docs techniques suivent souvent un plan type : <em>What it is — Syntax — Parameters — Return value — Examples — Notes/Warnings</em>.</p>
+<hr />
+<h2>Activité 1 — Extrait MDN : la méthode <code>Array.find()</code></h2>
+<p>Read this extract adapted from the MDN Web Docs:</p>
+<hr />
+<blockquote>
+<p><strong>Array.prototype.find()</strong></p>
+<p>The <code>find()</code> method returns the first element in the provided array that
+satisfies the provided testing function. If no values satisfy the testing
+function, <code>undefined</code> is returned.</p>
+<p><strong>Syntax</strong>
+<code>find(callbackFn)</code></p>
+<p><strong>Parameters</strong>
+- <code>callbackFn</code> : A function to execute for each element in the array.
+  It should return a truthy value to indicate a matching element has been found.</p>
+<p><strong>Return value</strong>
+The first element in the array that satisfies the provided testing function.
+Otherwise, <code>undefined</code> is returned.</p>
+<p><strong>Example</strong>
+```javascript
+const inventory = [
+  { name: "apples", quantity: 2 },
+  { name: "bananas", quantity: 0 },
+  { name: "cherries", quantity: 5 },
+];</p>
+<p>const result = inventory.find(({ name }) =&gt; name === "cherries");
+console.log(result); // { name: 'cherries', quantity: 5 }
+```</p>
+</blockquote>
+<hr />
+<div class="component-quiz-qcm" data-quiz><p class="quiz-question">What does `Array.find()` return if no element matches the condition?</p><div class="quiz-choices"><label><input type="radio" name="q-10" data-correct="false"> None</label><label><input type="radio" name="q-10" data-correct="false"> False</label><label><input type="radio" name="q-10" data-correct="false"> -1</label><label><input type="radio" name="q-10" data-correct="true"> undefined</label></div><button class="quiz-submit" type="button">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<div class="component-quiz-qcm" data-quiz><p class="quiz-question">If the array has 3 elements that match the condition, `find()` returns...</p><div class="quiz-choices"><label><input type="radio" name="q-11" data-correct="false"> Les 3 éléments sous forme de tableau</label><label><input type="radio" name="q-11" data-correct="true"> Seulement le premier élément trouvé</label><label><input type="radio" name="q-11" data-correct="false"> Le dernier élément trouvé</label><label><input type="radio" name="q-11" data-correct="false"> Une erreur</label></div><button class="quiz-submit" type="button">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<div class="component-quiz-texte" data-reponse="une fonction de test executee sur chaque element du tableau"><p class="quiz-question">In one French sentence, what does &quot;callbackFn&quot; represent in the context of Array.find()?</p><input type="text" class="quiz-input"><button type="button" class="quiz-submit">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<hr />
+<h2>Activité 2 — Extrait Stack Overflow</h2>
+<p>Read this Stack Overflow answer (simplified):</p>
+<hr />
+<blockquote>
+<p><strong>Question:</strong> How do I check if a key exists in a Python dictionary?</p>
+<p><strong>Answer (accepted, 847 upvotes):</strong></p>
+<p>Use the <code>in</code> operator. It's the most Pythonic way and also the fastest:</p>
+<p>```python
+my_dict = {"name": "Alice", "age": 30}</p>
+<p>if "name" in my_dict:
+    print("Key exists!")
+```</p>
+<p>Avoid using <code>my_dict.has_key("name")</code> — this method was removed in Python 3.</p>
+<p>If you want to get the value with a default fallback when the key doesn't
+exist, use <code>.get()</code>:</p>
+<p><code>python
+value = my_dict.get("email", "not provided")</code>
+This returns <code>"not provided"</code> if <code>"email"</code> is not in the dictionary.</p>
+</blockquote>
+<hr />
+<div class="component-quiz-qcm" data-quiz><p class="quiz-question">Quelle méthode est recommandée pour vérifier si une clé existe dans un dictionnaire Python?</p><div class="quiz-choices"><label><input type="radio" name="q-12" data-correct="false"> has_key()</label><label><input type="radio" name="q-12" data-correct="false"> exists()</label><label><input type="radio" name="q-12" data-correct="true"> L&#x27;opérateur in</label><label><input type="radio" name="q-12" data-correct="false"> contains()</label></div><button class="quiz-submit" type="button">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<div class="component-quiz-qcm" data-quiz><p class="quiz-question">Que retourne `my_dict.get(&quot;email&quot;, &quot;not provided&quot;)` si la clé &quot;email&quot; n&#x27;existe pas?</p><div class="quiz-choices"><label><input type="radio" name="q-13" data-correct="false"> None</label><label><input type="radio" name="q-13" data-correct="false"> Une erreur KeyError</label><label><input type="radio" name="q-13" data-correct="false"> False</label><label><input type="radio" name="q-13" data-correct="true"> not provided</label></div><button class="quiz-submit" type="button">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<div class="component-quiz-texte" data-reponse="cette methode a ete supprimee en python 3"><p class="quiz-question">Pourquoi faut-il éviter `has_key()` selon la réponse Stack Overflow?</p><input type="text" class="quiz-input"><button type="button" class="quiz-submit">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<hr />
+<h2>Aide IA</h2>
+<div class="component-aide-ia"><div class="aide-ia-label">💡 Comment l'IA peut t'aider</div><pre class="aide-ia-prompt">I&#x27;m a French BTS SIO student trying to understand this documentation extract:
+[paste the extract].
+I understand roughly what it does, but I&#x27;m not sure about this specific part:
+[describe what you don&#x27;t understand].
+Can you explain it to me step by step in simple terms, using a concrete
+example if possible? Don&#x27;t rewrite the whole doc for me.</pre><button type="button" class="aide-ia-copy">Copier le prompt</button></div>
+<hr />
+<h2>Solution</h2>
+<details class="component-reveal"><summary>Voir les réponses expliquées</summary><div class="reveal-content">Activité 1 — MDN Array.find() :
+- Si aucun élément ne correspond : undefined est retourné.
+- Si 3 éléments correspondent : seul le PREMIER est retourné.
+- callbackFn = une fonction de test exécutée sur chaque élément du tableau.
+Activité 2 — Stack Overflow :
+- Méthode recommandée : l&#x27;opérateur &quot;in&quot; (pythonique et rapide).
+- has_key() : supprimé en Python 3, ne plus l&#x27;utiliser.
+- get(&quot;email&quot;, &quot;not provided&quot;) : retourne &quot;not provided&quot; si la clé
+  &quot;email&quot; n&#x27;existe pas dans le dictionnaire.</div></details>
+<hr />
+<h2>Auto-évaluation</h2>
+<div class="component-auto-eval" data-auto-eval><p>Où en es-tu ?</p><button data-eval="ok">😊 Compris</button><button data-eval="hesitant">🤔 À revoir</button><button data-eval="bloque">😣 Bloqué</button></div>
+      </section>
+    
+      <section id="section-5" data-section-index="5">
+        <h2>
+          <span class="section-badge">5</span>
+          Writing a clear bug report in English
+        </h2>
+        
+          <details class="objectifs">
+            <summary>Objectifs de cette section</summary>
+            <ul>
+              <li>Comprendre la structure d&#39;un bon bug report en anglais</li><li>Rédiger les champs essentiels d&#39;un bug report de manière claire</li><li>Utiliser le vocabulaire approprié pour décrire un comportement inattendu</li>
+            </ul>
+          </details>
+        
+        <h2>Rappel de cours</h2>
+<p>Un <strong>bug report</strong> (rapport de bogue) est un document écrit qui permet à un développeur de reproduire et comprendre un problème. En entreprise, il est presque toujours rédigé en anglais sur des outils comme GitHub Issues, Jira, ou GitLab.</p>
+<h3>Structure type d'un bug report</h3>
+<table>
+<thead>
+<tr>
+<th>Champ</th>
+<th>Contenu</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Title</strong></td>
+<td>Une phrase courte qui résume le problème</td>
+</tr>
+<tr>
+<td><strong>Environment</strong></td>
+<td>OS, navigateur, version de l'appli</td>
+</tr>
+<tr>
+<td><strong>Steps to reproduce</strong></td>
+<td>Les étapes exactes pour reproduire le bug (1, 2, 3…)</td>
+</tr>
+<tr>
+<td><strong>Expected behavior</strong></td>
+<td>Ce qui devrait se passer</td>
+</tr>
+<tr>
+<td><strong>Actual behavior</strong></td>
+<td>Ce qui se passe vraiment</td>
+</tr>
+<tr>
+<td><strong>Screenshots / Logs</strong></td>
+<td>Preuve du problème</td>
+</tr>
+<tr>
+<td><strong>Severity</strong></td>
+<td>Critical / High / Medium / Low</td>
+</tr>
+</tbody>
+</table>
+<h3>Formules utiles</h3>
+<ul>
+<li>"When I click on..." / "After clicking..."</li>
+<li>"The expected behavior is..."</li>
+<li>"Instead, the application..."</li>
+<li>"This happens every time I..." / "This happens only when..."</li>
+<li>"I am using..." (version, OS, browser)</li>
+</ul>
+<hr />
+<h2>Activité 1 — Évaluer un bug report</h2>
+<p>Read this bug report and answer the questions:</p>
+<hr />
+<blockquote>
+<p><strong>Title:</strong> App crashes</p>
+<p><strong>Description:</strong> The app doesn't work. It crashes when I use it.
+Please fix it urgently!!!</p>
+<p><strong>Environment:</strong> My computer</p>
+<p><strong>Steps to reproduce:</strong> Open the app and use it.</p>
+<p><strong>Expected behavior:</strong> It should work.</p>
+<p><strong>Actual behavior:</strong> It crashes.</p>
+</blockquote>
+<hr />
+<div class="component-quiz-qcm" data-quiz><p class="quiz-question">What is the main problem with this bug report?</p><div class="quiz-choices"><label><input type="radio" name="q-14" data-correct="false"> Il est trop long</label><label><input type="radio" name="q-14" data-correct="true"> Il manque de précision et ne permet pas de reproduire le bug</label><label><input type="radio" name="q-14" data-correct="false"> Le titre est trop court</label><label><input type="radio" name="q-14" data-correct="false"> Il n&#x27;y a pas de screenshot</label></div><button class="quiz-submit" type="button">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<div class="component-quiz-qcm" data-quiz><p class="quiz-question">The steps say &quot;Open the app and use it.&quot; — Why is this insufficient as a steps-to-reproduce?</p><div class="quiz-choices"><label><input type="radio" name="q-15" data-correct="false"> Il faudrait écrire en français</label><label><input type="radio" name="q-15" data-correct="true"> On ne sait pas quelle action précise déclenche le crash</label><label><input type="radio" name="q-15" data-correct="false"> Il faudrait numéroter les étapes autrement</label><label><input type="radio" name="q-15" data-correct="false"> Les étapes sont trop nombreuses</label></div><button class="quiz-submit" type="button">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<hr />
+<h2>Activité 2 — Lire un bon bug report</h2>
+<p>Read this well-written bug report:</p>
+<hr />
+<blockquote>
+<p><strong>Title:</strong> Login form submits with empty password field — no validation error shown</p>
+<p><strong>Environment:</strong> Firefox 124.0, Windows 11, App v2.3.1</p>
+<p><strong>Steps to reproduce:</strong>
+1. Navigate to https://app.example.com/login
+2. Enter a valid email address in the "Email" field
+3. Leave the "Password" field empty
+4. Click the "Sign In" button</p>
+<p><strong>Expected behavior:</strong> An error message should appear: "Password is required."</p>
+<p><strong>Actual behavior:</strong> The form submits without showing any error message.
+  The page reloads and the user stays on the login page with no feedback.</p>
+<p><strong>Severity:</strong> High — users may think the login is broken and abandon the form.</p>
+</blockquote>
+<hr />
+<div class="component-quiz-qcm" data-quiz><p class="quiz-question">What is the exact bug described?</p><div class="quiz-choices"><label><input type="radio" name="q-16" data-correct="false"> L&#x27;application plante quand on se connecte</label><label><input type="radio" name="q-16" data-correct="true"> Le formulaire accepte un mot de passe vide sans afficher de message d&#x27;erreur</label><label><input type="radio" name="q-16" data-correct="false"> Le champ email ne fonctionne pas</label><label><input type="radio" name="q-16" data-correct="false"> La page de connexion ne charge pas</label></div><button class="quiz-submit" type="button">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<div class="component-quiz-texte" data-reponse="comportement attendu"><p class="quiz-question">Translate &quot;Expected behavior&quot; into French (the bug report field name).</p><input type="text" class="quiz-input"><button type="button" class="quiz-submit">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<div class="component-quiz-texte" data-reponse="comportement reel"><p class="quiz-question">Translate &quot;Actual behavior&quot; into French (the bug report field name).</p><input type="text" class="quiz-input"><button type="button" class="quiz-submit">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<hr />
+<h2>Activité 3 — Rédiger ton propre bug report</h2>
+<p>Imagine this scenario: you're testing a web application. When you click "Delete account", a confirmation dialog appears asking "Are you sure?". You click "Cancel" — but the account gets deleted anyway.</p>
+<p>Write a bug report for this scenario. Use the structure from the rappel de cours. Type your answer below:</p>
+<div class="component-quiz-texte" data-reponse="clicking cancel on delete account dialog still deletes the account"><p class="quiz-question">Write the &quot;Title&quot; field for this bug report (one clear sentence in English).</p><input type="text" class="quiz-input"><button type="button" class="quiz-submit">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<div class="component-quiz-texte" data-reponse="clicking cancel should close the dialog without deleting the account"><p class="quiz-question">Write the &quot;Expected behavior&quot; field in English (one sentence).</p><input type="text" class="quiz-input"><button type="button" class="quiz-submit">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<hr />
+<h2>Aide IA</h2>
+<div class="component-aide-ia"><div class="aide-ia-label">💡 Comment l'IA peut t'aider</div><pre class="aide-ia-prompt">I&#x27;m a French BTS SIO student learning to write bug reports in English.
+I need to describe this bug: [describe the bug in French].
+Can you help me identify the key information I need to include
+(steps, expected vs actual behavior), and suggest the English vocabulary
+I should use? Don&#x27;t write the bug report for me — just coach me.</pre><button type="button" class="aide-ia-copy">Copier le prompt</button></div>
+<hr />
+<h2>Solution</h2>
+<details class="component-reveal"><summary>Voir un exemple de bug report complet pour le scénario</summary><div class="reveal-content">**Title:** Clicking &quot;Cancel&quot; on the delete account dialog still deletes the account
+**Environment:** Chrome 124.0, macOS 14, App v1.8.0
+**Steps to reproduce:**
+1. Log in to the application
+2. Navigate to Settings &gt; Account
+3. Click the &quot;Delete account&quot; button
+4. When the confirmation dialog appears, click &quot;Cancel&quot;
+**Expected behavior:**
+The dialog should close and the account should remain active.
+**Actual behavior:**
+The account is deleted immediately after clicking &quot;Cancel&quot;.
+The user is logged out and cannot log back in.
+**Severity:** Critical — data loss, irreversible action.
+---
+Points clés :
+- Le titre pose le problème clairement en une phrase.
+- Les étapes sont précises et numérotées.
+- &quot;Expected&quot; et &quot;Actual&quot; sont bien distincts.
+- La sévérité est justifiée.</div></details>
+<hr />
+<h2>Auto-évaluation</h2>
+<div class="component-auto-eval" data-auto-eval><p>Où en es-tu ?</p><button data-eval="ok">😊 Compris</button><button data-eval="hesitant">🤔 À revoir</button><button data-eval="bloque">😣 Bloqué</button></div>
+      </section>
+    
+      <section id="section-6" data-section-index="6">
+        <h2>
+          <span class="section-badge">6</span>
+          Listening : comprendre un dialogue technique
+        </h2>
+        
+          <details class="objectifs">
+            <summary>Objectifs de cette section</summary>
+            <ul>
+              <li>Comprendre un dialogue technique en anglais</li><li>Identifier les informations clés dans un échange oral</li><li>Reconnaître le vocabulaire technique à l&#39;oral</li>
+            </ul>
+          </details>
+        
+        <h2>Rappel de cours</h2>
+<p>Comprendre l'anglais technique à l'oral, c'est une compétence différente de la lecture. À l'oral, les gens :</p>
+<ul>
+<li><strong>enchaînent</strong> les mots ("gonna", "wanna", "kinda")</li>
+<li><strong>abrègent</strong> les termes ("repo" pour repository, "app" pour application)</li>
+<li><strong>changent de sujet</strong> rapidement</li>
+<li><strong>utilisent des idiomes</strong> ("it's a no-brainer", "let's wrap up")</li>
+</ul>
+<p>La stratégie : écouter d'abord le <strong>sens global</strong>, puis revenir sur les détails.</p>
+<p>Dans cette activité, tu as une <strong>transcription écrite</strong> d'un dialogue technique imaginaire. Lis-la comme si tu l'écoutais : une seule fois, sans t'arrêter. Ensuite réponds aux questions.</p>
+<hr />
+<h2>Le dialogue — "Debugging the deployment"</h2>
+<p><em>Context: A team meeting between two developers, Yasmine (senior) and Lucas (junior), and their team lead Sofia.</em></p>
+<hr />
+<blockquote>
+<p><strong>Sofia:</strong> Alright, let's wrap up the standup. Lucas, you said you're blocked on the deployment — what's going on?</p>
+<p><strong>Lucas:</strong> Yeah, so... the pipeline keeps failing at the build step. I pushed the fix yesterday but it's still red.</p>
+<p><strong>Sofia:</strong> Did you check the logs?</p>
+<p><strong>Lucas:</strong> I did, but honestly the error message doesn't make much sense to me. It says something about a missing dependency.</p>
+<p><strong>Yasmine:</strong> Which dependency? Did it say the name?</p>
+<p><strong>Lucas:</strong> Yeah, it's <code>libssl-dev</code>. The build works fine on my machine, so I'm kinda confused.</p>
+<p><strong>Yasmine:</strong> Classic "works on my machine" problem. Your local environment probably has it installed already. The CI container starts clean every time.</p>
+<p><strong>Sofia:</strong> So we need to add it to the Dockerfile, right?</p>
+<p><strong>Yasmine:</strong> Exactly. Lucas, open the Dockerfile and add <code>libssl-dev</code> to the <code>apt-get install</code> line. Should be a five-minute fix.</p>
+<p><strong>Lucas:</strong> Got it. And then I just push and the pipeline should pick it up automatically?</p>
+<p><strong>Yasmine:</strong> Yep. The pipeline triggers on every push to main. Let me know if it's still red after that.</p>
+<p><strong>Sofia:</strong> Great. Lucas, can you do that right after the standup?</p>
+<p><strong>Lucas:</strong> Sure, I'm on it.</p>
+<p><strong>Sofia:</strong> Perfect. Let's move on — Yasmine, where are we on the authentication feature?</p>
+</blockquote>
+<hr />
+<h2>Questions de compréhension</h2>
+<div class="component-quiz-qcm" data-quiz><p class="quiz-question">What is Lucas&#x27;s problem at the beginning of the conversation?</p><div class="quiz-choices"><label><input type="radio" name="q-17" data-correct="false"> Il n&#x27;arrive pas à push son code</label><label><input type="radio" name="q-17" data-correct="true"> Le pipeline de déploiement échoue à l&#x27;étape de build</label><label><input type="radio" name="q-17" data-correct="false"> La base de données est inaccessible</label><label><input type="radio" name="q-17" data-correct="false"> Il n&#x27;a pas les droits pour accéder au serveur</label></div><button class="quiz-submit" type="button">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<div class="component-quiz-qcm" data-quiz><p class="quiz-question">Why does the build fail on the CI server but work on Lucas&#x27;s machine?</p><div class="quiz-choices"><label><input type="radio" name="q-18" data-correct="false"> Lucas a une meilleure connexion internet</label><label><input type="radio" name="q-18" data-correct="false"> La version de Python est différente</label><label><input type="radio" name="q-18" data-correct="true"> La dépendance libssl-dev est déjà installée sur sa machine mais pas dans le conteneur CI</label><label><input type="radio" name="q-18" data-correct="false"> Lucas a commis une erreur dans le Dockerfile</label></div><button class="quiz-submit" type="button">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<div class="component-quiz-qcm" data-quiz><p class="quiz-question">What solution does Yasmine propose?</p><div class="quiz-choices"><label><input type="radio" name="q-19" data-correct="false"> Redémarrer le serveur CI</label><label><input type="radio" name="q-19" data-correct="false"> Installer la dépendance manuellement sur le serveur</label><label><input type="radio" name="q-19" data-correct="true"> Ajouter libssl-dev dans le Dockerfile</label><label><input type="radio" name="q-19" data-correct="false"> Changer de pipeline</label></div><button class="quiz-submit" type="button">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<div class="component-quiz-qcm" data-quiz><p class="quiz-question">When does the pipeline trigger automatically, according to Yasmine?</p><div class="quiz-choices"><label><input type="radio" name="q-20" data-correct="false"> Tous les jours à minuit</label><label><input type="radio" name="q-20" data-correct="true"> À chaque push sur la branche main</label><label><input type="radio" name="q-20" data-correct="false"> Manuellement seulement</label><label><input type="radio" name="q-20" data-correct="false"> Après chaque pull request approuvée</label></div><button class="quiz-submit" type="button">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<hr />
+<h2>Vocabulaire du dialogue</h2>
+<p>Repère ces expressions dans le dialogue et assure-toi de les comprendre :</p>
+<div class="component-quiz-texte" data-reponse="terminer / conclure"><p class="quiz-question">&quot;Let&#x27;s wrap up the standup&quot; — que signifie &quot;wrap up&quot; dans ce contexte?</p><input type="text" class="quiz-input"><button type="button" class="quiz-submit">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<div class="component-quiz-texte" data-reponse="je m&#x27;en occupe"><p class="quiz-question">&quot;I&#x27;m on it&quot; — que signifie cette expression?</p><input type="text" class="quiz-input"><button type="button" class="quiz-submit">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<div class="component-quiz-qcm" data-quiz><p class="quiz-question">&quot;Works on my machine&quot; is a classic expression in development. It means...</p><div class="quiz-choices"><label><input type="radio" name="q-21" data-correct="false"> Le code est parfait et fonctionne partout</label><label><input type="radio" name="q-21" data-correct="true"> Le code fonctionne dans l&#x27;environnement du développeur mais pas ailleurs</label><label><input type="radio" name="q-21" data-correct="false"> La machine du développeur est plus puissante</label><label><input type="radio" name="q-21" data-correct="false"> Le test a réussi en local</label></div><button class="quiz-submit" type="button">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<hr />
+<h2>Aide IA</h2>
+<div class="component-aide-ia"><div class="aide-ia-label">💡 Comment l'IA peut t'aider</div><pre class="aide-ia-prompt">I&#x27;m a French BTS SIO student. I just read this technical dialogue in English:
+[paste a specific exchange you didn&#x27;t understand].
+I understand the individual words but I&#x27;m not sure I got the meaning.
+Can you explain what is being said in this exchange, and what the
+technical context is? Use simple French explanations.</pre><button type="button" class="aide-ia-copy">Copier le prompt</button></div>
+<hr />
+<h2>Solution</h2>
+<details class="component-reveal"><summary>Voir les réponses et le vocabulaire clé</summary><div class="reveal-content">Réponses aux questions de compréhension :
+1. Le pipeline échoue à l&#x27;étape de build.
+2. libssl-dev est installé sur la machine de Lucas mais pas dans le
+   conteneur CI (qui repart de zéro à chaque fois).
+3. Ajouter libssl-dev dans le Dockerfile.
+4. À chaque push sur la branche main.
+Vocabulaire clé :
+- &quot;wrap up&quot; = terminer, conclure
+- &quot;I&#x27;m on it&quot; = je m&#x27;en occupe, je m&#x27;y mets
+- &quot;it&#x27;s still red&quot; = le pipeline est en échec (couleur rouge dans CI/CD)
+- &quot;starts clean&quot; = repart de zéro, sans rien d&#x27;installé
+- &quot;picks it up&quot; = le détecte et le lance automatiquement
+- &quot;works on my machine&quot; = expression classique du développeur
+  qui découvre que son code ne fonctionne que chez lui.</div></details>
+<hr />
+<h2>Auto-évaluation</h2>
+<div class="component-auto-eval" data-auto-eval><p>Où en es-tu ?</p><button data-eval="ok">😊 Compris</button><button data-eval="hesitant">🤔 À revoir</button><button data-eval="bloque">😣 Bloqué</button></div>
+      </section>
+    
+      <section id="section-7" data-section-index="7">
+        <h2>
+          <span class="section-badge">7</span>
+          Speaking : présenter un concept technique en 1 minute
+        </h2>
+        
+          <details class="objectifs">
+            <summary>Objectifs de cette section</summary>
+            <ul>
+              <li>Structurer une présentation orale courte en anglais</li><li>Utiliser les connecteurs logiques de base en anglais</li><li>Présenter un concept IT de manière claire et concise</li>
+            </ul>
+          </details>
+        
+        <h2>Rappel de cours</h2>
+<p>Une présentation de 1 minute en anglais technique, c'est environ <strong>120 à 150 mots</strong>. Ce n'est pas beaucoup — c'est l'équivalent de 4 à 5 phrases bien construites.</p>
+<h3>Structure recommandée : le plan PEEL</h3>
+<table>
+<thead>
+<tr>
+<th>Étape</th>
+<th>Rôle</th>
+<th>Exemple</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Point</strong></td>
+<td>Annoncer le sujet</td>
+<td>"Today I'm going to explain what a DNS server is."</td>
+</tr>
+<tr>
+<td><strong>Explain</strong></td>
+<td>Expliquer en 2 phrases</td>
+<td>"A DNS server translates domain names into IP addresses..."</td>
+</tr>
+<tr>
+<td><strong>Example</strong></td>
+<td>Donner un exemple concret</td>
+<td>"For example, when you type google.com..."</td>
+</tr>
+<tr>
+<td><strong>Link</strong></td>
+<td>Conclure / ouvrir</td>
+<td>"Without DNS, we would need to memorize IP addresses."</td>
+</tr>
+</tbody>
+</table>
+<h3>Connecteurs utiles</h3>
+<ul>
+<li><strong>Pour commencer :</strong> "First of all...", "To begin with...", "Today I want to explain..."</li>
+<li><strong>Pour enchaîner :</strong> "Then...", "Next...", "In other words...", "This means that..."</li>
+<li><strong>Pour conclure :</strong> "To sum up...", "In short...", "That's why...", "Without X, we couldn't..."</li>
+</ul>
+<h3>Vocabulaire de la présentation orale</h3>
+<ul>
+<li>"Let me give you an example..." / "For instance..."</li>
+<li>"In simple terms..." / "Simply put..."</li>
+<li>"The key idea here is..."</li>
+<li>"As you can see..."</li>
+</ul>
+<hr />
+<h2>Choisis ton sujet</h2>
+<p>Voici 4 sujets. <strong>Choisis-en un</strong> et prépare ta présentation de 1 minute.</p>
+<p><strong>Sujet A — What is a VPN and why do we use it?</strong></p>
+<p><strong>Sujet B — What is an API and what is it used for?</strong></p>
+<p><strong>Sujet C — What is version control (Git) and why is it useful?</strong></p>
+<p><strong>Sujet D — What is the difference between HTTP and HTTPS?</strong></p>
+<hr />
+<h2>Exemple guidé — Sujet A (VPN)</h2>
+<p>Lis cet exemple pour comprendre la structure, puis prépare le tien :</p>
+<blockquote>
+<p>"Today I'm going to explain what a VPN is and why it matters.</p>
+<p>A VPN — which stands for Virtual Private Network — is a technology that
+creates a secure, encrypted tunnel between your device and the internet.
+In other words, all your traffic goes through a private server before
+reaching its destination.</p>
+<p>For example, when you connect to public Wi-Fi at a café, your data could
+be intercepted by anyone on the same network. A VPN encrypts that data,
+so even if someone captures it, they can't read it.</p>
+<p>To sum up, a VPN protects your privacy and security online, especially
+on untrusted networks. That's why many companies require employees to
+use a VPN when working remotely."</p>
+</blockquote>
+<p>Ce texte fait environ 130 mots et dure environ 1 minute à l'oral.</p>
+<hr />
+<h2>Activité — Prépare ta présentation</h2>
+<p>Après avoir choisi ton sujet, prépare les phrases clés de ta présentation.</p>
+<div class="component-quiz-texte" data-reponse="today i am going to explain"><p class="quiz-question">Write your opening sentence in English (Point — announce your topic). Start with &quot;Today I&#x27;m going to explain...&quot; or &quot;I want to talk about...&quot;</p><input type="text" class="quiz-input"><button type="button" class="quiz-submit">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<div class="component-quiz-texte" data-reponse="is a technology that"><p class="quiz-question">Write one &quot;Explain&quot; sentence in English that describes your chosen concept in simple terms.</p><input type="text" class="quiz-input"><button type="button" class="quiz-submit">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<div class="component-quiz-texte" data-reponse="for example"><p class="quiz-question">Write your example sentence in English. Start with &quot;For example...&quot; or &quot;For instance...&quot;</p><input type="text" class="quiz-input"><button type="button" class="quiz-submit">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<div class="component-quiz-texte" data-reponse="to sum up"><p class="quiz-question">Write your closing sentence in English. Start with &quot;To sum up...&quot; or &quot;In short...&quot;</p><input type="text" class="quiz-input"><button type="button" class="quiz-submit">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<hr />
+<h2>Aide IA</h2>
+<div class="component-aide-ia"><div class="aide-ia-label">💡 Comment l'IA peut t'aider</div><pre class="aide-ia-prompt">I&#x27;m a French BTS SIO student preparing a 1-minute technical presentation
+in English on the topic: [your chosen topic].
+Here are the key ideas I want to include in French: [list your ideas].
+Can you help me find the right English technical vocabulary for these ideas,
+and suggest natural connectors to link my sentences?
+Don&#x27;t write the presentation for me — just give me the vocabulary tools.</pre><button type="button" class="aide-ia-copy">Copier le prompt</button></div>
+<hr />
+<h2>Solution</h2>
+<details class="component-reveal"><summary>Voir des exemples de présentations complètes</summary><div class="reveal-content">Sujet B — What is an API?
+&quot;Today I want to explain what an API is and how it works.
+API stands for Application Programming Interface. It&#x27;s a set of rules
+that allows two software applications to communicate with each other.
+In other words, an API is like a waiter in a restaurant: you tell
+it what you want, and it brings back what you asked for from the kitchen.
+For example, when a weather app on your phone shows the current temperature,
+it uses an API to request that data from a weather service.
+To sum up, APIs are everywhere in modern software — they allow
+applications to share data and functionality without needing to know
+how the other one works internally.&quot;
+Sujet C — What is version control?
+&quot;I&#x27;m going to explain what version control is and why every developer
+needs it. Version control is a system that records changes to files
+over time, so you can recall specific versions later. Git is the most
+popular version control system today.
+For example, if you accidentally delete important code, Git allows you
+to go back to a previous version of your project in seconds.
+To sum up, version control is like a time machine for your code.
+Without it, collaborative development and safe experimentation would
+be almost impossible.&quot;</div></details>
+<hr />
+<h2>Auto-évaluation</h2>
+<div class="component-auto-eval" data-auto-eval><p>Où en es-tu ?</p><button data-eval="ok">😊 Compris</button><button data-eval="hesitant">🤔 À revoir</button><button data-eval="bloque">😣 Bloqué</button></div>
+      </section>
+    
+      <section id="section-8" data-section-index="8">
+        <h2>
+          <span class="section-badge">8</span>
+          Idiomes et faux amis en IT
+        </h2>
+        
+          <details class="objectifs">
+            <summary>Objectifs de cette section</summary>
+            <ul>
+              <li>Identifier les faux amis les plus courants en vocabulaire IT</li><li>Comprendre les idiomes techniques fréquents dans les échanges professionnels</li><li>Éviter les erreurs de traduction classiques</li>
+            </ul>
+          </details>
+        
+        <h2>Rappel de cours</h2>
+<h3>Les faux amis IT — mots qui piègent</h3>
+<p>Un <strong>faux ami</strong> est un mot anglais qui ressemble à un mot français, mais dont le sens est différent (ou pas tout à fait le même).</p>
+<table>
+<thead>
+<tr>
+<th>Mot anglais</th>
+<th>Mauvaise traduction</th>
+<th>Traduction correcte</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>eventually</strong></td>
+<td>éventuellement (= peut-être)</td>
+<td>finalement, à terme</td>
+</tr>
+<tr>
+<td><strong>library</strong></td>
+<td>librairie (= bookshop)</td>
+<td>bibliothèque (de code)</td>
+</tr>
+<tr>
+<td><strong>implement</strong></td>
+<td>implémenter</td>
+<td>mettre en oeuvre, coder</td>
+</tr>
+<tr>
+<td><strong>editor</strong></td>
+<td>éditeur (= publisher)</td>
+<td>éditeur de texte / IDE</td>
+</tr>
+<tr>
+<td><strong>console</strong></td>
+<td>console</td>
+<td>console (celui-là est OK !)</td>
+</tr>
+<tr>
+<td><strong>process</strong></td>
+<td>procès (= trial)</td>
+<td>processus</td>
+</tr>
+<tr>
+<td><strong>command</strong></td>
+<td>commande (= order, OK)</td>
+<td>aussi : commande shell</td>
+</tr>
+<tr>
+<td><strong>deprecated</strong></td>
+<td>(pas de faux ami)</td>
+<td>obsolète / déconseillé</td>
+</tr>
+<tr>
+<td><strong>actually</strong></td>
+<td>actuellement (= currently)</td>
+<td>en fait, en réalité</td>
+</tr>
+<tr>
+<td><strong>argument</strong></td>
+<td>argument</td>
+<td>argument de fonction / paramètre</td>
+</tr>
+</tbody>
+</table>
+<h3>Idiomes courants dans les équipes IT</h3>
+<p>Ces expressions reviennent constamment dans les conversations techniques, les Slack, les réunions :</p>
+<table>
+<thead>
+<tr>
+<th>Idiome</th>
+<th>Sens</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>it's a no-brainer</strong></td>
+<td>c'est une évidence, ça ne demande pas réflexion</td>
+</tr>
+<tr>
+<td><strong>works on my machine</strong></td>
+<td>ça marche chez moi (mais pas ailleurs)</td>
+</tr>
+<tr>
+<td><strong>let's ship it</strong></td>
+<td>on le déploie / on le livre</td>
+</tr>
+<tr>
+<td><strong>quick win</strong></td>
+<td>victoire rapide, amélioration facile</td>
+</tr>
+<tr>
+<td><strong>heads up</strong></td>
+<td>avertissement, tuyau (à la sauvette)</td>
+</tr>
+<tr>
+<td><strong>edge case</strong></td>
+<td>cas limite, cas particulier</td>
+</tr>
+<tr>
+<td><strong>under the hood</strong></td>
+<td>en interne, dans les coulisses</td>
+</tr>
+<tr>
+<td><strong>rubber duck debugging</strong></td>
+<td>expliquer son code à voix haute pour trouver le bug</td>
+</tr>
+<tr>
+<td><strong>bikeshedding</strong></td>
+<td>débat futile sur des détails sans importance</td>
+</tr>
+<tr>
+<td><strong>tech debt</strong></td>
+<td>dette technique (code à rembourser plus tard)</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2>Activité 1 — Faux amis</h2>
+<div class="component-quiz-qcm" data-quiz><p class="quiz-question">&quot;The fix will eventually be included in the next release.&quot; — Que signifie &quot;eventually&quot; ici?</p><div class="quiz-choices"><label><input type="radio" name="q-22" data-correct="false"> Éventuellement (peut-être)</label><label><input type="radio" name="q-22" data-correct="true"> Finalement, à terme — il sera inclus dans la prochaine version</label><label><input type="radio" name="q-22" data-correct="false"> Rapidement</label><label><input type="radio" name="q-22" data-correct="false"> Jamais</label></div><button class="quiz-submit" type="button">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<div class="component-quiz-qcm" data-quiz><p class="quiz-question">&quot;We use the React library for the frontend.&quot; — &quot;library&quot; signifie ici...</p><div class="quiz-choices"><label><input type="radio" name="q-23" data-correct="false"> Une librairie (magasin de livres)</label><label><input type="radio" name="q-23" data-correct="true"> Une bibliothèque de code</label><label><input type="radio" name="q-23" data-correct="false"> Une documentation</label><label><input type="radio" name="q-23" data-correct="false"> Un framework</label></div><button class="quiz-submit" type="button">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<div class="component-quiz-texte" data-reponse="en fait"><p class="quiz-question">&quot;Actually, the bug was in the configuration file.&quot; — Traduis &quot;actually&quot; correctement.</p><input type="text" class="quiz-input"><button type="button" class="quiz-submit">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<div class="component-quiz-qcm" data-quiz><p class="quiz-question">&quot;This feature is now deprecated.&quot; — Que signifie &quot;deprecated&quot;?</p><div class="quiz-choices"><label><input type="radio" name="q-24" data-correct="false"> La fonctionnalité est très appréciée</label><label><input type="radio" name="q-24" data-correct="true"> La fonctionnalité est déconseillée et sera supprimée dans le futur</label><label><input type="radio" name="q-24" data-correct="false"> La fonctionnalité est en cours de développement</label><label><input type="radio" name="q-24" data-correct="false"> La fonctionnalité est en cours de test</label></div><button class="quiz-submit" type="button">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<hr />
+<h2>Activité 2 — Idiomes</h2>
+<div class="component-quiz-qcm" data-quiz><p class="quiz-question">A colleague says &quot;Heads up — the API will be down for maintenance tonight.&quot; What should you do?</p><div class="quiz-choices"><label><input type="radio" name="q-25" data-correct="false"> Lever la tête</label><label><input type="radio" name="q-25" data-correct="true"> Être averti que l&#x27;API sera en maintenance ce soir et planifier en conséquence</label><label><input type="radio" name="q-25" data-correct="false"> Ignorer le message</label><label><input type="radio" name="q-25" data-correct="false"> Relancer l&#x27;API</label></div><button class="quiz-submit" type="button">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<div class="component-quiz-qcm" data-quiz><p class="quiz-question">&quot;Adding a linter to the project is a no-brainer.&quot; This means...</p><div class="quiz-choices"><label><input type="radio" name="q-26" data-correct="false"> Ajouter un linter est compliqué</label><label><input type="radio" name="q-26" data-correct="true"> Ajouter un linter ne nécessite pas de réflexion — c&#x27;est une évidence</label><label><input type="radio" name="q-26" data-correct="false"> Le projet n&#x27;a pas besoin d&#x27;un linter</label><label><input type="radio" name="q-26" data-correct="false"> Ajouter un linter est facultatif</label></div><button class="quiz-submit" type="button">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<div class="component-quiz-texte" data-reponse="debattre de details sans importance"><p class="quiz-question">&quot;We spent the whole meeting bikeshedding about the button color.&quot; — Que signifie &quot;bikeshedding&quot; dans ce contexte?</p><input type="text" class="quiz-input"><button type="button" class="quiz-submit">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<hr />
+<h2>Activité 3 — Trouves l'erreur de traduction</h2>
+<p>Ces phrases contiennent une mauvaise traduction du faux ami. Identifie le mot mal traduit.</p>
+<div class="component-quiz-qcm" data-quiz><p class="quiz-question">Dans la phrase &quot;Eventuellement, le serveur redémarre&quot;, quel mot est un faux ami mal traduit depuis l&#x27;anglais &quot;eventually&quot;?</p><div class="quiz-choices"><label><input type="radio" name="q-27" data-correct="false"> serveur</label><label><input type="radio" name="q-27" data-correct="false"> redémarre</label><label><input type="radio" name="q-27" data-correct="true"> Eventuellement</label><label><input type="radio" name="q-27" data-correct="false"> le</label></div><button class="quiz-submit" type="button">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<div class="component-quiz-texte" data-reponse="actually"><p class="quiz-question">Le mot &quot;Actuellement&quot; est souvent utilisé comme faux ami de quel mot anglais?</p><input type="text" class="quiz-input"><button type="button" class="quiz-submit">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<hr />
+<h2>Aide IA</h2>
+<div class="component-aide-ia"><div class="aide-ia-label">💡 Comment l'IA peut t'aider</div><pre class="aide-ia-prompt">I&#x27;m a French BTS SIO student. I found this sentence in an English
+technical document and I&#x27;m not sure I understand it correctly:
+[paste the sentence].
+I think the word &quot;[word]&quot; might be a false friend. Can you confirm
+whether it is, and explain the correct meaning in this context?</pre><button type="button" class="aide-ia-copy">Copier le prompt</button></div>
+<hr />
+<h2>Solution</h2>
+<details class="component-reveal"><summary>Voir toutes les réponses</summary><div class="reveal-content">Faux amis :
+- &quot;eventually&quot; = finalement, à terme (PAS &quot;éventuellement&quot; = perhaps/maybe)
+- &quot;library&quot; = bibliothèque de code (PAS &quot;librairie&quot; = bookshop)
+- &quot;actually&quot; = en fait, en réalité (PAS &quot;actuellement&quot; = currently/now)
+- &quot;deprecated&quot; = obsolète, déconseillé (la fonction sera supprimée)
+Idiomes :
+- &quot;Heads up&quot; = avertissement, petit tuyau → prendre connaissance et agir.
+- &quot;No-brainer&quot; = évidence, décision facile sans hésitation.
+- &quot;Bikeshedding&quot; = perdre du temps sur des détails insignifiants.
+Erreurs de traduction :
+- &quot;Eventuellement&quot; est le faux ami de &quot;eventually&quot;.
+- &quot;Actuellement&quot; est le faux ami de &quot;actually&quot;
+  (le bon équivalent de &quot;actuellement&quot; = &quot;currently&quot; ou &quot;now&quot;).</div></details>
+<hr />
+<h2>Auto-évaluation</h2>
+<div class="component-auto-eval" data-auto-eval><p>Où en es-tu ?</p><button data-eval="ok">😊 Compris</button><button data-eval="hesitant">🤔 À revoir</button><button data-eval="bloque">😣 Bloqué</button></div>
+      </section>
+    
+      <section id="section-9" data-section-index="9">
+        <h2>
+          <span class="section-badge">9</span>
+          Mini-projet : rédiger un README en anglais
+        </h2>
+        
+          <details class="objectifs">
+            <summary>Objectifs de cette section</summary>
+            <ul>
+              <li>Comprendre la structure d&#39;un README professionnel sur GitHub</li><li>Rédiger les sections essentielles d&#39;un README en anglais</li><li>Utiliser le Markdown pour formater un document technique</li>
+            </ul>
+          </details>
+        
+        <h2>Rappel de cours</h2>
+<p>Le <strong>README</strong> est le premier fichier qu'un visiteur voit sur un dépôt GitHub. C'est ta carte de visite technique. Un bon README répond à ces questions :</p>
+<ol>
+<li><strong>What is it?</strong> — De quoi s'agit-il?</li>
+<li><strong>Why use it?</strong> — Pourquoi c'est utile?</li>
+<li><strong>How to install it?</strong> — Comment l'installer?</li>
+<li><strong>How to use it?</strong> — Comment l'utiliser?</li>
+<li><strong>Who made it?</strong> — Qui l'a fait?</li>
+</ol>
+<h3>Structure type d'un README professionnel</h3>
+<pre><code class="language-markdown"># Project Name
+
+Short description in one or two sentences.
+
+## Features
+
+- Feature 1
+- Feature 2
+
+## Requirements
+
+- Python 3.10+
+- Node.js 18+
+
+## Installation
+
+Step-by-step instructions.
+
+## Usage
+
+How to run or use the project.
+
+## Author
+
+Your name — your contact or GitHub profile.
+
+## License
+
+MIT License (or other)
+</code></pre>
+<h3>Formules utiles pour chaque section</h3>
+<p><strong>Description :</strong>
+- "This project is a..."
+- "A simple tool that allows you to..."
+- "Built with [technology]."</p>
+<p><strong>Features :</strong>
+- "Supports..."
+- "Allows users to..."
+- "Automatically..."</p>
+<p><strong>Installation :</strong>
+- "Clone this repository:"
+- "Install the dependencies:"
+- "Run the application:"</p>
+<hr />
+<h2>Activité 1 — Analyser un README existant</h2>
+<p>Read this short README and answer the questions:</p>
+<hr />
+<blockquote>
+<h1>WeatherCheck CLI</h1>
+<p>A command-line tool that displays the current weather for any city,
+using the OpenWeatherMap API.</p>
+<h2>Features</h2>
+<ul>
+<li>Get real-time weather data for any city worldwide</li>
+<li>Displays temperature, humidity, and wind speed</li>
+<li>Supports both Celsius and Fahrenheit</li>
+</ul>
+<h2>Requirements</h2>
+<ul>
+<li>Python 3.10 or higher</li>
+<li>An OpenWeatherMap API key (free tier available)</li>
+</ul>
+<h2>Installation</h2>
+<p><code>bash
+git clone https://github.com/example/weathercheck.git
+cd weathercheck
+pip install -r requirements.txt</code></p>
+<h2>Usage</h2>
+<p><code>bash
+python weather.py --city "Paris" --unit celsius</code></p>
+<h2>Author</h2>
+<p>Alicia Morel — alicia@example.com</p>
+</blockquote>
+<hr />
+<div class="component-quiz-qcm" data-quiz><p class="quiz-question">What does this tool do, according to the README?</p><div class="quiz-choices"><label><input type="radio" name="q-28" data-correct="false"> Il prédit la météo pour les 7 prochains jours</label><label><input type="radio" name="q-28" data-correct="true"> Il affiche la météo actuelle pour une ville depuis la ligne de commande</label><label><input type="radio" name="q-28" data-correct="false"> Il crée des graphiques météo</label><label><input type="radio" name="q-28" data-correct="false"> Il envoie des alertes météo par email</label></div><button class="quiz-submit" type="button">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<div class="component-quiz-qcm" data-quiz><p class="quiz-question">What do you need to install before running the tool?</p><div class="quiz-choices"><label><input type="radio" name="q-29" data-correct="false"> Node.js et npm</label><label><input type="radio" name="q-29" data-correct="true"> Python 3.10 et les dépendances du fichier requirements.txt</label><label><input type="radio" name="q-29" data-correct="false"> Docker et docker-compose</label><label><input type="radio" name="q-29" data-correct="false"> Un serveur web</label></div><button class="quiz-submit" type="button">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<div class="component-quiz-texte" data-reponse="un outil en ligne de commande qui affiche la meteo actuelle pour nimporte quelle ville"><p class="quiz-question">Translate the description line &quot;A command-line tool that displays the current weather for any city&quot; into French.</p><input type="text" class="quiz-input"><button type="button" class="quiz-submit">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<hr />
+<h2>Activité 2 — Rédige ton README</h2>
+<p><strong>Scénario :</strong> Tu as développé une petite application Python pendant l'année. Choisis un de ces projets imaginaires (ou un vrai projet que tu as fait), et rédige son README.</p>
+<p><strong>Projets suggérés :</strong>
+- A — Un convertisseur de devises en Python (fetches live rates from an API)
+- B — Un gestionnaire de tâches en PHP (simple web to-do list)
+- C — Un script Bash qui sauvegarde automatiquement des fichiers
+- D — Ton propre projet BTS SIO</p>
+<p>Complète les sections clés :</p>
+<div class="component-quiz-texte" data-reponse="currency converter a python script that converts amounts between currencies using live exchange rates"><p class="quiz-question">Write the &quot;Project name&quot; and a one-sentence description for your chosen project (in English).</p><input type="text" class="quiz-input"><button type="button" class="quiz-submit">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<div class="component-quiz-texte" data-reponse="converts amounts between major currencies using real-time rates"><p class="quiz-question">Write ONE feature of your project in English. Start with a verb (supports, allows, converts, displays...).</p><input type="text" class="quiz-input"><button type="button" class="quiz-submit">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<div class="component-quiz-texte" data-reponse="clone this repository"><p class="quiz-question">Write the first installation step in English. Usually: &quot;Clone this repository:&quot; followed by the git clone command.</p><input type="text" class="quiz-input"><button type="button" class="quiz-submit">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<hr />
+<h2>Exemple complet — README d'un convertisseur de devises</h2>
+<details class="component-reveal"><summary>Voir un exemple de README complet</summary><div class="reveal-content"># Currency Converter
+A Python command-line tool that converts amounts between currencies
+using live exchange rates from the ExchangeRate-API.
+## Features
+- Supports 30+ currencies (EUR, USD, GBP, JPY, and more)
+- Fetches real-time exchange rates automatically
+- Simple command-line interface
+## Requirements
+- Python 3.10 or higher
+- An ExchangeRate-API key (free plan available at exchangerate-api.com)
+## Installation
+Clone this repository:
+git clone https://github.com/yourname/currency-converter.git
+cd currency-converter
+Install dependencies:
+pip install -r requirements.txt
+Set your API key in a .env file:
+EXCHANGE_API_KEY=your_api_key_here
+## Usage
+python converter.py --from EUR --to USD --amount 100
+Output: 100 EUR = 108.42 USD (rate updated: 2024-06-10)
+## Author
+Votre Prénom Nom — github.com/yourname
+## License
+MIT License</div></details>
+<hr />
+<h2>Aide IA</h2>
+<div class="component-aide-ia"><div class="aide-ia-label">💡 Comment l'IA peut t'aider</div><pre class="aide-ia-prompt">I&#x27;m a French BTS SIO student writing a README in English for my project.
+My project is: [describe your project in French in 2-3 sentences].
+I&#x27;ve written this README section: [paste your draft].
+Can you review it for clarity and natural English phrasing?
+Please point out any awkward sentences or missing technical information,
+but don&#x27;t rewrite it entirely for me.</pre><button type="button" class="aide-ia-copy">Copier le prompt</button></div>
+<hr />
+<h2>Auto-évaluation</h2>
+<div class="component-auto-eval" data-auto-eval><p>Où en es-tu ?</p><button data-eval="ok">😊 Compris</button><button data-eval="hesitant">🤔 À revoir</button><button data-eval="bloque">😣 Bloqué</button></div>
+      </section>
+    
+      <section id="section-10" data-section-index="10">
+        <h2>
+          <span class="section-badge">10</span>
+          Bilan final — Anglais IT
+        </h2>
+        
+        <h1>Bilan — Anglais IT English revival</h1>
+<h2>Ce que tu as travaillé</h2>
+<p>Tu arrives à la fin de ce cahier. Voici ce que tu as parcouru :</p>
+<table>
+<thead>
+<tr>
+<th>Activité</th>
+<th>Compétence</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>01 — Vocab réseaux et matériel</td>
+<td>Lire la doc réseau</td>
+</tr>
+<tr>
+<td>02 — Vocab développement</td>
+<td>Comprendre erreurs et code</td>
+</tr>
+<tr>
+<td>03 — Lire une doc technique</td>
+<td>Extraire l'info utile</td>
+</tr>
+<tr>
+<td>04 — Rédiger un bug report</td>
+<td>Écrire professionnel</td>
+</tr>
+<tr>
+<td>05 — Comprendre un dialogue</td>
+<td>Anglais technique oral</td>
+</tr>
+<tr>
+<td>06 — Présenter en 1 minute</td>
+<td>S'exprimer à l'oral</td>
+</tr>
+<tr>
+<td>07 — Idiomes et faux amis</td>
+<td>Éviter les pièges</td>
+</tr>
+<tr>
+<td>08 — Mini-projet README</td>
+<td>Rédiger un document pro</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2>Réflexion finale</h2>
+<p>Prends quelques minutes pour répondre honnêtement à ces questions :</p>
+<div class="component-quiz-qcm" data-quiz><p class="quiz-question">Après ce cahier, face à un message d&#x27;erreur en anglais, je me sens...</p><div class="quiz-choices"><label><input type="radio" name="q-30" data-correct="true"> Plus à l&#x27;aise qu&#x27;avant, je vais essayer de le comprendre</label><label><input type="radio" name="q-30" data-correct="false"> Pareil qu&#x27;avant</label><label><input type="radio" name="q-30" data-correct="true"> Toujours bloqué, j&#x27;ai besoin de plus de pratique</label></div><button class="quiz-submit" type="button">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<div class="component-quiz-qcm" data-quiz><p class="quiz-question">La compétence que j&#x27;ai le plus travaillée et que je dois encore consolider est...</p><div class="quiz-choices"><label><input type="radio" name="q-31" data-correct="true"> Lire la documentation technique</label><label><input type="radio" name="q-31" data-correct="true"> Rédiger en anglais (bug report, README)</label><label><input type="radio" name="q-31" data-correct="true"> Comprendre un dialogue technique oral</label><label><input type="radio" name="q-31" data-correct="true"> M&#x27;exprimer oralement en anglais</label><label><input type="radio" name="q-31" data-correct="true"> Le vocabulaire technique (réseaux, dev)</label></div><button class="quiz-submit" type="button">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<blockquote>
+<p>Toutes les réponses sont valables — c'est une question de positionnement personnel.</p>
+</blockquote>
+<hr />
+<h2>Ce que je retiens</h2>
+<p>Écris en quelques mots les 3 choses les plus utiles que tu emportes de ce cahier :</p>
+<div class="component-bilan" data-bilan><p>Mon bilan personnel (sauvegardé en local, exportable)</p><textarea rows="8" placeholder="Ce que j'ai appris, ce qui reste flou…"></textarea><button type="button" class="bilan-export">Exporter en .txt</button></div>
+<hr />
+<h2>Pour continuer à progresser</h2>
+<p>Si tu veux continuer à travailler ton anglais IT pendant les vacances, voici quelques pistes gratuites et concrètes :</p>
+<p><strong>Lire (15 min/jour) :</strong>
+- MDN Web Docs (developer.mozilla.org) — la référence pour le web, en anglais
+- GitHub README de projets open source qui t'intéressent
+- Messages d'erreur : prends l'habitude de les lire au lieu de les copier-coller directement dans Google</p>
+<p><strong>Écouter (au choix) :</strong>
+- Podcasts techniques en anglais : Syntax.fm (développement web), Software Engineering Daily
+- Chaînes YouTube techniques en anglais avec sous-titres auto</p>
+<p><strong>Écrire :</strong>
+- Mets tes commentaires de code en anglais dans tes projets perso
+- Essaie de décrire un bug en anglais la prochaine fois que tu en rencontres un</p>
+<p><strong>Outils :</strong>
+- DeepL (deepl.com) — meilleur traducteur pour les textes techniques
+- dict.cc ou Reverso Context — pour vérifier les nuances d'un terme</p>
+<hr />
+<h2>Félicitations</h2>
+<p>Tu as terminé le cahier Anglais. L'anglais technique ne s'apprend pas en une semaine, mais chaque lecture, chaque message d'erreur compris, chaque README rédigé est un pas concret vers l'autonomie professionnelle.</p>
+<p><strong>Good job, and see you in September!</strong></p>
+<hr />
+<h2>Auto-évaluation globale</h2>
+<div class="component-auto-eval" data-auto-eval><p>Où en es-tu ?</p><button data-eval="ok">😊 Compris</button><button data-eval="hesitant">🤔 À revoir</button><button data-eval="bloque">😣 Bloqué</button></div>
+      </section>
+    
+  </main>
+
+</div>
+
+<footer>
+  <p>Cahier de vacances BTS SIO · Travail autonome estival · Bonne continuation !</p>
+</footer>
+
+<script>/* 00-progress.js */
+/* Storage core — shared by quiz, auto-eval, bilan, progress-bar */
+(function () {
+  const KEY_PREFIX = "c2v:";
+
+  function cahierKey() {
+    // derive a stable key from the document title
+    return KEY_PREFIX + (document.title || "default").replace(/\s+/g, "_");
+  }
+
+  function load() {
+    try {
+      return JSON.parse(localStorage.getItem(cahierKey()) || "{}");
+    } catch {
+      return {};
+    }
+  }
+
+  function save(state) {
+    try {
+      localStorage.setItem(cahierKey(), JSON.stringify(state));
+    } catch (e) {
+      console.warn("storage failed", e);
+    }
+  }
+
+  function update(path, value) {
+    const state = load();
+    state[path] = value;
+    save(state);
+    window.dispatchEvent(new CustomEvent("c2v:update"));
+  }
+
+  function get(path) {
+    return load()[path];
+  }
+
+  window.C2V = { load, save, update, get };
+})();
+
+
+/* 10-quiz-qcm.js */
+/* Quiz QCM — single/multi choice with feedback */
+(function () {
+  function init(root) {
+    const submit = root.querySelector(".quiz-submit");
+    const feedback = root.querySelector(".quiz-feedback");
+    if (!submit || !feedback) return;
+
+    submit.addEventListener("click", () => {
+      const inputs = root.querySelectorAll('input[type="radio"], input[type="checkbox"]');
+      let allCorrect = true;
+      let anyChecked = false;
+      inputs.forEach((inp) => {
+        if (inp.checked) {
+          anyChecked = true;
+          if (inp.dataset.correct !== "true") allCorrect = false;
+        } else {
+          if (inp.dataset.correct === "true") allCorrect = false;
+        }
+      });
+      if (!anyChecked) {
+        feedback.textContent = "Choisis au moins une réponse.";
+        feedback.className = "quiz-feedback ko";
+        return;
+      }
+      if (allCorrect) {
+        feedback.textContent = "✅ Correct !";
+        feedback.className = "quiz-feedback ok";
+      } else {
+        feedback.textContent = "❌ Pas tout à fait — réessaie ou consulte le rappel de cours.";
+        feedback.className = "quiz-feedback ko";
+      }
+    });
+  }
+
+  document.addEventListener("DOMContentLoaded", () => {
+    document.querySelectorAll(".component-quiz-qcm").forEach(init);
+  });
+})();
+
+
+/* 11-quiz-texte.js */
+/* Quiz texte — tolerant comparison */
+(function () {
+  function normalise(s) {
+    return s
+      .toLowerCase()
+      .normalize("NFD")
+      .replace(/[̀-ͯ]/g, "")
+      .replace(/\s+/g, " ")
+      .trim();
+  }
+
+  function init(root) {
+    const expected = root.dataset.reponse || "";
+    const input = root.querySelector(".quiz-input");
+    const submit = root.querySelector(".quiz-submit");
+    const feedback = root.querySelector(".quiz-feedback");
+    if (!input || !submit || !feedback) return;
+
+    submit.addEventListener("click", () => {
+      if (normalise(input.value) === normalise(expected)) {
+        feedback.textContent = "✅ Correct !";
+        feedback.className = "quiz-feedback ok";
+      } else {
+        feedback.textContent = "❌ Pas la bonne réponse — réessaie.";
+        feedback.className = "quiz-feedback ko";
+      }
+    });
+  }
+
+  document.addEventListener("DOMContentLoaded", () => {
+    document.querySelectorAll(".component-quiz-texte").forEach(init);
+  });
+})();
+
+
+/* 20-auto-eval.js */
+/* Auto-eval — 3 buttons, saves to storage, drives progress-bar */
+(function () {
+  function init(root) {
+    const section = root.closest("section[data-section-index]");
+    const sectionIdx = section ? section.dataset.sectionIndex : "0";
+    const key = "eval:section-" + sectionIdx;
+
+    const current = window.C2V.get(key);
+    if (current) {
+      const btn = root.querySelector(`button[data-eval="${current}"]`);
+      if (btn) btn.classList.add("selected");
+    }
+
+    root.querySelectorAll("button[data-eval]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        root.querySelectorAll("button").forEach((b) => b.classList.remove("selected"));
+        btn.classList.add("selected");
+        window.C2V.update(key, btn.dataset.eval);
+      });
+    });
+  }
+
+  document.addEventListener("DOMContentLoaded", () => {
+    document.querySelectorAll(".component-auto-eval").forEach(init);
+  });
+})();
+
+
+/* 30-progress-bar.js */
+/* Progress-bar component — now handled by sidebar (50-sidebar-nav.js).
+   This stub keeps the component-progress-bar div harmless. */
+(function () {
+  document.addEventListener("DOMContentLoaded", () => {
+    document.querySelectorAll(".component-progress-bar").forEach((el) => {
+      el.style.display = "none";
+    });
+  });
+})();
+
+
+/* 40-bilan.js */
+/* Bilan — autosave + export .txt */
+(function () {
+  function init(root) {
+    const textarea = root.querySelector("textarea");
+    const exportBtn = root.querySelector(".bilan-export");
+    if (!textarea) return;
+
+    textarea.value = window.C2V.get("bilan") || "";
+    textarea.addEventListener("input", () => {
+      window.C2V.update("bilan", textarea.value);
+    });
+
+    if (exportBtn) {
+      exportBtn.addEventListener("click", () => {
+        const title = document.title.replace(/[^\w-]+/g, "_");
+        const content = "Bilan — " + document.title + "\n\n" + (textarea.value || "");
+        const blob = new Blob([content], { type: "text/plain;charset=utf-8" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = `bilan-${title}.txt`;
+        a.click();
+        URL.revokeObjectURL(url);
+      });
+    }
+  }
+
+  document.addEventListener("DOMContentLoaded", () => {
+    document.querySelectorAll(".component-bilan").forEach(init);
+  });
+})();
+
+
+/* 41-aide-ia.js */
+/* Aide IA — copy prompt to clipboard */
+(function () {
+  function init(root) {
+    const btn = root.querySelector(".aide-ia-copy");
+    const pre = root.querySelector(".aide-ia-prompt");
+    if (!btn || !pre) return;
+
+    btn.addEventListener("click", async () => {
+      try {
+        await navigator.clipboard.writeText(pre.textContent);
+        btn.textContent = "Copié ✓";
+        setTimeout(() => (btn.textContent = "Copier le prompt"), 2000);
+      } catch {
+        btn.textContent = "Sélectionne le texte et copie manuellement";
+      }
+    });
+  }
+
+  document.addEventListener("DOMContentLoaded", () => {
+    document.querySelectorAll(".component-aide-ia").forEach(init);
+  });
+})();
+
+
+/* 42-code-copy.js */
+/* Code-block — copy button */
+(function () {
+  function init(root) {
+    const btn = root.querySelector(".code-copy");
+    const code = root.querySelector("code");
+    if (!btn || !code) return;
+    btn.addEventListener("click", async () => {
+      try {
+        await navigator.clipboard.writeText(code.textContent);
+        btn.textContent = "Copié ✓";
+        setTimeout(() => (btn.textContent = "Copier"), 2000);
+      } catch {
+        btn.textContent = "Sélectionne et copie manuellement";
+      }
+    });
+  }
+  document.addEventListener("DOMContentLoaded", () => {
+    document.querySelectorAll(".component-code").forEach(init);
+  });
+})();
+
+
+/* 50-sidebar-nav.js */
+/* Sidebar nav — active section highlight + progress */
+(function () {
+  const sections = document.querySelectorAll("main section[data-section-index]");
+  const navLinks = document.querySelectorAll("nav.sommaire a[data-nav-index]");
+  const fill     = document.querySelector(".nav-progress-fill");
+  const label    = document.querySelector(".nav-progress-text");
+  const total    = sections.length;
+
+  if (!sections.length || !navLinks.length) return;
+
+  let visited = new Set();
+
+  function updateProgress() {
+    const pct = total > 0 ? Math.round((visited.size / total) * 100) : 0;
+    if (fill)  fill.style.width = pct + "%";
+    if (label) label.textContent = visited.size + " / " + total;
+  }
+
+  const observer = new IntersectionObserver(
+    (entries) => {
+      let topVisible = null;
+      entries.forEach((e) => {
+        if (e.isIntersecting) {
+          const idx = e.target.dataset.sectionIndex;
+          visited.add(idx);
+          if (!topVisible || e.boundingClientRect.top < topVisible.top) {
+            topVisible = { idx, top: e.boundingClientRect.top };
+          }
+        }
+      });
+
+      if (topVisible) {
+        navLinks.forEach((a) => {
+          a.classList.toggle("active", a.dataset.navIndex === topVisible.idx);
+        });
+      }
+
+      updateProgress();
+    },
+    { threshold: 0.15 }
+  );
+
+  sections.forEach((s) => observer.observe(s));
+})();
+</script>
+</body>
+</html>

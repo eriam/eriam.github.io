@@ -1,0 +1,2479 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Info-SLAM — Consolidation développement</title>
+<style>/* ============================================================
+   Cahiers de Vacances BTS SIO — Thème Estival ☀️
+   ============================================================ */
+
+:root {
+  --color-bg:           #fffcf0;
+  --color-text:         #1c1917;
+  --color-muted:        #78716c;
+  --color-primary:      #f97316;
+  --color-primary-dark: #c2410c;
+  --color-primary-soft: #ffedd5;
+  --color-secondary:    #0891b2;
+  --color-success:      #16a34a;
+  --color-success-soft: #dcfce7;
+  --color-warning:      #d97706;
+  --color-warning-soft: #fef3c7;
+  --color-danger:       #dc2626;
+  --color-danger-soft:  #fee2e2;
+  --color-border:       #fed7aa;
+  --color-card:         #ffffff;
+  --radius:             14px;
+  --radius-sm:          10px;
+  --radius-xs:          6px;
+  --shadow:             0 2px 6px rgba(249,115,22,.08), 0 6px 24px rgba(0,0,0,.06);
+  --shadow-sm:          0 1px 4px rgba(0,0,0,.08);
+  --sidebar-w:          240px;
+  --font-base:          -apple-system, BlinkMacSystemFont, &#34;Segoe UI&#34;, Roboto, &#34;Helvetica Neue&#34;, Arial, sans-serif;
+  --font-mono:          ui-monospace, SFMono-Regular, &#34;SF Mono&#34;, Menlo, Consolas, monospace;
+  --transition:         0.15s ease;
+}
+
+/* ── Reset ── */
+*, *::before, *::after { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+
+body {
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-base);
+  font-size: 16px;
+  line-height: 1.7;
+}
+
+/* ── Header ── */
+.cahier-header {
+  background: linear-gradient(135deg, #f97316 0%, #fb923c 35%, #fbbf24 70%, #f59e0b 100%);
+  color: #fff;
+  padding: 2.5rem 2rem 3.5rem;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Wavy bottom border */
+.cahier-header::after {
+  content: &#34;&#34;;
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  right: 0;
+  height: 40px;
+  background: var(--color-bg);
+  clip-path: ellipse(55% 100% at 50% 100%);
+}
+
+/* Decorative sunrays */
+.cahier-header::before {
+  content: &#34;&#34;;
+  position: absolute;
+  top: -60px;
+  right: -60px;
+  width: 220px;
+  height: 220px;
+  background: rgba(255,255,255,.1);
+  border-radius: 50%;
+}
+
+.cahier-header-inner {
+  max-width: calc(var(--sidebar-w) + 860px + 3rem);
+  margin: 0 auto;
+  position: relative;
+  z-index: 1;
+}
+
+.cahier-header h1 {
+  font-size: 2rem;
+  font-weight: 800;
+  margin: 0 0 0.4rem;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+  text-shadow: 0 1px 3px rgba(0,0,0,.15);
+}
+
+.cahier-meta {
+  opacity: 0.92;
+  font-size: 0.95rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.25rem;
+  margin: 0;
+}
+
+.cahier-meta-badge {
+  background: rgba(255,255,255,.22);
+  border-radius: 20px;
+  padding: 0.2rem 0.8rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  border: 1px solid rgba(255,255,255,.35);
+}
+
+/* ── Page body (sidebar + content) ── */
+.page-body {
+  display: grid;
+  grid-template-columns: var(--sidebar-w) 1fr;
+  gap: 2rem;
+  max-width: calc(var(--sidebar-w) + 860px + 3rem);
+  margin: 0 auto;
+  padding: 1.5rem 1rem 3rem;
+  align-items: start;
+}
+
+/* ── Sidebar ── */
+nav.sommaire {
+  position: sticky;
+  top: 1.5rem;
+  background: var(--color-card);
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+  padding: 1.25rem;
+  max-height: calc(100vh - 3rem);
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-border) transparent;
+}
+
+nav.sommaire h2 {
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--color-muted);
+  margin: 0 0 0.75rem;
+}
+
+nav.sommaire ol {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+nav.sommaire li { margin: 0; }
+
+nav.sommaire a {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  padding: 0.35rem 0.5rem;
+  border-radius: var(--radius-xs);
+  color: var(--color-muted);
+  text-decoration: none;
+  font-size: 0.82rem;
+  line-height: 1.35;
+  transition: background var(--transition), color var(--transition);
+}
+
+nav.sommaire a:hover {
+  background: var(--color-primary-soft);
+  color: var(--color-primary-dark);
+}
+
+nav.sommaire a.active {
+  background: var(--color-primary-soft);
+  color: var(--color-primary-dark);
+  font-weight: 600;
+}
+
+nav.sommaire .nav-num {
+  flex-shrink: 0;
+  background: var(--color-primary-soft);
+  color: var(--color-primary);
+  font-size: 0.68rem;
+  font-weight: 700;
+  border-radius: 4px;
+  padding: 0.1rem 0.35rem;
+  min-width: 1.4rem;
+  text-align: center;
+}
+
+nav.sommaire a.active .nav-num {
+  background: var(--color-primary);
+  color: #fff;
+}
+
+.nav-duree {
+  color: var(--color-muted);
+  font-size: 0.72rem;
+  margin-left: auto;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+/* Progress in sidebar */
+.nav-progress {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--color-border);
+}
+
+.nav-progress-label {
+  font-size: 0.72rem;
+  color: var(--color-muted);
+  margin-bottom: 0.4rem;
+  display: flex;
+  justify-content: space-between;
+}
+
+.nav-progress-track {
+  height: 6px;
+  background: var(--color-border);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.nav-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--color-primary), #fbbf24);
+  border-radius: 4px;
+  width: 0%;
+  transition: width 0.4s ease;
+}
+
+/* ── Main content ── */
+main { min-width: 0; }
+
+main section {
+  background: var(--color-card);
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 1.75rem 2rem;
+  margin-bottom: 1.5rem;
+  scroll-margin-top: 1.5rem;
+  position: relative;
+}
+
+/* Subtle left accent per section */
+main section::before {
+  content: &#34;&#34;;
+  position: absolute;
+  top: 1rem;
+  bottom: 1rem;
+  left: 0;
+  width: 4px;
+  background: linear-gradient(180deg, var(--color-primary) 0%, #fbbf24 100%);
+  border-radius: 0 2px 2px 0;
+  opacity: 0.6;
+}
+
+main section h2 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin: 0 0 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  color: var(--color-text);
+}
+
+.section-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 8px;
+  background: linear-gradient(135deg, var(--color-primary), #fbbf24);
+  color: #fff;
+  font-size: 0.8rem;
+  font-weight: 700;
+  flex-shrink: 0;
+  box-shadow: 0 2px 6px rgba(249,115,22,.35);
+}
+
+/* ── Typography ── */
+h1 { font-size: 1.9rem; font-weight: 800; margin: 0 0 0.75rem; }
+h2 { font-size: 1.25rem; font-weight: 700; margin: 1.75rem 0 0.75rem; }
+h3 { font-size: 1.05rem; font-weight: 600; margin: 1.25rem 0 0.5rem; color: var(--color-primary-dark); }
+p  { margin: 0 0 1rem; }
+a  { color: var(--color-secondary); }
+
+ul, ol { margin: 0 0 1rem; padding-left: 1.5rem; }
+li { margin: 0.2rem 0; }
+strong { font-weight: 600; }
+
+/* ── Objectifs block ── */
+details.objectifs {
+  background: linear-gradient(135deg, #fff7ed, #ffedd5);
+  border-left: 3px solid var(--color-primary);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  padding: 0.6rem 1rem;
+  margin-bottom: 1.25rem;
+}
+
+details.objectifs summary {
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: var(--color-primary-dark);
+  list-style: none;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+details.objectifs summary::before {
+  content: &#34;▶&#34;;
+  font-size: 0.6rem;
+  transition: transform var(--transition);
+}
+
+details.objectifs[open] summary::before { transform: rotate(90deg); }
+details.objectifs ul { margin: 0.5rem 0 0; }
+
+/* ── Quiz QCM ── */
+.component-quiz-qcm {
+  background: linear-gradient(135deg, #fff9f0, #fff7ed);
+  border: 1.5px solid #fed7aa;
+  border-radius: var(--radius-sm);
+  padding: 1.25rem 1.5rem;
+  margin: 1.25rem 0;
+}
+
+.quiz-question {
+  font-weight: 600;
+  margin: 0 0 0.9rem;
+  line-height: 1.45;
+}
+
+.quiz-choices {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  margin-bottom: 0.9rem;
+}
+
+.quiz-choices label {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.55rem 0.9rem;
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-xs);
+  cursor: pointer;
+  transition: border-color var(--transition), background var(--transition);
+  font-size: 0.95rem;
+  line-height: 1.35;
+  background: var(--color-card);
+}
+
+.quiz-choices label:hover {
+  border-color: var(--color-primary);
+  background: var(--color-primary-soft);
+}
+
+.quiz-choices input[type=&#34;radio&#34;] {
+  accent-color: var(--color-primary);
+  width: 1rem;
+  height: 1rem;
+  flex-shrink: 0;
+}
+
+/* ── Quiz texte ── */
+.component-quiz-texte {
+  background: linear-gradient(135deg, #fff9f0, #fff7ed);
+  border: 1.5px solid #fed7aa;
+  border-radius: var(--radius-sm);
+  padding: 1.25rem 1.5rem;
+  margin: 1.25rem 0;
+}
+
+.quiz-input {
+  display: block;
+  width: 100%;
+  max-width: 22rem;
+  padding: 0.5rem 0.75rem;
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-xs);
+  font-family: var(--font-base);
+  font-size: 1rem;
+  margin: 0.5rem 0 0.9rem;
+  transition: border-color var(--transition);
+  background: var(--color-card);
+}
+
+.quiz-input:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(249,115,22,.15);
+}
+
+/* ── Shared button ── */
+.quiz-submit, .code-copy, .aide-ia-copy, .bilan-export {
+  background: var(--color-primary);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius-xs);
+  padding: 0.45rem 1.1rem;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-family: var(--font-base);
+  font-weight: 600;
+  transition: background var(--transition), transform var(--transition), box-shadow var(--transition);
+  box-shadow: 0 2px 6px rgba(249,115,22,.3);
+}
+
+.quiz-submit:hover, .code-copy:hover, .aide-ia-copy:hover, .bilan-export:hover {
+  background: var(--color-primary-dark);
+  box-shadow: 0 3px 10px rgba(249,115,22,.4);
+}
+
+.quiz-submit:active { transform: scale(0.97); }
+
+/* ── Quiz feedback ── */
+.quiz-feedback {
+  margin-top: 0.6rem;
+  font-weight: 600;
+  font-size: 0.95rem;
+  min-height: 1.4em;
+}
+.quiz-feedback.ok { color: var(--color-success); }
+.quiz-feedback.ko { color: var(--color-danger); }
+
+/* ── Code block ── */
+.component-code {
+  position: relative;
+  background: #1c1917;
+  color: #fef3c7;
+  border-radius: var(--radius-sm);
+  padding: 1.1rem 1.25rem;
+  font-family: var(--font-mono);
+  font-size: 0.88rem;
+  line-height: 1.6;
+  overflow-x: auto;
+  margin: 1.25rem 0;
+  border: 1px solid #292524;
+}
+
+.component-code pre { margin: 0; }
+.component-code code { background: none; padding: 0; color: inherit; }
+
+.code-copy {
+  position: absolute;
+  top: 0.6rem;
+  right: 0.6rem;
+  font-size: 0.78rem;
+  padding: 0.25rem 0.6rem;
+  opacity: 0.65;
+  box-shadow: none;
+}
+.code-copy:hover { opacity: 1; box-shadow: none; }
+
+/* ── Reveal / correction ── */
+.component-reveal {
+  border: 1.5px solid #fdba74;
+  background: linear-gradient(135deg, #fff7ed, #ffedd5);
+  border-radius: var(--radius-sm);
+  margin: 1.25rem 0;
+  overflow: hidden;
+}
+
+.component-reveal summary {
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.92rem;
+  color: var(--color-primary-dark);
+  padding: 0.7rem 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  list-style: none;
+  user-select: none;
+}
+
+.component-reveal summary::before {
+  content: &#34;▶&#34;;
+  font-size: 0.6rem;
+  transition: transform var(--transition);
+}
+
+.component-reveal[open] summary::before { transform: rotate(90deg); }
+
+.reveal-content {
+  padding: 0 1rem 0.9rem;
+  white-space: pre-wrap;
+  font-size: 0.95rem;
+  color: var(--color-primary-dark);
+  border-top: 1px solid #fdba74;
+}
+
+/* ── Aide IA ── */
+.component-aide-ia {
+  background: linear-gradient(135deg, #f0fdf4, #dcfce7);
+  border: 1.5px solid #86efac;
+  border-radius: var(--radius-sm);
+  padding: 1rem 1.25rem;
+  margin: 1.25rem 0;
+}
+
+.aide-ia-label {
+  font-weight: 700;
+  font-size: 0.88rem;
+  color: #14532d;
+  margin-bottom: 0.5rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.aide-ia-prompt {
+  background: rgba(255,255,255,.75);
+  border: 1px solid #86efac;
+  border-radius: var(--radius-xs);
+  padding: 0.75rem 1rem;
+  white-space: pre-wrap;
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  color: #14532d;
+  margin: 0 0 0.75rem;
+}
+
+.aide-ia-copy { background: #16a34a; font-size: 0.82rem; padding: 0.3rem 0.75rem; box-shadow: 0 2px 6px rgba(22,163,74,.3); }
+.aide-ia-copy:hover { background: #15803d; }
+
+/* ── Auto-eval ── */
+.component-auto-eval {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem 0.75rem;
+  background: linear-gradient(135deg, #fff9f0, #fef3c7);
+  border: 1.5px solid #fed7aa;
+  border-radius: var(--radius-sm);
+  padding: 0.85rem 1.1rem;
+  margin: 1.25rem 0;
+}
+
+.component-auto-eval p {
+  margin: 0;
+  font-weight: 600;
+  font-size: 0.9rem;
+  flex-basis: 100%;
+  color: var(--color-muted);
+}
+
+.component-auto-eval button {
+  background: var(--color-card);
+  border: 1.5px solid var(--color-border);
+  border-radius: 20px;
+  padding: 0.35rem 1rem;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-family: var(--font-base);
+  transition: border-color var(--transition), background var(--transition);
+}
+
+.component-auto-eval button:hover { border-color: var(--color-primary); }
+
+.component-auto-eval button[data-eval=&#34;ok&#34;].selected {
+  background: var(--color-success-soft);
+  border-color: var(--color-success);
+  color: #14532d;
+  font-weight: 600;
+}
+
+.component-auto-eval button[data-eval=&#34;hesitant&#34;].selected {
+  background: var(--color-warning-soft);
+  border-color: var(--color-warning);
+  color: #78350f;
+  font-weight: 600;
+}
+
+.component-auto-eval button[data-eval=&#34;bloque&#34;].selected {
+  background: var(--color-danger-soft);
+  border-color: var(--color-danger);
+  color: #7f1d1d;
+  font-weight: 600;
+}
+
+/* ── Progress bar (inside sidebar, managed by JS) ── */
+.component-progress-bar { display: none; }
+
+/* ── Bilan ── */
+.component-bilan {
+  background: linear-gradient(135deg, #f0fdf4, #dcfce7);
+  border: 1.5px solid #86efac;
+  border-radius: var(--radius-sm);
+  padding: 1.25rem 1.5rem;
+  margin: 1.5rem 0;
+}
+
+.component-bilan &gt; p { font-weight: 600; color: #14532d; margin-bottom: 0.6rem; }
+
+.component-bilan textarea {
+  width: 100%;
+  font-family: var(--font-base);
+  font-size: 0.95rem;
+  padding: 0.6rem 0.75rem;
+  border: 1.5px solid #86efac;
+  border-radius: var(--radius-xs);
+  background: rgba(255,255,255,.75);
+  resize: vertical;
+  min-height: 8rem;
+  margin-bottom: 0.75rem;
+  line-height: 1.6;
+}
+
+.component-bilan textarea:focus {
+  outline: none;
+  border-color: var(--color-success);
+  box-shadow: 0 0 0 3px rgba(22,163,74,.15);
+}
+
+.bilan-export { background: var(--color-success); box-shadow: 0 2px 6px rgba(22,163,74,.3); }
+.bilan-export:hover { background: #15803d; }
+
+/* ── Ressources externes ── */
+.component-ressources {
+  background: linear-gradient(135deg, #ecfeff, #cffafe);
+  border: 1.5px solid #67e8f9;
+  border-radius: var(--radius-sm);
+  padding: 1rem 1.25rem;
+  margin: 1.25rem 0;
+}
+
+.ressources-label {
+  font-weight: 700;
+  font-size: 0.88rem;
+  color: #0e7490;
+  margin-bottom: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.ressources-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
+.ressource-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.5rem 0.75rem;
+  background: rgba(255,255,255,.7);
+  border: 1px solid #a5f3fc;
+  border-radius: var(--radius-xs);
+  text-decoration: none;
+  color: var(--color-text);
+  transition: background var(--transition), border-color var(--transition), transform var(--transition);
+}
+
+.ressource-item:hover {
+  background: #fff;
+  border-color: #0891b2;
+  transform: translateX(3px);
+  color: var(--color-text);
+}
+
+.ressource-icon {
+  font-size: 1rem;
+  width: 2rem;
+  height: 2rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  flex-shrink: 0;
+}
+
+.ressource-badge-video {
+  background: #fee2e2;
+  color: #dc2626;
+}
+
+.ressource-badge-doc {
+  background: var(--color-primary-soft);
+  color: var(--color-primary-dark);
+}
+
+.ressource-badge-lien {
+  background: #e0f2fe;
+  color: #0369a1;
+}
+
+.ressource-text {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  min-width: 0;
+}
+
+.ressource-titre {
+  font-weight: 600;
+  font-size: 0.92rem;
+  line-height: 1.3;
+}
+
+.ressource-meta {
+  font-size: 0.78rem;
+  color: var(--color-muted);
+}
+
+/* ── Unknown component ── */
+.component-unknown {
+  background: var(--color-danger-soft);
+  border: 1px dashed var(--color-danger);
+  padding: 0.5rem 0.75rem;
+  border-radius: var(--radius-xs);
+  color: #7f1d1d;
+  font-size: 0.9rem;
+  margin: 1rem 0;
+}
+
+/* ── Footer ── */
+footer {
+  text-align: center;
+  color: var(--color-muted);
+  padding: 2rem 0 2.5rem;
+  font-size: 0.85rem;
+  border-top: 1px solid var(--color-border);
+  margin-top: 1rem;
+}
+
+/* ── Tables ── */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1rem 0;
+  font-size: 0.93rem;
+}
+th, td {
+  border: 1px solid var(--color-border);
+  padding: 0.5rem 0.75rem;
+  text-align: left;
+}
+th {
+  background: var(--color-primary-soft);
+  font-weight: 600;
+  color: var(--color-primary-dark);
+}
+tr:nth-child(even) td { background: #fffbf5; }
+
+/* ── Inline code ── */
+code {
+  font-family: var(--font-mono);
+  font-size: 0.88em;
+  background: #fff7ed;
+  border: 1px solid #fed7aa;
+  border-radius: 4px;
+  padding: 0.1em 0.35em;
+  color: var(--color-primary-dark);
+}
+
+pre code { background: none; border: none; padding: 0; font-size: inherit; color: inherit; }
+
+/* ── Responsive ── */
+@media (max-width: 768px) {
+  .page-body {
+    grid-template-columns: 1fr;
+    padding: 1rem 0.75rem 2rem;
+  }
+
+  nav.sommaire {
+    position: static;
+    max-height: none;
+  }
+
+  .cahier-header { padding: 1.5rem 1rem 2.5rem; }
+  .cahier-header h1 { font-size: 1.5rem; }
+
+  main section { padding: 1.25rem 1rem; }
+}
+</style>
+</head>
+<body>
+
+<header class="cahier-header">
+  <div class="cahier-header-inner">
+    <h1>Info-SLAM — Consolidation développement</h1>
+    <p class="cahier-meta">
+      <span class="cahier-meta-badge">BTS SIO</span>
+      <span class="cahier-meta-badge">info-slam</span>
+      <span class="cahier-meta-badge">⏱ 10h estimées</span>
+    </p>
+  </div>
+</header>
+
+<div class="page-body">
+
+  <nav class="sommaire" aria-label="Sommaire">
+    <h2>Plan du cahier</h2>
+    <ol>
+      
+        <li>
+          <a href="#section-1" data-nav-index="1">
+            <span class="nav-num">1</span>
+            <span>Bienvenue dans ton cahier Info-SLAM</span>
+            <span class="nav-duree">15min</span>
+          </a>
+        </li>
+      
+        <li>
+          <a href="#section-2" data-nav-index="2">
+            <span class="nav-num">2</span>
+            <span>Tes outils en ligne — SQLFiddle &amp; PHPFiddle</span>
+            <span class="nav-duree">20min</span>
+          </a>
+        </li>
+      
+        <li>
+          <a href="#section-3" data-nav-index="3">
+            <span class="nav-num">3</span>
+            <span>SQL — SELECT, WHERE, ORDER BY</span>
+            <span class="nav-duree">60min</span>
+          </a>
+        </li>
+      
+        <li>
+          <a href="#section-4" data-nav-index="4">
+            <span class="nav-num">4</span>
+            <span>SQL — JOIN, GROUP BY et agrégats</span>
+            <span class="nav-duree">75min</span>
+          </a>
+        </li>
+      
+        <li>
+          <a href="#section-5" data-nav-index="5">
+            <span class="nav-num">5</span>
+            <span>Algorithmie PHP — boucles, conditions, fonctions</span>
+            <span class="nav-duree">75min</span>
+          </a>
+        </li>
+      
+        <li>
+          <a href="#section-6" data-nav-index="6">
+            <span class="nav-num">6</span>
+            <span>POO PHP — classe, attribut, méthode</span>
+            <span class="nav-duree">75min</span>
+          </a>
+        </li>
+      
+        <li>
+          <a href="#section-7" data-nav-index="7">
+            <span class="nav-num">7</span>
+            <span>POO PHP — héritage et polymorphisme</span>
+            <span class="nav-duree">75min</span>
+          </a>
+        </li>
+      
+        <li>
+          <a href="#section-8" data-nav-index="8">
+            <span class="nav-num">8</span>
+            <span>Gestion d&#39;erreurs PHP — try/catch/throw</span>
+            <span class="nav-duree">60min</span>
+          </a>
+        </li>
+      
+        <li>
+          <a href="#section-9" data-nav-index="9">
+            <span class="nav-num">9</span>
+            <span>Mini-projet CRUD PHP — Gestion de contacts</span>
+            <span class="nav-duree">90min</span>
+          </a>
+        </li>
+      
+        <li>
+          <a href="#section-10" data-nav-index="10">
+            <span class="nav-num">10</span>
+            <span>Bilan final — Info-SLAM</span>
+            <span class="nav-duree">20min</span>
+          </a>
+        </li>
+      
+    </ol>
+    <div class="nav-progress">
+      <div class="nav-progress-label">
+        <span>Progression</span>
+        <span class="nav-progress-text">0 / 10</span>
+      </div>
+      <div class="nav-progress-track">
+        <div class="nav-progress-fill"></div>
+      </div>
+    </div>
+  </nav>
+
+  <main>
+    
+      <section id="section-1" data-section-index="1">
+        <h2>
+          <span class="section-badge">1</span>
+          Bienvenue dans ton cahier Info-SLAM
+        </h2>
+        
+        <h2>Bonjour !</h2>
+<p>Ce cahier de vacances est là pour t'aider à <strong>consolider tes bases en développement</strong> avant la 2ème année de BTS SIO SLAM. Il n'est pas un examen, il n'y a pas de note — c'est un outil pour toi, à ton rythme.</p>
+<p>Si certains thèmes te semblent déjà familiers, tant mieux : les activités te permettront de vérifier que tu les maîtrises vraiment. Si d'autres te semblent flous, les rappels de cours et les aides IA sont là pour t'accompagner.</p>
+<h2>Ce que tu vas travailler</h2>
+<p>Ce cahier couvre <strong>8 thèmes</strong>, pour environ 10 heures de travail au total. Tout se fait dans le navigateur — <strong>aucune installation requise</strong> (SQLFiddle pour le SQL, 3v4l.org pour le PHP).</p>
+<table>
+<thead>
+<tr>
+<th>Activité</th>
+<th>Thème</th>
+<th>Durée</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>00b</td>
+<td>Outils en ligne — SQLFiddle &amp; PHPFiddle</td>
+<td>20 min</td>
+</tr>
+<tr>
+<td>01</td>
+<td>SQL — SELECT, WHERE, ORDER BY</td>
+<td>60 min</td>
+</tr>
+<tr>
+<td>02</td>
+<td>SQL — JOIN, GROUP BY, agrégats</td>
+<td>75 min</td>
+</tr>
+<tr>
+<td>03</td>
+<td>PHP — boucles, conditions, fonctions</td>
+<td>75 min</td>
+</tr>
+<tr>
+<td>04</td>
+<td>POO PHP — classe, attribut, méthode</td>
+<td>75 min</td>
+</tr>
+<tr>
+<td>05</td>
+<td>POO PHP — héritage et polymorphisme</td>
+<td>75 min</td>
+</tr>
+<tr>
+<td>06</td>
+<td>Gestion d'erreurs PHP — try/catch/throw</td>
+<td>60 min</td>
+</tr>
+<tr>
+<td>07</td>
+<td>Mini-projet CRUD PHP avec PDO</td>
+<td>90 min</td>
+</tr>
+</tbody>
+</table>
+<h2>Comment utiliser ce cahier</h2>
+<ol>
+<li><strong>Lis le rappel de cours</strong> — quelques paragraphes, l'essentiel pour l'activité.</li>
+<li><strong>Fais les activités</strong> — lis du code, réponds aux QCM, écris des petites requêtes ou fonctions.</li>
+<li><strong>Utilise l'aide IA si tu bloques</strong> — chaque activité a un prompt tout prêt à copier dans ChatGPT ou Claude. Il te guidera <strong>sans te donner la réponse directe</strong>.</li>
+<li><strong>Regarde la solution</strong> après avoir essayé — elle t'explique le raisonnement.</li>
+<li><strong>Fais ton auto-évaluation</strong> — sois honnête avec toi-même, ça t'aide à savoir sur quoi revenir.</li>
+</ol>
+<h2>Un conseil avant de commencer</h2>
+<p>Ne cherche pas à tout faire d'un coup. <strong>Une activité par jour</strong> pendant les vacances, c'est amplement suffisant. Le but est de rentrer en septembre avec les fondamentaux solides.</p>
+<p>Commence par l'activité <strong>00b</strong> pour configurer SQLFiddle et 3v4l.org (10 minutes). Les activités <strong>01 et 02</strong> sont de la révision SQL dans le navigateur. Les activités <strong>03 à 06</strong> couvrent le PHP : algo, POO, gestion d'erreurs. L'activité <strong>07</strong> est un mini-projet de synthèse MVC avec PDO.</p>
+<h2>Aide IA — apprendre avec l'intelligence artificielle</h2>
+<p>Chaque activité propose un <strong>encart Aide IA</strong> avec un prompt-type. L'idée : si tu bloques, tu colles ce prompt dans ChatGPT ou Claude, et tu demandes de l'aide à <strong>comprendre</strong>, pas à copier une réponse.</p>
+<div class="component-aide-ia"><div class="aide-ia-label">💡 Comment l'IA peut t'aider</div><pre class="aide-ia-prompt">Je suis étudiant en BTS SIO option SLAM et je reprends mes révisions
+pendant les vacances. Je travaille sur [le thème de l&#x27;activité].
+Je bloque sur [explique ce que tu ne comprends pas].
+Aide-moi à comprendre pas à pas, sans me donner la réponse directe.
+Pose-moi des questions pour que je trouve moi-même.</pre><button type="button" class="aide-ia-copy">Copier le prompt</button></div>
+<p>Bonne révision !</p>
+      </section>
+    
+      <section id="section-2" data-section-index="2">
+        <h2>
+          <span class="section-badge">2</span>
+          Tes outils en ligne — SQLFiddle &amp; PHPFiddle
+        </h2>
+        
+          <details class="objectifs">
+            <summary>Objectifs de cette section</summary>
+            <ul>
+              <li>Ouvrir et utiliser SQLFiddle pour tester du SQL dans le navigateur</li><li>Ouvrir et utiliser 3v4l.org pour tester du PHP dans le navigateur</li><li>Ne pas avoir besoin d&#39;installer quoi que ce soit sur ton ordinateur</li>
+            </ul>
+          </details>
+        
+        <h2>Pas d'installation requise !</h2>
+<p>Pour faire les exercices de ce cahier, tu n'as pas besoin d'installer MySQL, PHP ou WAMP. Deux outils gratuits en ligne font tout ça directement dans ton navigateur.</p>
+<hr />
+<h2>SQLFiddle — tester du SQL en ligne</h2>
+<p><strong>Adresse :</strong> <a href="https://sqlfiddle.com">sqlfiddle.com</a></p>
+<p>SQLFiddle te permet d'écrire du SQL dans le navigateur, sans rien installer.</p>
+<h3>Comment l'utiliser</h3>
+<ol>
+<li>Ouvre sqlfiddle.com</li>
+<li>En haut à gauche, sélectionne <strong>MySQL 8.0</strong> comme base de données</li>
+<li>La fenêtre de gauche sert à <strong>créer les tables</strong> (SQL DDL/DML)</li>
+<li>La fenêtre de droite sert à <strong>écrire tes requêtes SELECT</strong></li>
+<li>Clique sur <strong>Build Schema</strong> (gauche) puis <strong>Run SQL</strong> (droite)</li>
+</ol>
+<h3>Exercice de prise en main</h3>
+<p>Copie ce code dans la fenêtre de <strong>gauche</strong> de SQLFiddle, puis clique <strong>Build Schema</strong> :</p>
+<div class="component-code"><pre><code class="language-sql">CREATE TABLE etudiants (
+    id    INT PRIMARY KEY AUTO_INCREMENT,
+    nom   VARCHAR(50),
+    note  INT
+);
+INSERT INTO etudiants (nom, note) VALUES
+    (&#x27;Alice&#x27;, 14),
+    (&#x27;Bob&#x27;, 9),
+    (&#x27;Claire&#x27;, 17),
+    (&#x27;David&#x27;, 11);</code></pre><button type="button" class="code-copy">Copier</button></div>
+<p>Puis dans la fenêtre de <strong>droite</strong>, écris cette requête et clique <strong>Run SQL</strong> :</p>
+<div class="component-code"><pre><code class="language-sql">SELECT nom, note
+FROM etudiants
+WHERE note &gt;= 10
+ORDER BY note DESC;</code></pre><button type="button" class="code-copy">Copier</button></div>
+<div class="component-quiz-qcm" data-quiz><p class="quiz-question">Combien de lignes le résultat doit-il contenir ?
+</p><div class="quiz-choices"><label><input type="radio" name="q-141" data-correct="false"> 1</label><label><input type="radio" name="q-141" data-correct="false"> 2</label><label><input type="radio" name="q-141" data-correct="true"> 3</label><label><input type="radio" name="q-141" data-correct="false"> 4</label></div><button class="quiz-submit" type="button">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<div class="component-quiz-texte" data-reponse="Claire"><p class="quiz-question">Quel est le premier nom dans le résultat trié par note décroissante ?</p><input type="text" class="quiz-input"><button type="button" class="quiz-submit">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<hr />
+<h2>3v4l.org — tester du PHP en ligne</h2>
+<p><strong>Adresse :</strong> <a href="https://3v4l.org">3v4l.org</a></p>
+<p>3v4l.org est un bac à sable PHP minimaliste : tu colles ton code, tu cliques Run, tu vois le résultat. Aucun compte requis.</p>
+<h3>Comment l'utiliser</h3>
+<ol>
+<li>Ouvre 3v4l.org</li>
+<li>Colle ton code PHP dans la grande zone de texte</li>
+<li>Clique le bouton <strong>Run</strong> (ou appuie sur <code>Ctrl+Entrée</code>)</li>
+<li>Le résultat s'affiche sous la zone de code</li>
+</ol>
+<blockquote>
+<p>Note : 3v4l.org ne gère pas MySQL ni PDO, mais il est parfait pour tester
+des classes PHP, des fonctions, des boucles — tout ce qui ne dépend pas d'une BDD.</p>
+</blockquote>
+<h3>Exercice de prise en main</h3>
+<p>Copie ce code dans 3v4l.org et clique Run :</p>
+<div class="component-code"><pre><code class="language-php">&lt;?php
+class Rectangle {
+    public function __construct(
+        private float $largeur,
+        private float $hauteur
+    ) {}
+    public function aire(): float {
+        return $this-&gt;largeur * $this-&gt;hauteur;
+    }
+}
+$r = new Rectangle(5, 3);
+echo &quot;Aire : &quot; . $r-&gt;aire();</code></pre><button type="button" class="code-copy">Copier</button></div>
+<div class="component-quiz-qcm" data-quiz><p class="quiz-question">Que doit afficher ce code dans 3v4l.org ?
+</p><div class="quiz-choices"><label><input type="radio" name="q-142" data-correct="false"> {&#x27;Aire&#x27;: 8}</label><label><input type="radio" name="q-142" data-correct="true"> {&#x27;Aire&#x27;: &#x27;15 &#x27;}</label><label><input type="radio" name="q-142" data-correct="false"> {&#x27;Aire&#x27;: 16}</label><label><input type="radio" name="q-142" data-correct="false"> Une erreur PHP</label></div><button class="quiz-submit" type="button">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<hr />
+<h2>Récapitulatif</h2>
+<table>
+<thead>
+<tr>
+<th>Outil</th>
+<th>Adresse</th>
+<th>Pour quoi ?</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>SQLFiddle</td>
+<td>sqlfiddle.com</td>
+<td>Tester SQL — CREATE TABLE, SELECT, JOIN</td>
+</tr>
+<tr>
+<td>3v4l.org</td>
+<td>3v4l.org</td>
+<td>Tester PHP — classes, fonctions, boucles</td>
+</tr>
+</tbody>
+</table>
+<p>Garde ces deux onglets ouverts pendant que tu fais les exercices du cahier :
+tu pourras tester et modifier le code à volonté.</p>
+<h2>Aide IA</h2>
+<div class="component-aide-ia"><div class="aide-ia-label">💡 Comment l'IA peut t'aider</div><pre class="aide-ia-prompt">J&#x27;utilise SQLFiddle (sqlfiddle.com) pour tester du SQL et 3v4l.org pour tester
+du PHP. J&#x27;ai une erreur que je ne comprends pas :
+[colle ici le message d&#x27;erreur et ton code]
+Explique-moi ce qui ne va pas et comment corriger.</pre><button type="button" class="aide-ia-copy">Copier le prompt</button></div>
+      </section>
+    
+      <section id="section-3" data-section-index="3">
+        <h2>
+          <span class="section-badge">3</span>
+          SQL — SELECT, WHERE, ORDER BY
+        </h2>
+        
+          <details class="objectifs">
+            <summary>Objectifs de cette section</summary>
+            <ul>
+              <li>Lire et comprendre une requête SELECT simple</li><li>Filtrer des résultats avec WHERE</li><li>Trier les résultats avec ORDER BY</li>
+            </ul>
+          </details>
+        
+        <h2>Rappel de cours</h2>
+<p>Une requête <code>SELECT</code> permet d'extraire des données d'une table.</p>
+<div class="component-code"><pre><code class="language-sql">-- Structure de base
+SELECT colonne1, colonne2
+FROM table
+WHERE condition
+ORDER BY colonne ASC;
+-- Exemples concrets
+SELECT nom, prenom FROM clients;
+SELECT nom, prenom FROM clients WHERE ville = &#x27;Lyon&#x27;;
+SELECT nom, prenom FROM clients WHERE ville = &#x27;Lyon&#x27; ORDER BY nom ASC;</code></pre><button type="button" class="code-copy">Copier</button></div>
+<p>Quelques points clés :</p>
+<ul>
+<li><code>SELECT *</code> sélectionne <strong>toutes</strong> les colonnes (pratique mais à éviter en production).</li>
+<li><code>WHERE</code> filtre les lignes selon une condition. On peut combiner avec <code>AND</code> et <code>OR</code>.</li>
+<li><code>ORDER BY</code> trie : <code>ASC</code> (croissant, défaut) ou <code>DESC</code> (décroissant).</li>
+</ul>
+<h2>Activité 1 — Lire une requête</h2>
+<p>Voici la table <code>produits</code> :</p>
+<table>
+<thead>
+<tr>
+<th>id</th>
+<th>nom</th>
+<th>prix</th>
+<th>stock</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>Clavier</td>
+<td>45</td>
+<td>12</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Souris</td>
+<td>25</td>
+<td>0</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Écran</td>
+<td>299</td>
+<td>5</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Webcam</td>
+<td>89</td>
+<td>3</td>
+</tr>
+</tbody>
+</table>
+<p>Et la requête suivante :</p>
+<div class="component-code"><pre><code class="language-sql">SELECT nom, prix
+FROM produits
+WHERE stock &gt; 0
+ORDER BY prix DESC;</code></pre><button type="button" class="code-copy">Copier</button></div>
+<div class="component-quiz-qcm" data-quiz><p class="quiz-question">Quels produits cette requête renvoie-t-elle, dans quel ordre ?
+</p><div class="quiz-choices"><label><input type="radio" name="q-143" data-correct="false"> Tous les produits, triés du moins cher au plus cher</label><label><input type="radio" name="q-143" data-correct="true"> Les produits en stock (stock &gt; 0), triés du plus cher au moins cher</label><label><input type="radio" name="q-143" data-correct="false"> Les produits en stock (stock &gt; 0), triés du moins cher au plus cher</label><label><input type="radio" name="q-143" data-correct="false"> Tous les produits, triés du plus cher au moins cher</label></div><button class="quiz-submit" type="button">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<div class="component-quiz-qcm" data-quiz><p class="quiz-question">La requête renvoie seulement les colonnes nom et prix.
+Si on remplace &quot;SELECT nom, prix&quot; par &quot;SELECT *&quot;, que se passe-t-il ?
+</p><div class="quiz-choices"><label><input type="radio" name="q-144" data-correct="false"> Rien ne change, c&#x27;est pareil</label><label><input type="radio" name="q-144" data-correct="true"> {&#x27;La requête renvoie toutes les colonnes&#x27;: &#x27;id, nom, prix, stock &#x27;}</label><label><input type="radio" name="q-144" data-correct="false"> La requête renvoie une erreur</label><label><input type="radio" name="q-144" data-correct="false"> La requête renvoie uniquement la colonne id</label></div><button class="quiz-submit" type="button">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<h2>Activité 2 — Compléter une requête</h2>
+<p>Tu veux la liste des produits dont le prix est inférieur à 100€, triés par nom alphabétique.</p>
+<div class="component-quiz-texte" data-reponse="prix &lt; 100"><p class="quiz-question">Écris la clause WHERE manquante (juste la condition, sans le mot WHERE).</p><input type="text" class="quiz-input"><button type="button" class="quiz-submit">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<div class="component-quiz-texte" data-reponse="ORDER BY nom ASC"><p class="quiz-question">Écris la clause ORDER BY complète pour trier par nom alphabétique.</p><input type="text" class="quiz-input"><button type="button" class="quiz-submit">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<h2>Activité 3 — Écrire une requête complète</h2>
+<p>La table <code>clients</code> a les colonnes : <code>id</code>, <code>nom</code>, <code>prenom</code>, <code>ville</code>, <code>age</code>.</p>
+<p>Tu veux afficher le prénom et le nom de tous les clients de Paris, triés par âge décroissant.</p>
+<div class="component-quiz-texte" data-reponse="SELECT prenom, nom FROM clients WHERE ville = &#x27;Paris&#x27; ORDER BY age DESC"><p class="quiz-question">Écris la requête SQL complète (les espaces et la casse seront ignorés).</p><input type="text" class="quiz-input"><button type="button" class="quiz-submit">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<h2>Aide IA</h2>
+<div class="component-aide-ia"><div class="aide-ia-label">💡 Comment l'IA peut t'aider</div><pre class="aide-ia-prompt">Je suis étudiant en BTS SIO option SLAM et je révise SQL.
+Je dois écrire une requête SELECT avec WHERE et ORDER BY mais j&#x27;ai du mal
+à me souvenir de l&#x27;ordre des clauses et de la syntaxe exacte.
+Pose-moi des questions pour que je reconstruise la requête moi-même,
+sans me donner la réponse directe.</pre><button type="button" class="aide-ia-copy">Copier le prompt</button></div>
+<h2>Solution</h2>
+<details class="component-reveal"><summary>Voir les réponses</summary><div class="reveal-content">Activité 2 :
+- Condition WHERE : prix &lt; 100
+- ORDER BY : ORDER BY nom ASC
+Activité 3 :
+SELECT prenom, nom
+FROM clients
+WHERE ville = &#x27;Paris&#x27;
+ORDER BY age DESC;
+Astuce : l&#x27;ordre des clauses SQL est toujours le même —
+SELECT … FROM … WHERE … ORDER BY …
+On ne peut pas les inverser.</div></details>
+<h2>Ressources</h2>
+<div class="component-ressources"><div class="ressources-label">📚 Pour aller plus loin</div><div class="ressources-list"><a href="https://www.w3schools.com/sql/sql_select.asp" target="_blank" rel="noopener" class="ressource-item"><span class="ressource-icon ressource-badge-lien">🔗</span><span class="ressource-text"><span class="ressource-titre">SQL SELECT — tutoriel interactif W3Schools</span><span class="ressource-meta">W3Schools</span></span></a><a href="https://sqlzoo.net/wiki/SELECT_basics" target="_blank" rel="noopener" class="ressource-item"><span class="ressource-icon ressource-badge-lien">🔗</span><span class="ressource-text"><span class="ressource-titre">SQLZoo — exercices SELECT en ligne</span><span class="ressource-meta">SQLZoo</span></span></a><a href="https://www.youtube.com/results?search_query=SQL+SELECT+WHERE+ORDER+BY+fran%C3%A7ais+d%C3%A9butant" target="_blank" rel="noopener" class="ressource-item"><span class="ressource-icon ressource-badge-video">▶</span><span class="ressource-text"><span class="ressource-titre">SQL pour débutants — vidéos en français</span><span class="ressource-meta">YouTube · recherche</span></span></a></div></div>
+<h2>Auto-évaluation</h2>
+<div class="component-auto-eval" data-auto-eval><p>Où en es-tu ?</p><button data-eval="ok">😊 Compris</button><button data-eval="hesitant">🤔 À revoir</button><button data-eval="bloque">😣 Bloqué</button></div>
+      </section>
+    
+      <section id="section-4" data-section-index="4">
+        <h2>
+          <span class="section-badge">4</span>
+          SQL — JOIN, GROUP BY et agrégats
+        </h2>
+        
+          <details class="objectifs">
+            <summary>Objectifs de cette section</summary>
+            <ul>
+              <li>Joindre deux tables avec INNER JOIN</li><li>Regrouper des résultats avec GROUP BY</li><li>Utiliser les fonctions COUNT, SUM, AVG, MAX, MIN</li>
+            </ul>
+          </details>
+        
+        <h2>Rappel de cours</h2>
+<h3>Joindre deux tables</h3>
+<p>Quand des données sont réparties sur plusieurs tables, on utilise <code>JOIN</code> pour les combiner :</p>
+<div class="component-code"><pre><code class="language-sql">SELECT commandes.id, clients.nom, commandes.montant
+FROM commandes
+INNER JOIN clients ON clients.id = commandes.id_client;</code></pre><button type="button" class="code-copy">Copier</button></div>
+<p><code>INNER JOIN</code> ne renvoie que les lignes qui ont une correspondance dans les deux tables. On peut utiliser des <strong>alias</strong> pour raccourcir :</p>
+<div class="component-code"><pre><code class="language-sql">SELECT c.id, cl.nom, c.montant
+FROM commandes c
+INNER JOIN clients cl ON cl.id = c.id_client;</code></pre><button type="button" class="code-copy">Copier</button></div>
+<h3>Regrouper et compter</h3>
+<p><code>GROUP BY</code> regroupe les lignes qui ont la même valeur dans une colonne. On l'utilise avec des <strong>fonctions d'agrégation</strong> :</p>
+<table>
+<thead>
+<tr>
+<th>Fonction</th>
+<th>Rôle</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>COUNT(*)</code></td>
+<td>Compte le nombre de lignes</td>
+</tr>
+<tr>
+<td><code>SUM(col)</code></td>
+<td>Somme les valeurs</td>
+</tr>
+<tr>
+<td><code>AVG(col)</code></td>
+<td>Calcule la moyenne</td>
+</tr>
+<tr>
+<td><code>MAX(col)</code></td>
+<td>Valeur maximale</td>
+</tr>
+<tr>
+<td><code>MIN(col)</code></td>
+<td>Valeur minimale</td>
+</tr>
+</tbody>
+</table>
+<div class="component-code"><pre><code class="language-sql">-- Nombre de commandes par client
+SELECT id_client, COUNT(*) AS nb_commandes
+FROM commandes
+GROUP BY id_client;
+-- Montant total des commandes par client
+SELECT id_client, SUM(montant) AS total
+FROM commandes
+GROUP BY id_client;</code></pre><button type="button" class="code-copy">Copier</button></div>
+<h2>Activité 1 — Lire un JOIN</h2>
+<p>Voici deux tables :</p>
+<p><strong>clients</strong> : <code>id</code>, <code>nom</code>, <code>ville</code>
+<strong>commandes</strong> : <code>id</code>, <code>id_client</code>, <code>produit</code>, <code>montant</code></p>
+<div class="component-code"><pre><code class="language-sql">SELECT cl.nom, c.produit, c.montant
+FROM commandes c
+INNER JOIN clients cl ON cl.id = c.id_client
+WHERE cl.ville = &#x27;Bordeaux&#x27;
+ORDER BY c.montant DESC;</code></pre><button type="button" class="code-copy">Copier</button></div>
+<div class="component-quiz-qcm" data-quiz><p class="quiz-question">Que renvoie cette requête ?
+</p><div class="quiz-choices"><label><input type="radio" name="q-145" data-correct="false"> Le nom et la ville de tous les clients</label><label><input type="radio" name="q-145" data-correct="true"> Le nom du client, le produit commandé et le montant, uniquement pour les clients de Bordeaux, triés du montant le plus élevé au plus faible</label><label><input type="radio" name="q-145" data-correct="false"> Toutes les commandes de tous les clients, triées par montant</label><label><input type="radio" name="q-145" data-correct="false"> Le nombre de commandes des clients de Bordeaux</label></div><button class="quiz-submit" type="button">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<div class="component-quiz-qcm" data-quiz><p class="quiz-question">Dans &quot;ON cl.id = c.id_client&quot;, à quoi sert cette condition ?
+</p><div class="quiz-choices"><label><input type="radio" name="q-146" data-correct="false"> Elle filtre les lignes comme un WHERE</label><label><input type="radio" name="q-146" data-correct="true"> {&#x27;Elle définit le lien entre les deux tables&#x27;: &quot;une commande appartient au client dont l&#x27;id correspond &quot;}</label><label><input type="radio" name="q-146" data-correct="false"> Elle trie les résultats</label><label><input type="radio" name="q-146" data-correct="false"> Elle regroupe les résultats par client</label></div><button class="quiz-submit" type="button">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<h2>Activité 2 — Lire un GROUP BY</h2>
+<div class="component-code"><pre><code class="language-sql">SELECT cl.nom, COUNT(*) AS nb_commandes, SUM(c.montant) AS total
+FROM commandes c
+INNER JOIN clients cl ON cl.id = c.id_client
+GROUP BY cl.nom
+ORDER BY total DESC;</code></pre><button type="button" class="code-copy">Copier</button></div>
+<div class="component-quiz-qcm" data-quiz><p class="quiz-question">Que représente chaque ligne du résultat de cette requête ?
+</p><div class="quiz-choices"><label><input type="radio" name="q-147" data-correct="false"> Une commande individuelle avec le nom du client</label><label><input type="radio" name="q-147" data-correct="true"> Un client, avec le nombre total de ses commandes et le montant total qu&#x27;il a dépensé</label><label><input type="radio" name="q-147" data-correct="false"> Un produit commandé, avec le total des ventes</label><label><input type="radio" name="q-147" data-correct="false"> Un résumé global de toutes les commandes</label></div><button class="quiz-submit" type="button">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<h2>Activité 3 — Écrire une requête avec JOIN</h2>
+<p>Voici les tables :
+- <code>produits(id, nom, prix, id_categorie)</code>
+- <code>categories(id, nom)</code></p>
+<p>Écris une requête qui renvoie le nom du produit et le nom de sa catégorie, pour tous les produits dont le prix est supérieur à 50€.</p>
+<div class="component-quiz-texte" data-reponse="SELECT p.nom, c.nom FROM produits p INNER JOIN categories c ON c.id = p.id_categorie WHERE p.prix &gt; 50"><p class="quiz-question">Écris la requête SQL complète (les espaces et la casse seront ignorés).</p><input type="text" class="quiz-input"><button type="button" class="quiz-submit">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<h2>Activité 4 — Écrire un GROUP BY</h2>
+<p>Avec la même table <code>produits</code>, écris une requête qui affiche le prix moyen des produits pour chaque catégorie (id_categorie) .</p>
+<div class="component-quiz-texte" data-reponse="GROUP BY id_categorie"><p class="quiz-question">Complète la requête — quelle clause vient après SELECT id_categorie, AVG(prix) AS prix_moyen FROM produits ?</p><input type="text" class="quiz-input"><button type="button" class="quiz-submit">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<h2>Aide IA</h2>
+<div class="component-aide-ia"><div class="aide-ia-label">💡 Comment l'IA peut t'aider</div><pre class="aide-ia-prompt">Je suis étudiant en BTS SIO option SLAM et je révise SQL.
+Je dois écrire une requête avec INNER JOIN et GROUP BY mais je ne
+comprends pas bien comment articuler ces deux clauses ensemble.
+Explique-moi par étapes, avec un exemple différent de celui de mon cours,
+sans me donner directement la réponse à mon exercice.</pre><button type="button" class="aide-ia-copy">Copier le prompt</button></div>
+<h2>Solution</h2>
+<details class="component-reveal"><summary>Voir les réponses</summary><div class="reveal-content">Activité 3 :
+SELECT p.nom, c.nom
+FROM produits p
+INNER JOIN categories c ON c.id = p.id_categorie
+WHERE p.prix &gt; 50;
+Activité 4 :
+SELECT id_categorie, AVG(prix) AS prix_moyen
+FROM produits
+GROUP BY id_categorie;
+Astuce : l&#x27;ordre complet des clauses est —
+SELECT … FROM … JOIN … ON … WHERE … GROUP BY … ORDER BY …</div></details>
+<h2>Ressources</h2>
+<div class="component-ressources"><div class="ressources-label">📚 Pour aller plus loin</div><div class="ressources-list"><a href="https://www.w3schools.com/sql/sql_join.asp" target="_blank" rel="noopener" class="ressource-item"><span class="ressource-icon ressource-badge-lien">🔗</span><span class="ressource-text"><span class="ressource-titre">SQL JOIN — tutoriel interactif W3Schools</span><span class="ressource-meta">W3Schools</span></span></a><a href="https://www.w3schools.com/sql/sql_groupby.asp" target="_blank" rel="noopener" class="ressource-item"><span class="ressource-icon ressource-badge-lien">🔗</span><span class="ressource-text"><span class="ressource-titre">SQL GROUP BY et agrégats — W3Schools</span><span class="ressource-meta">W3Schools</span></span></a><a href="https://sqlzoo.net/wiki/The_JOIN_operation" target="_blank" rel="noopener" class="ressource-item"><span class="ressource-icon ressource-badge-lien">🔗</span><span class="ressource-text"><span class="ressource-titre">SQLZoo — JOIN et agrégats</span><span class="ressource-meta">SQLZoo</span></span></a><a href="https://www.youtube.com/results?search_query=SQL+JOIN+GROUP+BY+fran%C3%A7ais+d%C3%A9butant" target="_blank" rel="noopener" class="ressource-item"><span class="ressource-icon ressource-badge-video">▶</span><span class="ressource-text"><span class="ressource-titre">SQL JOIN expliqué en français</span><span class="ressource-meta">YouTube · recherche</span></span></a></div></div>
+<h2>Auto-évaluation</h2>
+<div class="component-auto-eval" data-auto-eval><p>Où en es-tu ?</p><button data-eval="ok">😊 Compris</button><button data-eval="hesitant">🤔 À revoir</button><button data-eval="bloque">😣 Bloqué</button></div>
+      </section>
+    
+      <section id="section-5" data-section-index="5">
+        <h2>
+          <span class="section-badge">5</span>
+          Algorithmie PHP — boucles, conditions, fonctions
+        </h2>
+        
+          <details class="objectifs">
+            <summary>Objectifs de cette section</summary>
+            <ul>
+              <li>Lire et écrire des boucles for, foreach et while en PHP</li><li>Utiliser les conditions if/elseif/else</li><li>Définir et appeler une fonction PHP avec paramètres et valeur de retour</li>
+            </ul>
+          </details>
+        
+        <h2>Rappel de cours</h2>
+<h3>Conditions</h3>
+<div class="component-code"><pre><code class="language-php">&lt;?php
+$note = 12;
+if ($note &gt;= 16) {
+    $mention = &quot;Très bien&quot;;
+} elseif ($note &gt;= 14) {
+    $mention = &quot;Bien&quot;;
+} elseif ($note &gt;= 12) {
+    $mention = &quot;Assez bien&quot;;
+} elseif ($note &gt;= 10) {
+    $mention = &quot;Passable&quot;;
+} else {
+    $mention = &quot;Insuffisant&quot;;
+}
+echo $mention;  // Assez bien</code></pre><button type="button" class="code-copy">Copier</button></div>
+<h3>Boucles</h3>
+<div class="component-code"><pre><code class="language-php">&lt;?php
+// foreach : parcourir un tableau
+$fruits = [&quot;pomme&quot;, &quot;banane&quot;, &quot;cerise&quot;];
+foreach ($fruits as $fruit) {
+    echo $fruit . &quot;\n&quot;;
+}
+// for : répéter N fois
+for ($i = 0; $i &lt; 5; $i++) {
+    echo $i . &quot;\n&quot;;  // 0, 1, 2, 3, 4
+}
+// while : tant que la condition est vraie
+$compteur = 0;
+while ($compteur &lt; 3) {
+    echo $compteur . &quot;\n&quot;;
+    $compteur++;  // 0, 1, 2
+}</code></pre><button type="button" class="code-copy">Copier</button></div>
+<h3>Fonctions</h3>
+<div class="component-code"><pre><code class="language-php">&lt;?php
+function calculerTva(float $prixHt, float $taux = 20.0): float {
+    return $prixHt * (1 + $taux / 100);
+}
+echo calculerTva(100);      // 120.0  (taux par défaut = 20%)
+echo calculerTva(100, 10);  // 110.0  (taux = 10%)</code></pre><button type="button" class="code-copy">Copier</button></div>
+<p>Points clés :
+- Les variables commencent par <code>$</code> en PHP.
+- <code>elseif</code> s'écrit en un mot (pas <code>else if</code>, qui marche aussi mais est moins courant).
+- Les <strong>types</strong> peuvent être déclarés (PHP 7+) : <code>float</code>, <code>int</code>, <code>string</code>, <code>bool</code>.</p>
+<h2>Activité 1 — Lire du code avec boucle et condition</h2>
+<div class="component-code"><pre><code class="language-php">&lt;?php
+$notes = [8, 15, 12, 6, 18, 10];
+$bonnesNotes = 0;
+foreach ($notes as $note) {
+    if ($note &gt;= 10) {
+        $bonnesNotes++;
+    }
+}
+echo &quot;Notes &gt;= 10 : &quot; . $bonnesNotes;</code></pre><button type="button" class="code-copy">Copier</button></div>
+<div class="component-quiz-qcm" data-quiz><p class="quiz-question">Que va afficher ce programme ?
+</p><div class="quiz-choices"><label><input type="radio" name="q-148" data-correct="false"> {&#x27;Notes &gt;= 10&#x27;: 3}</label><label><input type="radio" name="q-148" data-correct="true"> {&#x27;Notes &gt;= 10&#x27;: &#x27;4 &#x27;}</label><label><input type="radio" name="q-148" data-correct="false"> {&#x27;Notes &gt;= 10&#x27;: 5}</label><label><input type="radio" name="q-148" data-correct="false"> {&#x27;Notes &gt;= 10&#x27;: 6}</label></div><button class="quiz-submit" type="button">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<div class="component-quiz-qcm" data-quiz><p class="quiz-question">Si on remplace &quot;if ($note &gt;= 10)&quot; par &quot;if ($note &gt; 10)&quot;, combien de bonnes notes compte-t-on ?
+</p><div class="quiz-choices"><label><input type="radio" name="q-149" data-correct="false"> 2</label><label><input type="radio" name="q-149" data-correct="true"> 3</label><label><input type="radio" name="q-149" data-correct="false"> 4</label><label><input type="radio" name="q-149" data-correct="false"> 5</label></div><button class="quiz-submit" type="button">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<h2>Activité 2 — Lire une fonction</h2>
+<div class="component-code"><pre><code class="language-php">&lt;?php
+function estPair(int $n): bool {
+    return $n % 2 === 0;
+}
+function compterPairs(array $liste): int {
+    $compteur = 0;
+    foreach ($liste as $element) {
+        if (estPair($element)) {
+            $compteur++;
+        }
+    }
+    return $compteur;
+}
+$nombres = [1, 2, 3, 4, 5, 6];
+echo compterPairs($nombres);</code></pre><button type="button" class="code-copy">Copier</button></div>
+<div class="component-quiz-qcm" data-quiz><p class="quiz-question">Que va afficher echo compterPairs($nombres) ?
+</p><div class="quiz-choices"><label><input type="radio" name="q-150" data-correct="false"> 2</label><label><input type="radio" name="q-150" data-correct="true"> 3</label><label><input type="radio" name="q-150" data-correct="false"> 4</label><label><input type="radio" name="q-150" data-correct="false"> 6</label></div><button class="quiz-submit" type="button">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<div class="component-quiz-qcm" data-quiz><p class="quiz-question">Que retourne estPair(7) ?
+</p><div class="quiz-choices"><label><input type="radio" name="q-151" data-correct="false"> 7</label><label><input type="radio" name="q-151" data-correct="false"> True</label><label><input type="radio" name="q-151" data-correct="true"> false</label><label><input type="radio" name="q-151" data-correct="false"> 1</label></div><button class="quiz-submit" type="button">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<h2>Activité 3 — Compléter une fonction</h2>
+<div class="component-code"><pre><code class="language-php">&lt;?php
+function maximum(array $liste): int|float {
+    $maxi = $liste[0];
+    foreach ($liste as $element) {
+        if ($element &gt; $maxi) {
+            $maxi = $element;
+        }
+    }
+    return $maxi;
+}</code></pre><button type="button" class="code-copy">Copier</button></div>
+<div class="component-quiz-qcm" data-quiz><p class="quiz-question">Pourquoi initialise-t-on $maxi = $liste[0] plutôt que $maxi = 0 ?
+</p><div class="quiz-choices"><label><input type="radio" name="q-152" data-correct="false"> C&#x27;est la même chose, 0 est suffisant</label><label><input type="radio" name="q-152" data-correct="true"> Parce que si tous les éléments sont négatifs, initialiser à 0 donnerait un résultat faux</label><label><input type="radio" name="q-152" data-correct="false"> Pour respecter une convention PHP</label><label><input type="radio" name="q-152" data-correct="false"> Parce que $liste[0] est toujours le plus grand élément</label></div><button class="quiz-submit" type="button">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<div class="component-quiz-texte" data-reponse="9"><p class="quiz-question">Que retourne maximum([3, 7, 2, 9, 1]) ?</p><input type="text" class="quiz-input"><button type="button" class="quiz-submit">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<h2>Activité 4 — Écrire une fonction</h2>
+<p>Écris une fonction <code>moyenne(array $liste): float</code> qui retourne la moyenne des éléments, ou <code>0.0</code> si la liste est vide.</p>
+<div class="component-quiz-texte" data-reponse="8.0"><p class="quiz-question">Que retourne moyenne([4, 8, 12]) ?</p><input type="text" class="quiz-input"><button type="button" class="quiz-submit">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<div class="component-quiz-texte" data-reponse="array_sum"><p class="quiz-question">Quelle fonction PHP calcule la somme de tous les éléments d&#x27;un tableau ?</p><input type="text" class="quiz-input"><button type="button" class="quiz-submit">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<h2>Aide IA</h2>
+<div class="component-aide-ia"><div class="aide-ia-label">💡 Comment l'IA peut t'aider</div><pre class="aide-ia-prompt">Je suis étudiant en BTS SIO SLAM et je révise l&#x27;algorithmie en PHP.
+J&#x27;ai du mal à écrire des fonctions qui parcourent un tableau avec foreach
+et retournent un résultat. Pose-moi des questions étape par étape pour
+m&#x27;aider à construire ma fonction moi-même, sans me donner le code directement.</pre><button type="button" class="aide-ia-copy">Copier le prompt</button></div>
+<h2>Solution</h2>
+<details class="component-reveal"><summary>Voir la solution</summary><div class="reveal-content">Fonction moyenne :
+function moyenne(array $liste): float {
+    if (count($liste) === 0) {
+        return 0.0;
+    }
+    return array_sum($liste) / count($liste);
+}
+Test :
+echo moyenne([4, 8, 12]);  // 8.0
+echo moyenne([]);          // 0.0
+Mémo des opérateurs utiles en PHP :
+- %  : modulo (reste)      → 7 % 3 = 1
+- ** : puissance           → 2 ** 3 = 8
+- intdiv() : division ent. → intdiv(7, 2) = 3
+- count() : taille tableau → count([1,2,3]) = 3
+- array_sum() : somme      → array_sum([1,2,3]) = 6</div></details>
+<h2>Ressources</h2>
+<div class="component-ressources"><div class="ressources-label">📚 Pour aller plus loin</div><div class="ressources-list"><a href="https://www.php.net/manual/fr/language.control-structures.php" target="_blank" rel="noopener" class="ressource-item"><span class="ressource-icon ressource-badge-doc">📖</span><span class="ressource-text"><span class="ressource-titre">Structures de contrôle PHP — Documentation officielle</span><span class="ressource-meta">php.net</span></span></a><a href="https://www.php.net/manual/fr/language.functions.php" target="_blank" rel="noopener" class="ressource-item"><span class="ressource-icon ressource-badge-doc">📖</span><span class="ressource-text"><span class="ressource-titre">Les fonctions en PHP — Documentation officielle</span><span class="ressource-meta">php.net</span></span></a><a href="https://www.youtube.com/results?search_query=php+d%C3%A9butant+conditions+boucles+fonctions+fran%C3%A7ais" target="_blank" rel="noopener" class="ressource-item"><span class="ressource-icon ressource-badge-video">▶</span><span class="ressource-text"><span class="ressource-titre">PHP pour les débutants — cours complet</span><span class="ressource-meta">YouTube · recherche</span></span></a><a href="https://grafikart.fr/formations/php" target="_blank" rel="noopener" class="ressource-item"><span class="ressource-icon ressource-badge-video">▶</span><span class="ressource-text"><span class="ressource-titre">Grafikart — Formation PHP</span><span class="ressource-meta">Grafikart</span></span></a></div></div>
+<h2>Auto-évaluation</h2>
+<div class="component-auto-eval" data-auto-eval><p>Où en es-tu ?</p><button data-eval="ok">😊 Compris</button><button data-eval="hesitant">🤔 À revoir</button><button data-eval="bloque">😣 Bloqué</button></div>
+      </section>
+    
+      <section id="section-6" data-section-index="6">
+        <h2>
+          <span class="section-badge">6</span>
+          POO PHP — classe, attribut, méthode
+        </h2>
+        
+          <details class="objectifs">
+            <summary>Objectifs de cette section</summary>
+            <ul>
+              <li>Comprendre ce qu&#39;est une classe et un objet en PHP</li><li>Écrire une classe PHP avec __construct et $this</li><li>Instancier un objet et appeler ses méthodes</li>
+            </ul>
+          </details>
+        
+        <h2>Rappel de cours</h2>
+<p>En <strong>programmation orientée objet (POO)</strong>, on modélise le monde réel avec des <strong>classes</strong>. Une classe est un moule ; un <strong>objet</strong> est une instance de ce moule.</p>
+<div class="component-code"><pre><code class="language-php">&lt;?php
+class Produit {
+    public string $nom;
+    public float  $prix;
+    public function __construct(string $nom, float $prix) {
+        $this-&gt;nom  = $nom;
+        $this-&gt;prix = $prix;
+    }
+    public function afficher(): void {
+        echo &quot;{$this-&gt;nom} — {$this-&gt;prix} €\n&quot;;
+    }
+    public function appliquerRemise(float $pourcentage): float {
+        return $this-&gt;prix * (1 - $pourcentage / 100);
+    }
+}
+// Créer des objets (instances)
+$clavier = new Produit(&quot;Clavier&quot;, 45);
+$ecran   = new Produit(&quot;Écran&quot;, 299);
+// Appeler des méthodes
+$clavier-&gt;afficher();                        // Clavier — 45 €
+echo $ecran-&gt;appliquerRemise(10) . &quot;\n&quot;;    // 269.1</code></pre><button type="button" class="code-copy">Copier</button></div>
+<p>Points clés :
+- <code>__construct</code> est le <strong>constructeur</strong> : exécuté automatiquement lors du <code>new</code>.
+- <code>$this-&gt;</code> désigne l'objet courant. Il faut l'utiliser pour accéder aux attributs depuis une méthode.
+- <code>public</code> rend l'attribut ou la méthode accessible depuis l'extérieur de la classe.</p>
+<h2>Activité 1 — Lire une classe</h2>
+<div class="component-code"><pre><code class="language-php">&lt;?php
+class Rectangle {
+    public float $largeur;
+    public float $hauteur;
+    public function __construct(float $largeur, float $hauteur) {
+        $this-&gt;largeur = $largeur;
+        $this-&gt;hauteur = $hauteur;
+    }
+    public function aire(): float {
+        return $this-&gt;largeur * $this-&gt;hauteur;
+    }
+    public function perimetre(): float {
+        return 2 * ($this-&gt;largeur + $this-&gt;hauteur);
+    }
+}
+$r = new Rectangle(5, 3);
+echo $r-&gt;aire();
+echo $r-&gt;perimetre();</code></pre><button type="button" class="code-copy">Copier</button></div>
+<div class="component-quiz-qcm" data-quiz><p class="quiz-question">Que va afficher echo $r-&gt;aire() ?
+</p><div class="quiz-choices"><label><input type="radio" name="q-153" data-correct="false"> 8</label><label><input type="radio" name="q-153" data-correct="true"> 15</label><label><input type="radio" name="q-153" data-correct="false"> 16</label><label><input type="radio" name="q-153" data-correct="false"> 30</label></div><button class="quiz-submit" type="button">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<div class="component-quiz-qcm" data-quiz><p class="quiz-question">Que va afficher echo $r-&gt;perimetre() ?
+</p><div class="quiz-choices"><label><input type="radio" name="q-154" data-correct="false"> 8</label><label><input type="radio" name="q-154" data-correct="false"> 15</label><label><input type="radio" name="q-154" data-correct="true"> 16</label><label><input type="radio" name="q-154" data-correct="false"> 30</label></div><button class="quiz-submit" type="button">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<div class="component-quiz-qcm" data-quiz><p class="quiz-question">Dans la méthode aire(), pourquoi écrit-on &quot;$this-&gt;largeur&quot; plutôt que juste &quot;$largeur&quot; ?
+</p><div class="quiz-choices"><label><input type="radio" name="q-155" data-correct="false"> C&#x27;est une convention sans utilité réelle</label><label><input type="radio" name="q-155" data-correct="true"> Parce que &quot;$this-&gt;largeur&quot; accède à l&#x27;attribut de l&#x27;objet, stocké lors du __construct</label><label><input type="radio" name="q-155" data-correct="false"> Parce que PHP l&#x27;exige pour toutes les variables locales</label><label><input type="radio" name="q-155" data-correct="false"> Pour éviter de confondre avec une variable globale</label></div><button class="quiz-submit" type="button">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<h2>Activité 2 — Compléter une classe</h2>
+<div class="component-code"><pre><code class="language-php">&lt;?php
+class Eleve {
+    public string $nom;
+    public int    $age;
+    public array  $notes = [];
+    public function __construct(string $nom, int $age) {
+        $this-&gt;nom = $nom;
+        $this-&gt;age = $age;
+    }
+    public function ajouterNote(float $note): void {
+        $this-&gt;notes[] = $note;
+    }
+    public function moyenne(): float {
+        // À compléter : retourne la moyenne des notes, ou 0.0 si aucune note
+    }
+}</code></pre><button type="button" class="code-copy">Copier</button></div>
+<div class="component-quiz-texte" data-reponse="array_sum"><p class="quiz-question">Quelle fonction PHP calcule la somme d&#x27;un tableau de nombres ?</p><input type="text" class="quiz-input"><button type="button" class="quiz-submit">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<div class="component-quiz-qcm" data-quiz><p class="quiz-question">Voici une implémentation de moyenne() :
+  if (count($this-&gt;notes) === 0) { return 0.0; }
+  return array_sum($this-&gt;notes) / count($this-&gt;notes);
+Est-elle correcte ?
+</p><div class="quiz-choices"><label><input type="radio" name="q-156" data-correct="false"> Non, on ne peut pas utiliser array_sum() sur des notes</label><label><input type="radio" name="q-156" data-correct="true"> Oui, elle gère bien le cas vide et calcule correctement la moyenne</label><label><input type="radio" name="q-156" data-correct="false"> Non, il faut utiliser une boucle foreach au lieu de array_sum()</label><label><input type="radio" name="q-156" data-correct="false"> Non, count() ne fonctionne pas sur $this-&gt;notes</label></div><button class="quiz-submit" type="button">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<h2>Activité 3 — Écrire une classe</h2>
+<p>Écris une classe <code>CompteBancaire</code> qui :
+- a un attribut <code>$solde</code> initialisé à <code>0.0</code> dans <code>__construct</code>
+- a une méthode <code>deposer(float $montant): void</code> qui ajoute le montant au solde
+- a une méthode <code>retirer(float $montant): void</code> qui retire le montant du solde</p>
+<div class="component-quiz-texte" data-reponse="__construct"><p class="quiz-question">Comment s&#x27;appelle le constructeur en PHP ?</p><input type="text" class="quiz-input"><button type="button" class="quiz-submit">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<div class="component-quiz-texte" data-reponse="$this-&gt;solde += $montant;"><p class="quiz-question">Dans la méthode deposer($montant), quelle ligne ajoute le montant au solde ?</p><input type="text" class="quiz-input"><button type="button" class="quiz-submit">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<h2>Aide IA</h2>
+<div class="component-aide-ia"><div class="aide-ia-label">💡 Comment l'IA peut t'aider</div><pre class="aide-ia-prompt">Je suis étudiant en BTS SIO SLAM et j&#x27;apprends la POO en PHP.
+Je dois écrire une classe avec un constructeur __construct et des méthodes,
+mais je ne comprends pas bien le rôle de $this.
+Explique-moi ce que représente $this avec un exemple simple,
+sans me donner le code de mon exercice directement.</pre><button type="button" class="aide-ia-copy">Copier le prompt</button></div>
+<h2>Solution</h2>
+<details class="component-reveal"><summary>Voir la solution</summary><div class="reveal-content">Classe CompteBancaire :
+class CompteBancaire {
+    public float $solde;
+    public function __construct() {
+        $this-&gt;solde = 0.0;
+    }
+    public function deposer(float $montant): void {
+        $this-&gt;solde += $montant;
+    }
+    public function retirer(float $montant): void {
+        $this-&gt;solde -= $montant;
+    }
+}
+Méthode moyenne() de la classe Eleve :
+    public function moyenne(): float {
+        if (count($this-&gt;notes) === 0) {
+            return 0.0;
+        }
+        return array_sum($this-&gt;notes) / count($this-&gt;notes);
+    }</div></details>
+<h2>Ressources</h2>
+<div class="component-ressources"><div class="ressources-label">📚 Pour aller plus loin</div><div class="ressources-list"><a href="https://www.php.net/manual/fr/language.oop5.php" target="_blank" rel="noopener" class="ressource-item"><span class="ressource-icon ressource-badge-doc">📖</span><span class="ressource-text"><span class="ressource-titre">La programmation orientée objet en PHP</span><span class="ressource-meta">php.net</span></span></a><a href="https://www.php.net/manual/fr/language.oop5.basic.php" target="_blank" rel="noopener" class="ressource-item"><span class="ressource-icon ressource-badge-doc">📖</span><span class="ressource-text"><span class="ressource-titre">Les classes et objets — Référence PHP</span><span class="ressource-meta">php.net</span></span></a><a href="https://grafikart.fr/formations/php" target="_blank" rel="noopener" class="ressource-item"><span class="ressource-icon ressource-badge-video">▶</span><span class="ressource-text"><span class="ressource-titre">Grafikart — Formation PHP (section POO)</span><span class="ressource-meta">Grafikart</span></span></a><a href="https://www.youtube.com/results?search_query=php+POO+classe+objet+d%C3%A9butant+fran%C3%A7ais" target="_blank" rel="noopener" class="ressource-item"><span class="ressource-icon ressource-badge-video">▶</span><span class="ressource-text"><span class="ressource-titre">POO PHP débutant — vidéos en français</span><span class="ressource-meta">YouTube · recherche</span></span></a></div></div>
+<h2>Auto-évaluation</h2>
+<div class="component-auto-eval" data-auto-eval><p>Où en es-tu ?</p><button data-eval="ok">😊 Compris</button><button data-eval="hesitant">🤔 À revoir</button><button data-eval="bloque">😣 Bloqué</button></div>
+      </section>
+    
+      <section id="section-7" data-section-index="7">
+        <h2>
+          <span class="section-badge">7</span>
+          POO PHP — héritage et polymorphisme
+        </h2>
+        
+          <details class="objectifs">
+            <summary>Objectifs de cette section</summary>
+            <ul>
+              <li>Comprendre l&#39;héritage en PHP avec extends</li><li>Appeler le constructeur parent avec parent::__construct()</li><li>Identifier le polymorphisme dans du code PHP</li>
+            </ul>
+          </details>
+        
+        <h2>Rappel de cours</h2>
+<h3>Héritage</h3>
+<p>L'<strong>héritage</strong> permet à une classe enfant de réutiliser les attributs et méthodes d'une classe parente, et d'en ajouter ou modifier.</p>
+<div class="component-code"><pre><code class="language-php">&lt;?php
+class Animal {
+    public string $nom;
+    public function __construct(string $nom) {
+        $this-&gt;nom = $nom;
+    }
+    public function parler(): string {
+        return &quot;...&quot;;
+    }
+    public function presentation(): string {
+        return &quot;Je m&#x27;appelle {$this-&gt;nom} et je dis : {$this-&gt;parler()}&quot;;
+    }
+}
+class Chien extends Animal {       // Chien hérite de Animal
+    public function parler(): string {
+        return &quot;Woof !&quot;;
+    }
+}
+class Chat extends Animal {        // Chat hérite de Animal
+    public function parler(): string {
+        return &quot;Miaou !&quot;;
+    }
+}
+$rex  = new Chien(&quot;Rex&quot;);
+$mimi = new Chat(&quot;Mimi&quot;);
+echo $rex-&gt;presentation();   // Je m&#x27;appelle Rex et je dis : Woof !
+echo $mimi-&gt;presentation();  // Je m&#x27;appelle Mimi et je dis : Miaou !</code></pre><button type="button" class="code-copy">Copier</button></div>
+<h3>parent::</h3>
+<p><code>parent::</code> appelle une méthode de la classe parente :</p>
+<div class="component-code"><pre><code class="language-php">&lt;?php
+class Employe {
+    public string $nom;
+    public float  $salaire;
+    public function __construct(string $nom, float $salaire) {
+        $this-&gt;nom     = $nom;
+        $this-&gt;salaire = $salaire;
+    }
+}
+class Manager extends Employe {
+    public array $equipe;
+    public function __construct(string $nom, float $salaire, array $equipe) {
+        parent::__construct($nom, $salaire);  // appelle Employe::__construct
+        $this-&gt;equipe = $equipe;              // attribut supplémentaire
+    }
+}</code></pre><button type="button" class="code-copy">Copier</button></div>
+<h3>Polymorphisme</h3>
+<p>Des objets de types différents répondent à la <strong>même méthode</strong>, chacun à sa façon.</p>
+<h2>Activité 1 — Lire du code avec héritage</h2>
+<div class="component-code"><pre><code class="language-php">&lt;?php
+class Vehicule {
+    public string $marque;
+    public int    $vitesseMax;
+    public function __construct(string $marque, int $vitesseMax) {
+        $this-&gt;marque     = $marque;
+        $this-&gt;vitesseMax = $vitesseMax;
+    }
+    public function description(): string {
+        return &quot;{$this-&gt;marque}, max {$this-&gt;vitesseMax} km/h&quot;;
+    }
+}
+class Voiture extends Vehicule {
+    public int $nbPortes;
+    public function __construct(string $marque, int $vitesseMax, int $nbPortes) {
+        parent::__construct($marque, $vitesseMax);
+        $this-&gt;nbPortes = $nbPortes;
+    }
+    public function description(): string {
+        $base = parent::description();
+        return &quot;$base, {$this-&gt;nbPortes} portes&quot;;
+    }
+}
+$v = new Voiture(&quot;Renault&quot;, 180, 5);
+echo $v-&gt;description();</code></pre><button type="button" class="code-copy">Copier</button></div>
+<div class="component-quiz-qcm" data-quiz><p class="quiz-question">Que va afficher echo $v-&gt;description() ?
+</p><div class="quiz-choices"><label><input type="radio" name="q-157" data-correct="false"> Renault, max 180 km/h</label><label><input type="radio" name="q-157" data-correct="true"> Renault, max 180 km/h, 5 portes</label><label><input type="radio" name="q-157" data-correct="false"> Voiture, max 180 km/h, 5 portes</label><label><input type="radio" name="q-157" data-correct="false"> Une erreur, car description() est définie deux fois</label></div><button class="quiz-submit" type="button">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<div class="component-quiz-qcm" data-quiz><p class="quiz-question">À quoi sert parent::__construct($marque, $vitesseMax) dans Voiture::__construct ?
+</p><div class="quiz-choices"><label><input type="radio" name="q-158" data-correct="false"> À créer un objet Vehicule séparé</label><label><input type="radio" name="q-158" data-correct="true"> À appeler le constructeur de la classe parente pour initialiser $marque et $vitesseMax</label><label><input type="radio" name="q-158" data-correct="false"> À copier tous les attributs de Vehicule</label><label><input type="radio" name="q-158" data-correct="false"> C&#x27;est obligatoire en PHP, même si ça ne fait rien</label></div><button class="quiz-submit" type="button">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<h2>Activité 2 — Polymorphisme en action</h2>
+<div class="component-code"><pre><code class="language-php">&lt;?php
+class Forme {
+    public function aire(): float { return 0.0; }
+}
+class Carre extends Forme {
+    public function __construct(private float $cote) {}
+    public function aire(): float { return $this-&gt;cote ** 2; }
+}
+class Cercle extends Forme {
+    public function __construct(private float $rayon) {}
+    public function aire(): float { return 3.14 * $this-&gt;rayon ** 2; }
+}
+$formes = [new Carre(4), new Cercle(3), new Carre(2)];
+foreach ($formes as $f) {
+    echo $f-&gt;aire() . &quot;\n&quot;;
+}</code></pre><button type="button" class="code-copy">Copier</button></div>
+<div class="component-quiz-qcm" data-quiz><p class="quiz-question">Quelles valeurs affiche ce programme (dans l&#x27;ordre) ?
+</p><div class="quiz-choices"><label><input type="radio" name="q-159" data-correct="false"> 0, 0, 0</label><label><input type="radio" name="q-159" data-correct="false"> 4, 3, 2</label><label><input type="radio" name="q-159" data-correct="true"> 16, 28.26, 4</label><label><input type="radio" name="q-159" data-correct="false"> Une erreur car Forme::aire() retourne 0.0</label></div><button class="quiz-submit" type="button">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<div class="component-quiz-qcm" data-quiz><p class="quiz-question">Pourquoi peut-on appeler $f-&gt;aire() sur des Carre et des Cercle dans la même boucle ?
+</p><div class="quiz-choices"><label><input type="radio" name="q-160" data-correct="false"> Parce que PHP convertit automatiquement les types</label><label><input type="radio" name="q-160" data-correct="true"> Parce que les deux classes héritent de Forme et définissent toutes les deux aire() — c&#x27;est le polymorphisme</label><label><input type="radio" name="q-160" data-correct="false"> Parce que Carre et Cercle sont des synonymes en PHP</label><label><input type="radio" name="q-160" data-correct="false"> Parce que le tableau ne peut contenir que des objets du même type</label></div><button class="quiz-submit" type="button">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<h2>Activité 3 — Compléter une classe fille</h2>
+<div class="component-code"><pre><code class="language-php">&lt;?php
+class Personne {
+    public function __construct(
+        public string $nom,
+        public int    $age
+    ) {}
+    public function presenter(): string {
+        return &quot;Je suis {$this-&gt;nom}, j&#x27;ai {$this-&gt;age} ans.&quot;;
+    }
+}
+class Etudiant extends Personne {
+    public string $formation;
+    public function __construct(string $nom, int $age, string $formation) {
+        // À compléter : appeler le constructeur parent
+        $this-&gt;formation = $formation;
+    }
+    public function presenter(): string {
+        // À compléter : utiliser parent:: et ajouter la formation
+    }
+}</code></pre><button type="button" class="code-copy">Copier</button></div>
+<div class="component-quiz-texte" data-reponse="parent::__construct($nom, $age);"><p class="quiz-question">Dans Etudiant::__construct, quelle ligne appelle le constructeur de Personne ?</p><input type="text" class="quiz-input"><button type="button" class="quiz-submit">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<div class="component-quiz-texte" data-reponse="Je suis {nom}, j&#x27;ai {age} ans."><p class="quiz-question">Dans Etudiant::presenter(), que retourne parent::presenter() ?</p><input type="text" class="quiz-input"><button type="button" class="quiz-submit">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<h2>Aide IA</h2>
+<div class="component-aide-ia"><div class="aide-ia-label">💡 Comment l'IA peut t'aider</div><pre class="aide-ia-prompt">Je suis étudiant en BTS SIO SLAM et j&#x27;étudie l&#x27;héritage en PHP.
+Je ne comprends pas bien comment parent:: fonctionne et pourquoi
+on l&#x27;utilise dans __construct.
+Explique-moi avec un exemple très simple, sans me donner le code
+de mon exercice. Pose-moi des questions pour tester ma compréhension.</pre><button type="button" class="aide-ia-copy">Copier le prompt</button></div>
+<h2>Solution</h2>
+<details class="component-reveal"><summary>Voir la solution</summary><div class="reveal-content">Classe Etudiant complétée :
+class Etudiant extends Personne {
+    public string $formation;
+    public function __construct(string $nom, int $age, string $formation) {
+        parent::__construct($nom, $age);
+        $this-&gt;formation = $formation;
+    }
+    public function presenter(): string {
+        $base = parent::presenter();
+        return &quot;$base Je suis en {$this-&gt;formation}.&quot;;
+    }
+}
+Test :
+$e = new Etudiant(&quot;Alice&quot;, 19, &quot;BTS SIO SLAM&quot;);
+echo $e-&gt;presenter();
+// Je suis Alice, j&#x27;ai 19 ans. Je suis en BTS SIO SLAM.</div></details>
+<h2>Ressources</h2>
+<div class="component-ressources"><div class="ressources-label">📚 Pour aller plus loin</div><div class="ressources-list"><a href="https://www.php.net/manual/fr/language.oop5.inheritance.php" target="_blank" rel="noopener" class="ressource-item"><span class="ressource-icon ressource-badge-doc">📖</span><span class="ressource-text"><span class="ressource-titre">L&#x27;héritage en PHP — Documentation officielle</span><span class="ressource-meta">php.net</span></span></a><a href="https://www.php.net/manual/fr/language.oop5.interfaces.php" target="_blank" rel="noopener" class="ressource-item"><span class="ressource-icon ressource-badge-doc">📖</span><span class="ressource-text"><span class="ressource-titre">Le polymorphisme et les interfaces</span><span class="ressource-meta">php.net</span></span></a><a href="https://www.youtube.com/results?search_query=php+h%C3%A9ritage+polymorphisme+fran%C3%A7ais" target="_blank" rel="noopener" class="ressource-item"><span class="ressource-icon ressource-badge-video">▶</span><span class="ressource-text"><span class="ressource-titre">Héritage et polymorphisme PHP — vidéos en français</span><span class="ressource-meta">YouTube · recherche</span></span></a></div></div>
+<h2>Auto-évaluation</h2>
+<div class="component-auto-eval" data-auto-eval><p>Où en es-tu ?</p><button data-eval="ok">😊 Compris</button><button data-eval="hesitant">🤔 À revoir</button><button data-eval="bloque">😣 Bloqué</button></div>
+      </section>
+    
+      <section id="section-8" data-section-index="8">
+        <h2>
+          <span class="section-badge">8</span>
+          Gestion d&#39;erreurs PHP — try/catch/throw
+        </h2>
+        
+          <details class="objectifs">
+            <summary>Objectifs de cette section</summary>
+            <ul>
+              <li>Comprendre ce qu&#39;est une exception en PHP</li><li>Utiliser try/catch pour gérer les erreurs</li><li>Lancer une exception avec throw</li><li>Identifier les exceptions PHP courantes (PDOException, InvalidArgumentException)</li>
+            </ul>
+          </details>
+        
+        <h2>Rappel de cours</h2>
+<p>Quand PHP rencontre une erreur grave, il <strong>lance une exception</strong> — le programme s'arrête si l'exception n'est pas interceptée.</p>
+<div class="component-code"><pre><code class="language-php">&lt;?php
+// Sans gestion d&#x27;erreur : le programme plante
+$tableau = [1, 2, 3];
+echo $tableau[10];  // Notice, mais pas d&#x27;exception ici
+// Avec PDO, les erreurs SQL lancent bien une exception :
+$pdo = new PDO(&quot;mysql:host=localhost;dbname=inconnu&quot;, &quot;root&quot;, &quot;&quot;);
+// → PDOException: SQLSTATE[HY000] Access denied...</code></pre><button type="button" class="code-copy">Copier</button></div>
+<h3>Gérer une exception avec try/catch</h3>
+<div class="component-code"><pre><code class="language-php">&lt;?php
+try {
+    $pdo = new PDO(
+        &quot;mysql:host=localhost;dbname=test;charset=utf8&quot;,
+        &quot;root&quot;, &quot;&quot;,
+        [PDO::ATTR_ERRMODE =&gt; PDO::ERRMODE_EXCEPTION]
+    );
+    echo &quot;Connexion réussie.&quot;;
+} catch (PDOException $e) {
+    echo &quot;Erreur BDD : &quot; . $e-&gt;getMessage();
+} finally {
+    echo &quot;Fin de la tentative de connexion.&quot;;
+}</code></pre><button type="button" class="code-copy">Copier</button></div>
+<ul>
+<li>Le bloc <code>try</code> contient le code qui peut échouer.</li>
+<li>Le bloc <code>catch</code> attrape l'exception si elle est lancée.</li>
+<li>Le bloc <code>finally</code> est toujours exécuté (succès ou erreur).</li>
+</ul>
+<h3>Lancer une exception avec throw</h3>
+<div class="component-code"><pre><code class="language-php">&lt;?php
+function deposer(float $solde, float $montant): float {
+    if ($montant &lt;= 0) {
+        throw new InvalidArgumentException(&quot;Le montant doit être positif.&quot;);
+    }
+    return $solde + $montant;
+}
+try {
+    $nouveau = deposer(100, -50);
+} catch (InvalidArgumentException $e) {
+    echo &quot;Erreur : &quot; . $e-&gt;getMessage();
+    // Erreur : Le montant doit être positif.
+}</code></pre><button type="button" class="code-copy">Copier</button></div>
+<h2>Activité 1 — Lire du code avec try/catch</h2>
+<div class="component-code"><pre><code class="language-php">&lt;?php
+function diviser(float $a, float $b): ?float {
+    if ($b == 0) {
+        throw new InvalidArgumentException(&quot;Division par zéro interdite.&quot;);
+    }
+    return $a / $b;
+}
+try {
+    echo diviser(10, 2) . &quot;\n&quot;;
+    echo diviser(10, 0) . &quot;\n&quot;;
+} catch (InvalidArgumentException $e) {
+    echo &quot;Erreur : &quot; . $e-&gt;getMessage();
+}</code></pre><button type="button" class="code-copy">Copier</button></div>
+<div class="component-quiz-qcm" data-quiz><p class="quiz-question">Que va afficher ce programme (dans l&#x27;ordre) ?
+</p><div class="quiz-choices"><label><input type="radio" name="q-161" data-correct="false"> 5 puis une erreur non gérée</label><label><input type="radio" name="q-161" data-correct="true"> {&#x27;5 puis &quot;Erreur&#x27;: &#x27;Division par zéro interdite.&quot; &#x27;}</label><label><input type="radio" name="q-161" data-correct="false"> 5 puis 0</label><label><input type="radio" name="q-161" data-correct="false"> Une erreur dès le début</label></div><button class="quiz-submit" type="button">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<div class="component-quiz-qcm" data-quiz><p class="quiz-question">Pourquoi diviser(10, 0) n&#x27;affiche-t-il pas le second echo ?
+</p><div class="quiz-choices"><label><input type="radio" name="q-162" data-correct="false"> Parce que PHP arrête tous les echo après une exception</label><label><input type="radio" name="q-162" data-correct="true"> Parce que throw arrête l&#x27;exécution du bloc try et saute au catch</label><label><input type="radio" name="q-162" data-correct="false"> Parce que diviser retourne null quand b vaut 0</label><label><input type="radio" name="q-162" data-correct="false"> C&#x27;est un bug PHP</label></div><button class="quiz-submit" type="button">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<h2>Activité 2 — Attraper la bonne exception</h2>
+<div class="component-code"><pre><code class="language-php">&lt;?php
+try {
+    $pdo = new PDO(
+        &quot;mysql:host=localhost;dbname=inexistant&quot;,
+        &quot;root&quot;, &quot;mauvais_mdp&quot;,
+        [PDO::ATTR_ERRMODE =&gt; PDO::ERRMODE_EXCEPTION]
+    );
+} catch (InvalidArgumentException $e) {
+    echo &quot;Argument invalide.&quot;;
+} catch (PDOException $e) {
+    echo &quot;Erreur base de données.&quot;;
+}</code></pre><button type="button" class="code-copy">Copier</button></div>
+<div class="component-quiz-qcm" data-quiz><p class="quiz-question">Quel bloc catch va s&#x27;exécuter ?
+</p><div class="quiz-choices"><label><input type="radio" name="q-163" data-correct="false"> Le premier catch (InvalidArgumentException)</label><label><input type="radio" name="q-163" data-correct="true"> Le second catch (PDOException)</label><label><input type="radio" name="q-163" data-correct="false"> Les deux catch s&#x27;exécutent</label><label><input type="radio" name="q-163" data-correct="false"> Aucun, le programme plante</label></div><button class="quiz-submit" type="button">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<div class="component-quiz-qcm" data-quiz><p class="quiz-question">Que se passerait-il si on retirait les deux catch ?
+</p><div class="quiz-choices"><label><input type="radio" name="q-164" data-correct="false"> PHP continue silencieusement</label><label><input type="radio" name="q-164" data-correct="true"> L&#x27;exception non interceptée arrête le programme avec un message d&#x27;erreur fatal</label><label><input type="radio" name="q-164" data-correct="false"> PHP affiche simplement un avertissement</label><label><input type="radio" name="q-164" data-correct="false"> Rien, PDO ne lance pas d&#x27;exception par défaut</label></div><button class="quiz-submit" type="button">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<h2>Activité 3 — Compléter un try/catch</h2>
+<div class="component-code"><pre><code class="language-php">&lt;?php
+function lireEntier(string $texte): int {
+    if (!ctype_digit($texte)) {
+        throw new ___________(&quot;La valeur n&#x27;est pas un entier : $texte&quot;);
+    }
+    return (int) $texte;
+}
+try {
+    echo lireEntier(&quot;42&quot;);       // 42
+    echo lireEntier(&quot;bonjour&quot;);  // doit lancer une exception
+} catch (InvalidArgumentException $e) {
+    echo &quot;Erreur : &quot; . $e-&gt;getMessage();
+}</code></pre><button type="button" class="code-copy">Copier</button></div>
+<div class="component-quiz-texte" data-reponse="InvalidArgumentException"><p class="quiz-question">Quelle classe d&#x27;exception faut-il mettre à la place des ___ ?</p><input type="text" class="quiz-input"><button type="button" class="quiz-submit">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<div class="component-quiz-texte" data-reponse="True"><p class="quiz-question">Que retourne ctype_digit(&quot;42&quot;) ?</p><input type="text" class="quiz-input"><button type="button" class="quiz-submit">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<h2>Activité 4 — finally</h2>
+<div class="component-code"><pre><code class="language-php">&lt;?php
+function connecter(string $mdp): void {
+    try {
+        if ($mdp !== &quot;secret&quot;) {
+            throw new RuntimeException(&quot;Mot de passe incorrect.&quot;);
+        }
+        echo &quot;Connexion réussie.\n&quot;;
+    } catch (RuntimeException $e) {
+        echo &quot;Erreur : &quot; . $e-&gt;getMessage() . &quot;\n&quot;;
+    } finally {
+        echo &quot;Tentative de connexion terminée.\n&quot;;
+    }
+}
+connecter(&quot;secret&quot;);
+connecter(&quot;mauvais&quot;);</code></pre><button type="button" class="code-copy">Copier</button></div>
+<div class="component-quiz-qcm" data-quiz><p class="quiz-question">Quelles lignes va afficher l&#x27;appel connecter(&quot;mauvais&quot;) ?
+</p><div class="quiz-choices"><label><input type="radio" name="q-165" data-correct="false"> Connexion réussie. puis Tentative de connexion terminée.</label><label><input type="radio" name="q-165" data-correct="false"> {&#x27;Erreur&#x27;: &#x27;Mot de passe incorrect. [seul]&#x27;}</label><label><input type="radio" name="q-165" data-correct="true"> {&#x27;Erreur&#x27;: &#x27;Mot de passe incorrect. puis Tentative de connexion terminée. &#x27;}</label><label><input type="radio" name="q-165" data-correct="false"> Seulement Tentative de connexion terminée.</label></div><button class="quiz-submit" type="button">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<h2>Aide IA</h2>
+<div class="component-aide-ia"><div class="aide-ia-label">💡 Comment l'IA peut t'aider</div><pre class="aide-ia-prompt">Je suis étudiant en BTS SIO SLAM et j&#x27;apprends la gestion des exceptions
+en PHP. Je ne comprends pas toujours quelle exception lancer ni où placer
+le try/catch. Aide-moi à comprendre la logique générale avec un exemple
+simple, sans me donner directement le code de mon exercice.
+Pose-moi des questions pour vérifier ma compréhension.</pre><button type="button" class="aide-ia-copy">Copier le prompt</button></div>
+<h2>Solution</h2>
+<details class="component-reveal"><summary>Voir les solutions</summary><div class="reveal-content">Activité 3 — la bonne exception :
+throw new InvalidArgumentException(...)
+Explication : InvalidArgumentException est l&#x27;exception standard PHP pour
+signaler qu&#x27;un argument a une valeur incorrecte. RuntimeException est plus
+générale. PDOException est réservée aux erreurs de base de données.
+Correspondance PHP / Python :
+- throw new Exception()       ↔  raise Exception()
+- catch (Exception $e)        ↔  except Exception as e:
+- $e-&gt;getMessage()            ↔  str(e)
+- InvalidArgumentException    ↔  ValueError
+- PDOException                ↔  (pas d&#x27;équivalent direct Python)
+- finally                     ↔  finally (identique)
+Activité 4 — trace de connecter(&quot;mauvais&quot;) :
+1. $mdp !== &quot;secret&quot; est vrai → throw RuntimeException
+2. Le catch attrape l&#x27;exception → affiche &quot;Erreur : Mot de passe incorrect.&quot;
+3. Le finally s&#x27;exécute toujours → affiche &quot;Tentative de connexion terminée.&quot;</div></details>
+<h2>Ressources</h2>
+<div class="component-ressources"><div class="ressources-label">📚 Pour aller plus loin</div><div class="ressources-list"><a href="https://www.php.net/manual/fr/language.exceptions.php" target="_blank" rel="noopener" class="ressource-item"><span class="ressource-icon ressource-badge-doc">📖</span><span class="ressource-text"><span class="ressource-titre">Les exceptions en PHP — Documentation officielle</span><span class="ressource-meta">php.net</span></span></a><a href="https://www.php.net/manual/fr/spl.exceptions.php" target="_blank" rel="noopener" class="ressource-item"><span class="ressource-icon ressource-badge-doc">📖</span><span class="ressource-text"><span class="ressource-titre">SPL — Exceptions standard PHP</span><span class="ressource-meta">php.net</span></span></a><a href="https://www.youtube.com/results?search_query=php+exceptions+try+catch+fran%C3%A7ais" target="_blank" rel="noopener" class="ressource-item"><span class="ressource-icon ressource-badge-video">▶</span><span class="ressource-text"><span class="ressource-titre">Gestion des erreurs PHP — vidéos en français</span><span class="ressource-meta">YouTube · recherche</span></span></a></div></div>
+<h2>Auto-évaluation</h2>
+<div class="component-auto-eval" data-auto-eval><p>Où en es-tu ?</p><button data-eval="ok">😊 Compris</button><button data-eval="hesitant">🤔 À revoir</button><button data-eval="bloque">😣 Bloqué</button></div>
+      </section>
+    
+      <section id="section-9" data-section-index="9">
+        <h2>
+          <span class="section-badge">9</span>
+          Mini-projet CRUD PHP — Gestion de contacts
+        </h2>
+        
+          <details class="objectifs">
+            <summary>Objectifs de cette section</summary>
+            <ul>
+              <li>Comprendre l&#39;architecture Modèle / DAO / Contrôleur en PHP</li><li>Lire et compléter un CRUD complet avec PDO</li><li>Relier POO, SQL et gestion d&#39;erreurs dans un projet web réel</li>
+            </ul>
+          </details>
+        
+        <h2>Présentation du projet</h2>
+<p>Tu vas travailler sur une application web de <strong>gestion de contacts</strong> : une liste de personnes avec nom, prénom et email. L'architecture suit le patron <strong>MVC simplifié</strong> :</p>
+<ul>
+<li><strong>Modèle</strong> : la classe <code>Contact</code> représente une ligne de la BDD.</li>
+<li><strong>DAO</strong> (Data Access Object) : la classe <code>ContactDAO</code> exécute les requêtes SQL.</li>
+<li><strong>Contrôleur</strong> : reçoit la requête HTTP et orchestre le traitement.</li>
+<li><strong>Vue</strong> : le fichier HTML/PHP qui affiche les données.</li>
+</ul>
+<h2>Couche 1 — Le modèle</h2>
+<div class="component-code"><pre><code class="language-php">&lt;?php
+class Contact {
+    public function __construct(
+        public string  $nom,
+        public string  $prenom,
+        public string  $email,
+        public ?int    $id = null
+    ) {}
+    public function __toString(): string {
+        return &quot;[{$this-&gt;id}] {$this-&gt;prenom} {$this-&gt;nom} — {$this-&gt;email}&quot;;
+    }
+}</code></pre><button type="button" class="code-copy">Copier</button></div>
+<div class="component-quiz-qcm" data-quiz><p class="quiz-question">Pourquoi $id a-t-il une valeur par défaut de null dans le constructeur ?
+</p><div class="quiz-choices"><label><input type="radio" name="q-166" data-correct="false"> Par convention PHP, tous les arguments doivent avoir une valeur par défaut</label><label><input type="radio" name="q-166" data-correct="true"> Parce qu&#x27;un nouveau contact n&#x27;a pas encore d&#x27;id — il sera assigné par la BDD lors de l&#x27;insertion</label><label><input type="radio" name="q-166" data-correct="false"> Parce que l&#x27;id n&#x27;est pas utile dans le modèle</label><label><input type="radio" name="q-166" data-correct="false"> Pour éviter une erreur si on oublie de passer l&#x27;id</label></div><button class="quiz-submit" type="button">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<h2>Couche 2 — Le DAO avec PDO</h2>
+<div class="component-code"><pre><code class="language-php">&lt;?php
+class ContactDAO {
+    private PDO $pdo;
+    public function __construct() {
+        $this-&gt;pdo = new PDO(
+            &quot;mysql:host=localhost;dbname=contacts;charset=utf8&quot;,
+            &quot;root&quot;, &quot;&quot;,
+            [PDO::ATTR_ERRMODE =&gt; PDO::ERRMODE_EXCEPTION]
+        );
+    }
+    public function creer(Contact $c): Contact {
+        $stmt = $this-&gt;pdo-&gt;prepare(
+            &quot;INSERT INTO contacts (nom, prenom, email)
+             VALUES (:nom, :prenom, :email)&quot;
+        );
+        $stmt-&gt;execute([
+            &#x27;:nom&#x27;    =&gt; $c-&gt;nom,
+            &#x27;:prenom&#x27; =&gt; $c-&gt;prenom,
+            &#x27;:email&#x27;  =&gt; $c-&gt;email,
+        ]);
+        $c-&gt;id = (int) $this-&gt;pdo-&gt;lastInsertId();
+        return $c;
+    }
+    public function lireTous(): array {
+        $stmt = $this-&gt;pdo-&gt;query(
+            &quot;SELECT id, nom, prenom, email FROM contacts ORDER BY nom&quot;
+        );
+        return array_map(
+            fn($r) =&gt; new Contact($r[&#x27;nom&#x27;], $r[&#x27;prenom&#x27;], $r[&#x27;email&#x27;], $r[&#x27;id&#x27;]),
+            $stmt-&gt;fetchAll(PDO::FETCH_ASSOC)
+        );
+    }
+    public function supprimer(int $id): void {
+        $stmt = $this-&gt;pdo-&gt;prepare(&quot;DELETE FROM contacts WHERE id = :id&quot;);
+        $stmt-&gt;execute([&#x27;:id&#x27; =&gt; $id]);
+    }
+}</code></pre><button type="button" class="code-copy">Copier</button></div>
+<div class="component-quiz-qcm" data-quiz><p class="quiz-question">Dans la méthode creer(), pourquoi utilise-t-on &quot;:nom&quot;, &quot;:prenom&quot;, &quot;:email&quot;
+dans la requête plutôt que de concaténer les valeurs directement ?
+</p><div class="quiz-choices"><label><input type="radio" name="q-167" data-correct="false"> C&#x27;est une convention de style uniquement</label><label><input type="radio" name="q-167" data-correct="true"> Pour éviter les injections SQL — PDO remplace les paramètres nommés de façon sécurisée</label><label><input type="radio" name="q-167" data-correct="false"> Parce que PHP ne permet pas les chaînes dans PDO::prepare()</label><label><input type="radio" name="q-167" data-correct="false"> Pour aller plus vite</label></div><button class="quiz-submit" type="button">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<div class="component-quiz-qcm" data-quiz><p class="quiz-question">Que fait la ligne :
+fn($r) =&gt; new Contact($r[&#x27;nom&#x27;], $r[&#x27;prenom&#x27;], $r[&#x27;email&#x27;], $r[&#x27;id&#x27;])
+</p><div class="quiz-choices"><label><input type="radio" name="q-168" data-correct="false"> Elle retourne un tableau associatif brut de la BDD</label><label><input type="radio" name="q-168" data-correct="true"> Elle crée un objet Contact pour chaque ligne du résultat</label><label><input type="radio" name="q-168" data-correct="false"> Elle filtre les contacts selon leur id</label><label><input type="radio" name="q-168" data-correct="false"> Elle met à jour les contacts en base</label></div><button class="quiz-submit" type="button">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<h2>Couche 3 — Le contrôleur</h2>
+<div class="component-code"><pre><code class="language-php">&lt;?php
+// index.php — point d&#x27;entrée
+require_once &#x27;Contact.php&#x27;;
+require_once &#x27;ContactDAO.php&#x27;;
+$dao    = new ContactDAO();
+$action = $_GET[&#x27;action&#x27;] ?? &#x27;liste&#x27;;
+$erreur = null;
+if ($action === &#x27;ajouter&#x27; &amp;&amp; $_SERVER[&#x27;REQUEST_METHOD&#x27;] === &#x27;POST&#x27;) {
+    $nom    = trim($_POST[&#x27;nom&#x27;]    ?? &#x27;&#x27;);
+    $prenom = trim($_POST[&#x27;prenom&#x27;] ?? &#x27;&#x27;);
+    $email  = trim($_POST[&#x27;email&#x27;]  ?? &#x27;&#x27;);
+    try {
+        if (!$nom || !$prenom || !$email) {
+            throw new InvalidArgumentException(&quot;Tous les champs sont obligatoires.&quot;);
+        }
+        $dao-&gt;creer(new Contact($nom, $prenom, $email));
+        header(&#x27;Location: index.php&#x27;);
+        exit;
+    } catch (InvalidArgumentException $e) {
+        $erreur = $e-&gt;getMessage();
+    }
+}
+if ($action === &#x27;supprimer&#x27; &amp;&amp; isset($_GET[&#x27;id&#x27;])) {
+    $dao-&gt;supprimer((int) $_GET[&#x27;id&#x27;]);
+    header(&#x27;Location: index.php&#x27;);
+    exit;
+}
+$contacts = $dao-&gt;lireTous();
+require &#x27;vue.php&#x27;;</code></pre><button type="button" class="code-copy">Copier</button></div>
+<div class="component-quiz-qcm" data-quiz><p class="quiz-question">Pourquoi vérifie-t-on que REQUEST_METHOD === &#x27;POST&#x27; avant de traiter l&#x27;ajout ?
+</p><div class="quiz-choices"><label><input type="radio" name="q-169" data-correct="false"> Pour des raisons de performance uniquement</label><label><input type="radio" name="q-169" data-correct="true"> Pour éviter de traiter le formulaire quand l&#x27;utilisateur arrive sur la page en GET — seul un vrai envoi de formulaire doit créer un contact</label><label><input type="radio" name="q-169" data-correct="false"> Parce que PDO n&#x27;accepte que les données POST</label><label><input type="radio" name="q-169" data-correct="false"> C&#x27;est inutile, PHP gère cela automatiquement</label></div><button class="quiz-submit" type="button">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<h2>Couche 4 — La vue</h2>
+<div class="component-code"><pre><code class="language-php">&lt;!-- vue.php --&gt;
+&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;fr&quot;&gt;
+&lt;head&gt;&lt;meta charset=&quot;UTF-8&quot;&gt;&lt;title&gt;Contacts&lt;/title&gt;&lt;/head&gt;
+&lt;body&gt;
+&lt;h1&gt;Carnet de contacts&lt;/h1&gt;
+&lt;?php if ($erreur): ?&gt;
+  &lt;p style=&quot;color:red&quot;&gt;&lt;?= htmlspecialchars($erreur) ?&gt;&lt;/p&gt;
+&lt;?php endif; ?&gt;
+&lt;form method=&quot;post&quot; action=&quot;index.php?action=ajouter&quot;&gt;
+  &lt;input name=&quot;nom&quot;    placeholder=&quot;Nom&quot;    required&gt;
+  &lt;input name=&quot;prenom&quot; placeholder=&quot;Prénom&quot; required&gt;
+  &lt;input name=&quot;email&quot;  placeholder=&quot;Email&quot;  type=&quot;email&quot; required&gt;
+  &lt;button type=&quot;submit&quot;&gt;Ajouter&lt;/button&gt;
+&lt;/form&gt;
+&lt;table&gt;
+  &lt;tr&gt;&lt;th&gt;Id&lt;/th&gt;&lt;th&gt;Nom&lt;/th&gt;&lt;th&gt;Prénom&lt;/th&gt;&lt;th&gt;Email&lt;/th&gt;&lt;th&gt;&lt;/th&gt;&lt;/tr&gt;
+  &lt;?php foreach ($contacts as $c): ?&gt;
+  &lt;tr&gt;
+    &lt;td&gt;&lt;?= $c-&gt;id ?&gt;&lt;/td&gt;
+    &lt;td&gt;&lt;?= htmlspecialchars($c-&gt;nom) ?&gt;&lt;/td&gt;
+    &lt;td&gt;&lt;?= htmlspecialchars($c-&gt;prenom) ?&gt;&lt;/td&gt;
+    &lt;td&gt;&lt;?= htmlspecialchars($c-&gt;email) ?&gt;&lt;/td&gt;
+    &lt;td&gt;&lt;a href=&quot;index.php?action=supprimer&amp;id=&lt;?= $c-&gt;id ?&gt;&quot;&gt;Supprimer&lt;/a&gt;&lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;?php endforeach; ?&gt;
+&lt;/table&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre><button type="button" class="code-copy">Copier</button></div>
+<div class="component-quiz-qcm" data-quiz><p class="quiz-question">Pourquoi utilise-t-on htmlspecialchars() pour afficher les données dans la vue ?
+</p><div class="quiz-choices"><label><input type="radio" name="q-170" data-correct="false"> Pour formater le texte en majuscules</label><label><input type="radio" name="q-170" data-correct="true"> Pour convertir les caractères spéciaux HTML en entités et éviter les attaques XSS</label><label><input type="radio" name="q-170" data-correct="false"> Parce que PHP ne peut pas afficher de chaînes directement</label><label><input type="radio" name="q-170" data-correct="false"> Pour améliorer les performances d&#x27;affichage</label></div><button class="quiz-submit" type="button">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<h2>Activité — Compléter le CRUD</h2>
+<p>La méthode <code>modifier()</code> est manquante dans <code>ContactDAO</code>. Elle doit mettre à jour nom, prénom et email d'un contact existant en base.</p>
+<div class="component-quiz-texte" data-reponse="UPDATE contacts SET nom = :nom, prenom = :prenom, email = :email WHERE id = :id"><p class="quiz-question">Quelle requête SQL met à jour un contact par son id ? (commencer par UPDATE)</p><input type="text" class="quiz-input"><button type="button" class="quiz-submit">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<div class="component-quiz-qcm" data-quiz><p class="quiz-question">Voici une ébauche de modifier() :
+  $stmt = $this-&gt;pdo-&gt;prepare(&quot;UPDATE contacts SET nom=:nom, prenom=:prenom,
+  email=:email WHERE id=:id&quot;);
+  $stmt-&gt;execute([&#x27;:nom&#x27;=&gt;$c-&gt;nom, &#x27;:prenom&#x27;=&gt;$c-&gt;prenom,
+  &#x27;:email&#x27;=&gt;$c-&gt;email, &#x27;:id&#x27;=&gt;$c-&gt;id]);
+Est-elle correcte ?
+</p><div class="quiz-choices"><label><input type="radio" name="q-171" data-correct="false"> Non, il faut utiliser une requête INSERT pour modifier</label><label><input type="radio" name="q-171" data-correct="true"> Oui, elle utilise une requête préparée paramétrée pour mettre à jour le bon enregistrement</label><label><input type="radio" name="q-171" data-correct="false"> Non, PDO ne supporte pas les paramètres nommés dans UPDATE</label><label><input type="radio" name="q-171" data-correct="false"> Non, il faut d&#x27;abord supprimer puis réinsérer le contact</label></div><button class="quiz-submit" type="button">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<h2>Aide IA</h2>
+<div class="component-aide-ia"><div class="aide-ia-label">💡 Comment l'IA peut t'aider</div><pre class="aide-ia-prompt">Je suis étudiant en BTS SIO SLAM et je travaille sur un mini-projet CRUD
+en PHP avec PDO et MySQL. Je dois écrire la méthode modifier() dans
+la classe ContactDAO qui met à jour un contact existant.
+Je bloque sur [explique ton blocage].
+Guide-moi pas à pas sans me donner le code complet directement.</pre><button type="button" class="aide-ia-copy">Copier le prompt</button></div>
+<h2>Solution</h2>
+<details class="component-reveal"><summary>Voir la solution complète</summary><div class="reveal-content">Méthode modifier() dans ContactDAO :
+public function modifier(Contact $c): void {
+    $stmt = $this-&gt;pdo-&gt;prepare(
+        &quot;UPDATE contacts
+         SET nom = :nom, prenom = :prenom, email = :email
+         WHERE id = :id&quot;
+    );
+    $stmt-&gt;execute([
+        &#x27;:nom&#x27;    =&gt; $c-&gt;nom,
+        &#x27;:prenom&#x27; =&gt; $c-&gt;prenom,
+        &#x27;:email&#x27;  =&gt; $c-&gt;email,
+        &#x27;:id&#x27;     =&gt; $c-&gt;id,
+    ]);
+}
+Architecture CRUD résumée :
+- CREATE → INSERT + lastInsertId()
+- READ   → SELECT + fetchAll()
+- UPDATE → UPDATE WHERE id = :id
+- DELETE → DELETE WHERE id = :id
+Pour aller plus loin :
+Ajoute dans la vue un formulaire pré-rempli avec les données actuelles
+du contact, et appelle $dao-&gt;modifier() depuis le contrôleur en POST.</div></details>
+<h2>Ressources</h2>
+<div class="component-ressources"><div class="ressources-label">📚 Pour aller plus loin</div><div class="ressources-list"><a href="https://www.php.net/manual/fr/book.pdo.php" target="_blank" rel="noopener" class="ressource-item"><span class="ressource-icon ressource-badge-doc">📖</span><span class="ressource-text"><span class="ressource-titre">PDO — Documentation officielle PHP</span><span class="ressource-meta">php.net</span></span></a><a href="https://www.php.net/manual/fr/pdo.prepared-statements.php" target="_blank" rel="noopener" class="ressource-item"><span class="ressource-icon ressource-badge-doc">📖</span><span class="ressource-text"><span class="ressource-titre">PDO — Requêtes préparées et procédures stockées</span><span class="ressource-meta">php.net</span></span></a><a href="https://grafikart.fr/formations/php" target="_blank" rel="noopener" class="ressource-item"><span class="ressource-icon ressource-badge-video">▶</span><span class="ressource-text"><span class="ressource-titre">Grafikart — PHP et MySQL avec PDO</span><span class="ressource-meta">Grafikart</span></span></a><a href="https://www.youtube.com/results?search_query=CRUD+PHP+PDO+MySQL+fran%C3%A7ais" target="_blank" rel="noopener" class="ressource-item"><span class="ressource-icon ressource-badge-video">▶</span><span class="ressource-text"><span class="ressource-titre">CRUD PHP PDO MySQL — tutoriels en français</span><span class="ressource-meta">YouTube · recherche</span></span></a></div></div>
+<h2>Auto-évaluation</h2>
+<div class="component-auto-eval" data-auto-eval><p>Où en es-tu ?</p><button data-eval="ok">😊 Compris</button><button data-eval="hesitant">🤔 À revoir</button><button data-eval="bloque">😣 Bloqué</button></div>
+      </section>
+    
+      <section id="section-10" data-section-index="10">
+        <h2>
+          <span class="section-badge">10</span>
+          Bilan final — Info-SLAM
+        </h2>
+        
+        <h2>Bravo, tu as terminé le cahier !</h2>
+<p>Ce cahier t'a fait travailler sur 8 thèmes essentiels du développement. Prends quelques minutes pour faire le point sur ce que tu as consolidé.</p>
+<h2>Ce que tu as travaillé</h2>
+<table>
+<thead>
+<tr>
+<th>Activité</th>
+<th>Thème</th>
+<th>Je maîtrise</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>01</td>
+<td>SQL — SELECT, WHERE, ORDER BY</td>
+<td></td>
+</tr>
+<tr>
+<td>02</td>
+<td>SQL — JOIN, GROUP BY, agrégats</td>
+<td></td>
+</tr>
+<tr>
+<td>03</td>
+<td>POO — classe, attribut, méthode</td>
+<td></td>
+</tr>
+<tr>
+<td>04</td>
+<td>POO — héritage et polymorphisme</td>
+<td></td>
+</tr>
+<tr>
+<td>05</td>
+<td>Algorithmie — boucles, conditions, fonctions</td>
+<td></td>
+</tr>
+<tr>
+<td>06</td>
+<td>Gestion d'erreurs et exceptions</td>
+<td></td>
+</tr>
+<tr>
+<td>07</td>
+<td>Git — commit, branche, merge</td>
+<td></td>
+</tr>
+<tr>
+<td>08</td>
+<td>Mini-projet CRUD complet</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>Coche mentalement les thèmes que tu sens bien maîtriser. Ceux que tu laisses vides méritent une révision avant la rentrée.</p>
+<h2>Points clés à retenir</h2>
+<p><strong>SQL</strong> : l'ordre des clauses ne change jamais — <code>SELECT … FROM … WHERE … GROUP BY … ORDER BY …</code>. Les <code>JOIN</code> permettent de croiser des tables liées par une clé étrangère.</p>
+<p><strong>POO</strong> : une classe est un moule, un objet est une instance. <code>self</code> désigne toujours l'objet courant. L'héritage permet de réutiliser du code ; le polymorphisme permet d'appeler la même méthode sur des objets différents.</p>
+<p><strong>Algorithmie</strong> : les fonctions doivent faire une seule chose et la faire bien. Penser aux cas limites (liste vide, valeur négative, etc.).</p>
+<p><strong>Exceptions</strong> : attraper l'exception la plus précise possible. Ne jamais masquer une erreur sans la traiter.</p>
+<p><strong>Git</strong> : <code>add</code> → <code>commit</code> → <code>push</code>. Toujours écrire des messages de commit clairs. Travailler sur des branches pour ne pas casser <code>main</code>.</p>
+<h2>Ton bilan personnel</h2>
+<p>Écris ici ce qui t'a semblé le plus utile, ce sur quoi tu veux encore travailler, et ce que tu as envie d'approfondir en 2ème année.</p>
+<div class="component-bilan" data-bilan><p>Mon bilan personnel (sauvegardé en local, exportable)</p><textarea rows="8" placeholder="Ce que j'ai appris, ce qui reste flou…"></textarea><button type="button" class="bilan-export">Exporter en .txt</button></div>
+<h2>Aide IA — pour continuer à progresser</h2>
+<div class="component-aide-ia"><div class="aide-ia-label">💡 Comment l'IA peut t'aider</div><pre class="aide-ia-prompt">Je viens de terminer un cahier de révision BTS SIO SLAM couvrant SQL,
+la POO Python, l&#x27;algorithmie, les exceptions et Git.
+Je veux identifier mes lacunes pour les travailler avant la rentrée.
+Pose-moi 3 questions sur chacun de ces thèmes pour m&#x27;aider à évaluer
+mon niveau, sans me donner les réponses directement.</pre><button type="button" class="aide-ia-copy">Copier le prompt</button></div>
+<h2>Pour la rentrée</h2>
+<p>Ces compétences sont directement utiles en 2ème année :
+- <strong>SQL</strong> : vous irez vers les requêtes imbriquées, les transactions, l'optimisation.
+- <strong>POO</strong> : vous utiliserez des frameworks (Symfony, Spring, Django…) qui s'appuient entièrement sur ces concepts.
+- <strong>Git</strong> : vous travaillerez en équipe avec des branches, des pull requests et des workflows de collaboration.
+- <strong>CRUD</strong> : c'est la base de toute application web ou mobile que vous développerez.</p>
+<p>Bonne rentrée !</p>
+      </section>
+    
+  </main>
+
+</div>
+
+<footer>
+  <p>Cahier de vacances BTS SIO · Travail autonome estival · Bonne continuation !</p>
+</footer>
+
+<script>/* 00-progress.js */
+/* Storage core — shared by quiz, auto-eval, bilan, progress-bar */
+(function () {
+  const KEY_PREFIX = "c2v:";
+
+  function cahierKey() {
+    // derive a stable key from the document title
+    return KEY_PREFIX + (document.title || "default").replace(/\s+/g, "_");
+  }
+
+  function load() {
+    try {
+      return JSON.parse(localStorage.getItem(cahierKey()) || "{}");
+    } catch {
+      return {};
+    }
+  }
+
+  function save(state) {
+    try {
+      localStorage.setItem(cahierKey(), JSON.stringify(state));
+    } catch (e) {
+      console.warn("storage failed", e);
+    }
+  }
+
+  function update(path, value) {
+    const state = load();
+    state[path] = value;
+    save(state);
+    window.dispatchEvent(new CustomEvent("c2v:update"));
+  }
+
+  function get(path) {
+    return load()[path];
+  }
+
+  window.C2V = { load, save, update, get };
+})();
+
+
+/* 10-quiz-qcm.js */
+/* Quiz QCM — single/multi choice with feedback */
+(function () {
+  function init(root) {
+    const submit = root.querySelector(".quiz-submit");
+    const feedback = root.querySelector(".quiz-feedback");
+    if (!submit || !feedback) return;
+
+    submit.addEventListener("click", () => {
+      const inputs = root.querySelectorAll('input[type="radio"], input[type="checkbox"]');
+      let allCorrect = true;
+      let anyChecked = false;
+      inputs.forEach((inp) => {
+        if (inp.checked) {
+          anyChecked = true;
+          if (inp.dataset.correct !== "true") allCorrect = false;
+        } else {
+          if (inp.dataset.correct === "true") allCorrect = false;
+        }
+      });
+      if (!anyChecked) {
+        feedback.textContent = "Choisis au moins une réponse.";
+        feedback.className = "quiz-feedback ko";
+        return;
+      }
+      if (allCorrect) {
+        feedback.textContent = "✅ Correct !";
+        feedback.className = "quiz-feedback ok";
+      } else {
+        feedback.textContent = "❌ Pas tout à fait — réessaie ou consulte le rappel de cours.";
+        feedback.className = "quiz-feedback ko";
+      }
+    });
+  }
+
+  document.addEventListener("DOMContentLoaded", () => {
+    document.querySelectorAll(".component-quiz-qcm").forEach(init);
+  });
+})();
+
+
+/* 11-quiz-texte.js */
+/* Quiz texte — tolerant comparison */
+(function () {
+  function normalise(s) {
+    return s
+      .toLowerCase()
+      .normalize("NFD")
+      .replace(/[̀-ͯ]/g, "")
+      .replace(/\s+/g, " ")
+      .trim();
+  }
+
+  function init(root) {
+    const expected = root.dataset.reponse || "";
+    const input = root.querySelector(".quiz-input");
+    const submit = root.querySelector(".quiz-submit");
+    const feedback = root.querySelector(".quiz-feedback");
+    if (!input || !submit || !feedback) return;
+
+    submit.addEventListener("click", () => {
+      if (normalise(input.value) === normalise(expected)) {
+        feedback.textContent = "✅ Correct !";
+        feedback.className = "quiz-feedback ok";
+      } else {
+        feedback.textContent = "❌ Pas la bonne réponse — réessaie.";
+        feedback.className = "quiz-feedback ko";
+      }
+    });
+  }
+
+  document.addEventListener("DOMContentLoaded", () => {
+    document.querySelectorAll(".component-quiz-texte").forEach(init);
+  });
+})();
+
+
+/* 20-auto-eval.js */
+/* Auto-eval — 3 buttons, saves to storage, drives progress-bar */
+(function () {
+  function init(root) {
+    const section = root.closest("section[data-section-index]");
+    const sectionIdx = section ? section.dataset.sectionIndex : "0";
+    const key = "eval:section-" + sectionIdx;
+
+    const current = window.C2V.get(key);
+    if (current) {
+      const btn = root.querySelector(`button[data-eval="${current}"]`);
+      if (btn) btn.classList.add("selected");
+    }
+
+    root.querySelectorAll("button[data-eval]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        root.querySelectorAll("button").forEach((b) => b.classList.remove("selected"));
+        btn.classList.add("selected");
+        window.C2V.update(key, btn.dataset.eval);
+      });
+    });
+  }
+
+  document.addEventListener("DOMContentLoaded", () => {
+    document.querySelectorAll(".component-auto-eval").forEach(init);
+  });
+})();
+
+
+/* 30-progress-bar.js */
+/* Progress-bar component — now handled by sidebar (50-sidebar-nav.js).
+   This stub keeps the component-progress-bar div harmless. */
+(function () {
+  document.addEventListener("DOMContentLoaded", () => {
+    document.querySelectorAll(".component-progress-bar").forEach((el) => {
+      el.style.display = "none";
+    });
+  });
+})();
+
+
+/* 40-bilan.js */
+/* Bilan — autosave + export .txt */
+(function () {
+  function init(root) {
+    const textarea = root.querySelector("textarea");
+    const exportBtn = root.querySelector(".bilan-export");
+    if (!textarea) return;
+
+    textarea.value = window.C2V.get("bilan") || "";
+    textarea.addEventListener("input", () => {
+      window.C2V.update("bilan", textarea.value);
+    });
+
+    if (exportBtn) {
+      exportBtn.addEventListener("click", () => {
+        const title = document.title.replace(/[^\w-]+/g, "_");
+        const content = "Bilan — " + document.title + "\n\n" + (textarea.value || "");
+        const blob = new Blob([content], { type: "text/plain;charset=utf-8" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = `bilan-${title}.txt`;
+        a.click();
+        URL.revokeObjectURL(url);
+      });
+    }
+  }
+
+  document.addEventListener("DOMContentLoaded", () => {
+    document.querySelectorAll(".component-bilan").forEach(init);
+  });
+})();
+
+
+/* 41-aide-ia.js */
+/* Aide IA — copy prompt to clipboard */
+(function () {
+  function init(root) {
+    const btn = root.querySelector(".aide-ia-copy");
+    const pre = root.querySelector(".aide-ia-prompt");
+    if (!btn || !pre) return;
+
+    btn.addEventListener("click", async () => {
+      try {
+        await navigator.clipboard.writeText(pre.textContent);
+        btn.textContent = "Copié ✓";
+        setTimeout(() => (btn.textContent = "Copier le prompt"), 2000);
+      } catch {
+        btn.textContent = "Sélectionne le texte et copie manuellement";
+      }
+    });
+  }
+
+  document.addEventListener("DOMContentLoaded", () => {
+    document.querySelectorAll(".component-aide-ia").forEach(init);
+  });
+})();
+
+
+/* 42-code-copy.js */
+/* Code-block — copy button */
+(function () {
+  function init(root) {
+    const btn = root.querySelector(".code-copy");
+    const code = root.querySelector("code");
+    if (!btn || !code) return;
+    btn.addEventListener("click", async () => {
+      try {
+        await navigator.clipboard.writeText(code.textContent);
+        btn.textContent = "Copié ✓";
+        setTimeout(() => (btn.textContent = "Copier"), 2000);
+      } catch {
+        btn.textContent = "Sélectionne et copie manuellement";
+      }
+    });
+  }
+  document.addEventListener("DOMContentLoaded", () => {
+    document.querySelectorAll(".component-code").forEach(init);
+  });
+})();
+
+
+/* 50-sidebar-nav.js */
+/* Sidebar nav — active section highlight + progress */
+(function () {
+  const sections = document.querySelectorAll("main section[data-section-index]");
+  const navLinks = document.querySelectorAll("nav.sommaire a[data-nav-index]");
+  const fill     = document.querySelector(".nav-progress-fill");
+  const label    = document.querySelector(".nav-progress-text");
+  const total    = sections.length;
+
+  if (!sections.length || !navLinks.length) return;
+
+  let visited = new Set();
+
+  function updateProgress() {
+    const pct = total > 0 ? Math.round((visited.size / total) * 100) : 0;
+    if (fill)  fill.style.width = pct + "%";
+    if (label) label.textContent = visited.size + " / " + total;
+  }
+
+  const observer = new IntersectionObserver(
+    (entries) => {
+      let topVisible = null;
+      entries.forEach((e) => {
+        if (e.isIntersecting) {
+          const idx = e.target.dataset.sectionIndex;
+          visited.add(idx);
+          if (!topVisible || e.boundingClientRect.top < topVisible.top) {
+            topVisible = { idx, top: e.boundingClientRect.top };
+          }
+        }
+      });
+
+      if (topVisible) {
+        navLinks.forEach((a) => {
+          a.classList.toggle("active", a.dataset.navIndex === topVisible.idx);
+        });
+      }
+
+      updateProgress();
+    },
+    { threshold: 0.15 }
+  );
+
+  sections.forEach((s) => observer.observe(s));
+})();
+</script>
+</body>
+</html>

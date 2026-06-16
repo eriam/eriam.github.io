@@ -1,0 +1,2282 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Math — Logique, numération, graphes</title>
+<style>/* ============================================================
+   Cahiers de Vacances BTS SIO — Thème Estival ☀️
+   ============================================================ */
+
+:root {
+  --color-bg:           #fffcf0;
+  --color-text:         #1c1917;
+  --color-muted:        #78716c;
+  --color-primary:      #f97316;
+  --color-primary-dark: #c2410c;
+  --color-primary-soft: #ffedd5;
+  --color-secondary:    #0891b2;
+  --color-success:      #16a34a;
+  --color-success-soft: #dcfce7;
+  --color-warning:      #d97706;
+  --color-warning-soft: #fef3c7;
+  --color-danger:       #dc2626;
+  --color-danger-soft:  #fee2e2;
+  --color-border:       #fed7aa;
+  --color-card:         #ffffff;
+  --radius:             14px;
+  --radius-sm:          10px;
+  --radius-xs:          6px;
+  --shadow:             0 2px 6px rgba(249,115,22,.08), 0 6px 24px rgba(0,0,0,.06);
+  --shadow-sm:          0 1px 4px rgba(0,0,0,.08);
+  --sidebar-w:          240px;
+  --font-base:          -apple-system, BlinkMacSystemFont, &#34;Segoe UI&#34;, Roboto, &#34;Helvetica Neue&#34;, Arial, sans-serif;
+  --font-mono:          ui-monospace, SFMono-Regular, &#34;SF Mono&#34;, Menlo, Consolas, monospace;
+  --transition:         0.15s ease;
+}
+
+/* ── Reset ── */
+*, *::before, *::after { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+
+body {
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-base);
+  font-size: 16px;
+  line-height: 1.7;
+}
+
+/* ── Header ── */
+.cahier-header {
+  background: linear-gradient(135deg, #f97316 0%, #fb923c 35%, #fbbf24 70%, #f59e0b 100%);
+  color: #fff;
+  padding: 2.5rem 2rem 3.5rem;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Wavy bottom border */
+.cahier-header::after {
+  content: &#34;&#34;;
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  right: 0;
+  height: 40px;
+  background: var(--color-bg);
+  clip-path: ellipse(55% 100% at 50% 100%);
+}
+
+/* Decorative sunrays */
+.cahier-header::before {
+  content: &#34;&#34;;
+  position: absolute;
+  top: -60px;
+  right: -60px;
+  width: 220px;
+  height: 220px;
+  background: rgba(255,255,255,.1);
+  border-radius: 50%;
+}
+
+.cahier-header-inner {
+  max-width: calc(var(--sidebar-w) + 860px + 3rem);
+  margin: 0 auto;
+  position: relative;
+  z-index: 1;
+}
+
+.cahier-header h1 {
+  font-size: 2rem;
+  font-weight: 800;
+  margin: 0 0 0.4rem;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+  text-shadow: 0 1px 3px rgba(0,0,0,.15);
+}
+
+.cahier-meta {
+  opacity: 0.92;
+  font-size: 0.95rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.25rem;
+  margin: 0;
+}
+
+.cahier-meta-badge {
+  background: rgba(255,255,255,.22);
+  border-radius: 20px;
+  padding: 0.2rem 0.8rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  border: 1px solid rgba(255,255,255,.35);
+}
+
+/* ── Page body (sidebar + content) ── */
+.page-body {
+  display: grid;
+  grid-template-columns: var(--sidebar-w) 1fr;
+  gap: 2rem;
+  max-width: calc(var(--sidebar-w) + 860px + 3rem);
+  margin: 0 auto;
+  padding: 1.5rem 1rem 3rem;
+  align-items: start;
+}
+
+/* ── Sidebar ── */
+nav.sommaire {
+  position: sticky;
+  top: 1.5rem;
+  background: var(--color-card);
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+  padding: 1.25rem;
+  max-height: calc(100vh - 3rem);
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-border) transparent;
+}
+
+nav.sommaire h2 {
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--color-muted);
+  margin: 0 0 0.75rem;
+}
+
+nav.sommaire ol {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+nav.sommaire li { margin: 0; }
+
+nav.sommaire a {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  padding: 0.35rem 0.5rem;
+  border-radius: var(--radius-xs);
+  color: var(--color-muted);
+  text-decoration: none;
+  font-size: 0.82rem;
+  line-height: 1.35;
+  transition: background var(--transition), color var(--transition);
+}
+
+nav.sommaire a:hover {
+  background: var(--color-primary-soft);
+  color: var(--color-primary-dark);
+}
+
+nav.sommaire a.active {
+  background: var(--color-primary-soft);
+  color: var(--color-primary-dark);
+  font-weight: 600;
+}
+
+nav.sommaire .nav-num {
+  flex-shrink: 0;
+  background: var(--color-primary-soft);
+  color: var(--color-primary);
+  font-size: 0.68rem;
+  font-weight: 700;
+  border-radius: 4px;
+  padding: 0.1rem 0.35rem;
+  min-width: 1.4rem;
+  text-align: center;
+}
+
+nav.sommaire a.active .nav-num {
+  background: var(--color-primary);
+  color: #fff;
+}
+
+.nav-duree {
+  color: var(--color-muted);
+  font-size: 0.72rem;
+  margin-left: auto;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+/* Progress in sidebar */
+.nav-progress {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--color-border);
+}
+
+.nav-progress-label {
+  font-size: 0.72rem;
+  color: var(--color-muted);
+  margin-bottom: 0.4rem;
+  display: flex;
+  justify-content: space-between;
+}
+
+.nav-progress-track {
+  height: 6px;
+  background: var(--color-border);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.nav-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--color-primary), #fbbf24);
+  border-radius: 4px;
+  width: 0%;
+  transition: width 0.4s ease;
+}
+
+/* ── Main content ── */
+main { min-width: 0; }
+
+main section {
+  background: var(--color-card);
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 1.75rem 2rem;
+  margin-bottom: 1.5rem;
+  scroll-margin-top: 1.5rem;
+  position: relative;
+}
+
+/* Subtle left accent per section */
+main section::before {
+  content: &#34;&#34;;
+  position: absolute;
+  top: 1rem;
+  bottom: 1rem;
+  left: 0;
+  width: 4px;
+  background: linear-gradient(180deg, var(--color-primary) 0%, #fbbf24 100%);
+  border-radius: 0 2px 2px 0;
+  opacity: 0.6;
+}
+
+main section h2 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin: 0 0 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  color: var(--color-text);
+}
+
+.section-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 8px;
+  background: linear-gradient(135deg, var(--color-primary), #fbbf24);
+  color: #fff;
+  font-size: 0.8rem;
+  font-weight: 700;
+  flex-shrink: 0;
+  box-shadow: 0 2px 6px rgba(249,115,22,.35);
+}
+
+/* ── Typography ── */
+h1 { font-size: 1.9rem; font-weight: 800; margin: 0 0 0.75rem; }
+h2 { font-size: 1.25rem; font-weight: 700; margin: 1.75rem 0 0.75rem; }
+h3 { font-size: 1.05rem; font-weight: 600; margin: 1.25rem 0 0.5rem; color: var(--color-primary-dark); }
+p  { margin: 0 0 1rem; }
+a  { color: var(--color-secondary); }
+
+ul, ol { margin: 0 0 1rem; padding-left: 1.5rem; }
+li { margin: 0.2rem 0; }
+strong { font-weight: 600; }
+
+/* ── Objectifs block ── */
+details.objectifs {
+  background: linear-gradient(135deg, #fff7ed, #ffedd5);
+  border-left: 3px solid var(--color-primary);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  padding: 0.6rem 1rem;
+  margin-bottom: 1.25rem;
+}
+
+details.objectifs summary {
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: var(--color-primary-dark);
+  list-style: none;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+details.objectifs summary::before {
+  content: &#34;▶&#34;;
+  font-size: 0.6rem;
+  transition: transform var(--transition);
+}
+
+details.objectifs[open] summary::before { transform: rotate(90deg); }
+details.objectifs ul { margin: 0.5rem 0 0; }
+
+/* ── Quiz QCM ── */
+.component-quiz-qcm {
+  background: linear-gradient(135deg, #fff9f0, #fff7ed);
+  border: 1.5px solid #fed7aa;
+  border-radius: var(--radius-sm);
+  padding: 1.25rem 1.5rem;
+  margin: 1.25rem 0;
+}
+
+.quiz-question {
+  font-weight: 600;
+  margin: 0 0 0.9rem;
+  line-height: 1.45;
+}
+
+.quiz-choices {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  margin-bottom: 0.9rem;
+}
+
+.quiz-choices label {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.55rem 0.9rem;
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-xs);
+  cursor: pointer;
+  transition: border-color var(--transition), background var(--transition);
+  font-size: 0.95rem;
+  line-height: 1.35;
+  background: var(--color-card);
+}
+
+.quiz-choices label:hover {
+  border-color: var(--color-primary);
+  background: var(--color-primary-soft);
+}
+
+.quiz-choices input[type=&#34;radio&#34;] {
+  accent-color: var(--color-primary);
+  width: 1rem;
+  height: 1rem;
+  flex-shrink: 0;
+}
+
+/* ── Quiz texte ── */
+.component-quiz-texte {
+  background: linear-gradient(135deg, #fff9f0, #fff7ed);
+  border: 1.5px solid #fed7aa;
+  border-radius: var(--radius-sm);
+  padding: 1.25rem 1.5rem;
+  margin: 1.25rem 0;
+}
+
+.quiz-input {
+  display: block;
+  width: 100%;
+  max-width: 22rem;
+  padding: 0.5rem 0.75rem;
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-xs);
+  font-family: var(--font-base);
+  font-size: 1rem;
+  margin: 0.5rem 0 0.9rem;
+  transition: border-color var(--transition);
+  background: var(--color-card);
+}
+
+.quiz-input:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(249,115,22,.15);
+}
+
+/* ── Shared button ── */
+.quiz-submit, .code-copy, .aide-ia-copy, .bilan-export {
+  background: var(--color-primary);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius-xs);
+  padding: 0.45rem 1.1rem;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-family: var(--font-base);
+  font-weight: 600;
+  transition: background var(--transition), transform var(--transition), box-shadow var(--transition);
+  box-shadow: 0 2px 6px rgba(249,115,22,.3);
+}
+
+.quiz-submit:hover, .code-copy:hover, .aide-ia-copy:hover, .bilan-export:hover {
+  background: var(--color-primary-dark);
+  box-shadow: 0 3px 10px rgba(249,115,22,.4);
+}
+
+.quiz-submit:active { transform: scale(0.97); }
+
+/* ── Quiz feedback ── */
+.quiz-feedback {
+  margin-top: 0.6rem;
+  font-weight: 600;
+  font-size: 0.95rem;
+  min-height: 1.4em;
+}
+.quiz-feedback.ok { color: var(--color-success); }
+.quiz-feedback.ko { color: var(--color-danger); }
+
+/* ── Code block ── */
+.component-code {
+  position: relative;
+  background: #1c1917;
+  color: #fef3c7;
+  border-radius: var(--radius-sm);
+  padding: 1.1rem 1.25rem;
+  font-family: var(--font-mono);
+  font-size: 0.88rem;
+  line-height: 1.6;
+  overflow-x: auto;
+  margin: 1.25rem 0;
+  border: 1px solid #292524;
+}
+
+.component-code pre { margin: 0; }
+.component-code code { background: none; padding: 0; color: inherit; }
+
+.code-copy {
+  position: absolute;
+  top: 0.6rem;
+  right: 0.6rem;
+  font-size: 0.78rem;
+  padding: 0.25rem 0.6rem;
+  opacity: 0.65;
+  box-shadow: none;
+}
+.code-copy:hover { opacity: 1; box-shadow: none; }
+
+/* ── Reveal / correction ── */
+.component-reveal {
+  border: 1.5px solid #fdba74;
+  background: linear-gradient(135deg, #fff7ed, #ffedd5);
+  border-radius: var(--radius-sm);
+  margin: 1.25rem 0;
+  overflow: hidden;
+}
+
+.component-reveal summary {
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.92rem;
+  color: var(--color-primary-dark);
+  padding: 0.7rem 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  list-style: none;
+  user-select: none;
+}
+
+.component-reveal summary::before {
+  content: &#34;▶&#34;;
+  font-size: 0.6rem;
+  transition: transform var(--transition);
+}
+
+.component-reveal[open] summary::before { transform: rotate(90deg); }
+
+.reveal-content {
+  padding: 0 1rem 0.9rem;
+  white-space: pre-wrap;
+  font-size: 0.95rem;
+  color: var(--color-primary-dark);
+  border-top: 1px solid #fdba74;
+}
+
+/* ── Aide IA ── */
+.component-aide-ia {
+  background: linear-gradient(135deg, #f0fdf4, #dcfce7);
+  border: 1.5px solid #86efac;
+  border-radius: var(--radius-sm);
+  padding: 1rem 1.25rem;
+  margin: 1.25rem 0;
+}
+
+.aide-ia-label {
+  font-weight: 700;
+  font-size: 0.88rem;
+  color: #14532d;
+  margin-bottom: 0.5rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.aide-ia-prompt {
+  background: rgba(255,255,255,.75);
+  border: 1px solid #86efac;
+  border-radius: var(--radius-xs);
+  padding: 0.75rem 1rem;
+  white-space: pre-wrap;
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  color: #14532d;
+  margin: 0 0 0.75rem;
+}
+
+.aide-ia-copy { background: #16a34a; font-size: 0.82rem; padding: 0.3rem 0.75rem; box-shadow: 0 2px 6px rgba(22,163,74,.3); }
+.aide-ia-copy:hover { background: #15803d; }
+
+/* ── Auto-eval ── */
+.component-auto-eval {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem 0.75rem;
+  background: linear-gradient(135deg, #fff9f0, #fef3c7);
+  border: 1.5px solid #fed7aa;
+  border-radius: var(--radius-sm);
+  padding: 0.85rem 1.1rem;
+  margin: 1.25rem 0;
+}
+
+.component-auto-eval p {
+  margin: 0;
+  font-weight: 600;
+  font-size: 0.9rem;
+  flex-basis: 100%;
+  color: var(--color-muted);
+}
+
+.component-auto-eval button {
+  background: var(--color-card);
+  border: 1.5px solid var(--color-border);
+  border-radius: 20px;
+  padding: 0.35rem 1rem;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-family: var(--font-base);
+  transition: border-color var(--transition), background var(--transition);
+}
+
+.component-auto-eval button:hover { border-color: var(--color-primary); }
+
+.component-auto-eval button[data-eval=&#34;ok&#34;].selected {
+  background: var(--color-success-soft);
+  border-color: var(--color-success);
+  color: #14532d;
+  font-weight: 600;
+}
+
+.component-auto-eval button[data-eval=&#34;hesitant&#34;].selected {
+  background: var(--color-warning-soft);
+  border-color: var(--color-warning);
+  color: #78350f;
+  font-weight: 600;
+}
+
+.component-auto-eval button[data-eval=&#34;bloque&#34;].selected {
+  background: var(--color-danger-soft);
+  border-color: var(--color-danger);
+  color: #7f1d1d;
+  font-weight: 600;
+}
+
+/* ── Progress bar (inside sidebar, managed by JS) ── */
+.component-progress-bar { display: none; }
+
+/* ── Bilan ── */
+.component-bilan {
+  background: linear-gradient(135deg, #f0fdf4, #dcfce7);
+  border: 1.5px solid #86efac;
+  border-radius: var(--radius-sm);
+  padding: 1.25rem 1.5rem;
+  margin: 1.5rem 0;
+}
+
+.component-bilan &gt; p { font-weight: 600; color: #14532d; margin-bottom: 0.6rem; }
+
+.component-bilan textarea {
+  width: 100%;
+  font-family: var(--font-base);
+  font-size: 0.95rem;
+  padding: 0.6rem 0.75rem;
+  border: 1.5px solid #86efac;
+  border-radius: var(--radius-xs);
+  background: rgba(255,255,255,.75);
+  resize: vertical;
+  min-height: 8rem;
+  margin-bottom: 0.75rem;
+  line-height: 1.6;
+}
+
+.component-bilan textarea:focus {
+  outline: none;
+  border-color: var(--color-success);
+  box-shadow: 0 0 0 3px rgba(22,163,74,.15);
+}
+
+.bilan-export { background: var(--color-success); box-shadow: 0 2px 6px rgba(22,163,74,.3); }
+.bilan-export:hover { background: #15803d; }
+
+/* ── Ressources externes ── */
+.component-ressources {
+  background: linear-gradient(135deg, #ecfeff, #cffafe);
+  border: 1.5px solid #67e8f9;
+  border-radius: var(--radius-sm);
+  padding: 1rem 1.25rem;
+  margin: 1.25rem 0;
+}
+
+.ressources-label {
+  font-weight: 700;
+  font-size: 0.88rem;
+  color: #0e7490;
+  margin-bottom: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.ressources-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
+.ressource-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.5rem 0.75rem;
+  background: rgba(255,255,255,.7);
+  border: 1px solid #a5f3fc;
+  border-radius: var(--radius-xs);
+  text-decoration: none;
+  color: var(--color-text);
+  transition: background var(--transition), border-color var(--transition), transform var(--transition);
+}
+
+.ressource-item:hover {
+  background: #fff;
+  border-color: #0891b2;
+  transform: translateX(3px);
+  color: var(--color-text);
+}
+
+.ressource-icon {
+  font-size: 1rem;
+  width: 2rem;
+  height: 2rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  flex-shrink: 0;
+}
+
+.ressource-badge-video {
+  background: #fee2e2;
+  color: #dc2626;
+}
+
+.ressource-badge-doc {
+  background: var(--color-primary-soft);
+  color: var(--color-primary-dark);
+}
+
+.ressource-badge-lien {
+  background: #e0f2fe;
+  color: #0369a1;
+}
+
+.ressource-text {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  min-width: 0;
+}
+
+.ressource-titre {
+  font-weight: 600;
+  font-size: 0.92rem;
+  line-height: 1.3;
+}
+
+.ressource-meta {
+  font-size: 0.78rem;
+  color: var(--color-muted);
+}
+
+/* ── Unknown component ── */
+.component-unknown {
+  background: var(--color-danger-soft);
+  border: 1px dashed var(--color-danger);
+  padding: 0.5rem 0.75rem;
+  border-radius: var(--radius-xs);
+  color: #7f1d1d;
+  font-size: 0.9rem;
+  margin: 1rem 0;
+}
+
+/* ── Footer ── */
+footer {
+  text-align: center;
+  color: var(--color-muted);
+  padding: 2rem 0 2.5rem;
+  font-size: 0.85rem;
+  border-top: 1px solid var(--color-border);
+  margin-top: 1rem;
+}
+
+/* ── Tables ── */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1rem 0;
+  font-size: 0.93rem;
+}
+th, td {
+  border: 1px solid var(--color-border);
+  padding: 0.5rem 0.75rem;
+  text-align: left;
+}
+th {
+  background: var(--color-primary-soft);
+  font-weight: 600;
+  color: var(--color-primary-dark);
+}
+tr:nth-child(even) td { background: #fffbf5; }
+
+/* ── Inline code ── */
+code {
+  font-family: var(--font-mono);
+  font-size: 0.88em;
+  background: #fff7ed;
+  border: 1px solid #fed7aa;
+  border-radius: 4px;
+  padding: 0.1em 0.35em;
+  color: var(--color-primary-dark);
+}
+
+pre code { background: none; border: none; padding: 0; font-size: inherit; color: inherit; }
+
+/* ── Responsive ── */
+@media (max-width: 768px) {
+  .page-body {
+    grid-template-columns: 1fr;
+    padding: 1rem 0.75rem 2rem;
+  }
+
+  nav.sommaire {
+    position: static;
+    max-height: none;
+  }
+
+  .cahier-header { padding: 1.5rem 1rem 2.5rem; }
+  .cahier-header h1 { font-size: 1.5rem; }
+
+  main section { padding: 1.25rem 1rem; }
+}
+</style>
+</head>
+<body>
+
+<header class="cahier-header">
+  <div class="cahier-header-inner">
+    <h1>Math — Logique, numération, graphes</h1>
+    <p class="cahier-meta">
+      <span class="cahier-meta-badge">BTS SIO</span>
+      <span class="cahier-meta-badge">math</span>
+      <span class="cahier-meta-badge">⏱ 10h estimées</span>
+    </p>
+  </div>
+</header>
+
+<div class="page-body">
+
+  <nav class="sommaire" aria-label="Sommaire">
+    <h2>Plan du cahier</h2>
+    <ol>
+      
+        <li>
+          <a href="#section-1" data-nav-index="1">
+            <span class="nav-num">1</span>
+            <span>Introduction — Mathématiques pour l&#39;informatique</span>
+            <span class="nav-duree">15min</span>
+          </a>
+        </li>
+      
+        <li>
+          <a href="#section-2" data-nav-index="2">
+            <span class="nav-num">2</span>
+            <span>Logique propositionnelle et tables de vérité</span>
+            <span class="nav-duree">45min</span>
+          </a>
+        </li>
+      
+        <li>
+          <a href="#section-3" data-nav-index="3">
+            <span class="nav-num">3</span>
+            <span>Prédicats et quantificateurs</span>
+            <span class="nav-duree">50min</span>
+          </a>
+        </li>
+      
+        <li>
+          <a href="#section-4" data-nav-index="4">
+            <span class="nav-num">4</span>
+            <span>Numération binaire et hexadécimale</span>
+            <span class="nav-duree">60min</span>
+          </a>
+        </li>
+      
+        <li>
+          <a href="#section-5" data-nav-index="5">
+            <span class="nav-num">5</span>
+            <span>Algèbre de Boole et portes logiques</span>
+            <span class="nav-duree">60min</span>
+          </a>
+        </li>
+      
+        <li>
+          <a href="#section-6" data-nav-index="6">
+            <span class="nav-num">6</span>
+            <span>Probabilités élémentaires</span>
+            <span class="nav-duree">60min</span>
+          </a>
+        </li>
+      
+        <li>
+          <a href="#section-7" data-nav-index="7">
+            <span class="nav-num">7</span>
+            <span>Suites arithmétiques et géométriques</span>
+            <span class="nav-duree">60min</span>
+          </a>
+        </li>
+      
+        <li>
+          <a href="#section-8" data-nav-index="8">
+            <span class="nav-num">8</span>
+            <span>Théorie des graphes — bases</span>
+            <span class="nav-duree">60min</span>
+          </a>
+        </li>
+      
+        <li>
+          <a href="#section-9" data-nav-index="9">
+            <span class="nav-num">9</span>
+            <span>Mini-projet — Modéliser un réseau social en graphe</span>
+            <span class="nav-duree">75min</span>
+          </a>
+        </li>
+      
+        <li>
+          <a href="#section-10" data-nav-index="10">
+            <span class="nav-num">10</span>
+            <span>Bilan final — Mathématiques pour l&#39;informatique</span>
+            <span class="nav-duree">30min</span>
+          </a>
+        </li>
+      
+    </ol>
+    <div class="nav-progress">
+      <div class="nav-progress-label">
+        <span>Progression</span>
+        <span class="nav-progress-text">0 / 10</span>
+      </div>
+      <div class="nav-progress-track">
+        <div class="nav-progress-fill"></div>
+      </div>
+    </div>
+  </nav>
+
+  <main>
+    
+      <section id="section-1" data-section-index="1">
+        <h2>
+          <span class="section-badge">1</span>
+          Introduction — Mathématiques pour l&#39;informatique
+        </h2>
+        
+          <details class="objectifs">
+            <summary>Objectifs de cette section</summary>
+            <ul>
+              <li>Comprendre le lien entre les maths et l&#39;informatique</li><li>Se repérer dans le cahier</li>
+            </ul>
+          </details>
+        
+        <h2>Bienvenue dans ce cahier</h2>
+<p>Ce cahier de révision couvre les mathématiques <strong>directement utiles en BTS SIO</strong>. Chaque notion est illustrée par un cas concret en informatique.</p>
+<h3>Pourquoi des maths en BTS SIO ?</h3>
+<p>Tu te demandes peut-être ce que les maths viennent faire ici. La réponse est simple :</p>
+<table>
+<thead>
+<tr>
+<th>Notion mathématique</th>
+<th>Application informatique</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Logique propositionnelle</td>
+<td>Conditions <code>if/else</code>, tests booléens</td>
+</tr>
+<tr>
+<td>Algèbre de Boole</td>
+<td>Circuits logiques, droits d'accès Linux</td>
+</tr>
+<tr>
+<td>Numération binaire/hex</td>
+<td>Adresses IP, couleurs HTML, mémoire</td>
+</tr>
+<tr>
+<td>Probabilités</td>
+<td>Moteur de recommandation (Netflix, Spotify)</td>
+</tr>
+<tr>
+<td>Suites</td>
+<td>Complexité d'un algorithme (O(n), O(log n))</td>
+</tr>
+<tr>
+<td>Graphes</td>
+<td>Réseau informatique, routage, réseaux sociaux</td>
+</tr>
+</tbody>
+</table>
+<h3>Ce que tu vas pratiquer dans ce cahier</h3>
+<p>Ce cahier contient <strong>8 activités</strong>, soit environ <strong>10 heures</strong> de travail. Chaque activité :</p>
+<ul>
+<li>commence par un <strong>rappel de cours court</strong> ;</li>
+<li>te propose des <strong>exercices pratiques</strong> avec correction ;</li>
+<li>t'offre une <strong>aide IA</strong> si tu bloques ;</li>
+<li>se termine par une <strong>auto-évaluation</strong>.</li>
+</ul>
+<h3>Comment utiliser l'aide IA ?</h3>
+<p>Les encarts "Aide IA" te donnent un prompt prêt à copier dans Claude ou ChatGPT. L'objectif est de te faire <strong>comprendre</strong>, pas de te donner la réponse directe.</p>
+<h3>Comment te situer dans ton apprentissage ?</h3>
+<p>À la fin de chaque activité, clique sur un des 3 boutons :</p>
+<ul>
+<li><strong>Compris</strong> : tu as fait l'activité sans trop bloquer</li>
+<li><strong>À revoir</strong> : tu as eu besoin de la correction</li>
+<li><strong>Bloqué</strong> : tu n'as pas réussi à avancer seul</li>
+</ul>
+<p>Il n'y a pas de mauvaise réponse. L'honnêteté t'aide à mieux cibler tes révisions.</p>
+<hr />
+<p>Bonne révision !</p>
+      </section>
+    
+      <section id="section-2" data-section-index="2">
+        <h2>
+          <span class="section-badge">2</span>
+          Logique propositionnelle et tables de vérité
+        </h2>
+        
+          <details class="objectifs">
+            <summary>Objectifs de cette section</summary>
+            <ul>
+              <li>Construire une table de vérité</li><li>Identifier des équivalences logiques simples</li><li>Faire le lien avec les conditions if/else en programmation</li>
+            </ul>
+          </details>
+        
+        <h2>Rappel de cours</h2>
+<p>Les opérateurs logiques de base :</p>
+<table>
+<thead>
+<tr>
+<th>Symbole</th>
+<th>Nom</th>
+<th>Comportement</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>¬ A</td>
+<td>NON A</td>
+<td>vrai si A est faux</td>
+</tr>
+<tr>
+<td>A ∧ B</td>
+<td>A ET B</td>
+<td>vrai si A et B sont vrais</td>
+</tr>
+<tr>
+<td>A ∨ B</td>
+<td>A OU B</td>
+<td>vrai si au moins un des deux est vrai</td>
+</tr>
+<tr>
+<td>A → B</td>
+<td>A IMPLIQUE B</td>
+<td>faux uniquement quand A vrai et B faux</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Lien avec le code :</strong> en Python, <code>A ∧ B</code> s'écrit <code>A and B</code>, <code>A ∨ B</code> s'écrit <code>A or B</code>, et <code>¬A</code> s'écrit <code>not A</code>.</p>
+<p><strong>Table de vérité de A ∧ B :</strong></p>
+<table>
+<thead>
+<tr>
+<th>A</th>
+<th>B</th>
+<th>A ∧ B</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>V</td>
+<td>V</td>
+<td>V</td>
+</tr>
+<tr>
+<td>V</td>
+<td>F</td>
+<td>F</td>
+</tr>
+<tr>
+<td>F</td>
+<td>V</td>
+<td>F</td>
+</tr>
+<tr>
+<td>F</td>
+<td>F</td>
+<td>F</td>
+</tr>
+</tbody>
+</table>
+<h2>Activité 1 — Lire une table de vérité</h2>
+<div class="component-quiz-qcm" data-quiz><p class="quiz-question">Pour quelle combinaison A ∨ B est-il faux ?</p><div class="quiz-choices"><label><input type="radio" name="q-172" data-correct="false"> A=V, B=V</label><label><input type="radio" name="q-172" data-correct="false"> A=V, B=F</label><label><input type="radio" name="q-172" data-correct="false"> A=F, B=V</label><label><input type="radio" name="q-172" data-correct="true"> A=F, B=F</label></div><button class="quiz-submit" type="button">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<div class="component-quiz-qcm" data-quiz><p class="quiz-question">La condition Python `(age &gt;= 18) and (permis == True)` correspond à quelle formule logique (avec A = &quot;age &gt;= 18&quot;, B = &quot;permis&quot;) ?</p><div class="quiz-choices"><label><input type="radio" name="q-173" data-correct="false"> A ∨ B</label><label><input type="radio" name="q-173" data-correct="true"> A ∧ B</label><label><input type="radio" name="q-173" data-correct="false"> ¬A ∧ B</label><label><input type="radio" name="q-173" data-correct="false"> A → B</label></div><button class="quiz-submit" type="button">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<h2>Activité 2 — Construire une table de vérité</h2>
+<p>Complète la table de vérité de ¬A ∨ B (équivalente à A → B).</p>
+<div class="component-quiz-texte" data-reponse="F"><p class="quiz-question">Quel est le résultat de ¬A ∨ B quand A=V et B=F ?</p><input type="text" class="quiz-input"><button type="button" class="quiz-submit">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<div class="component-quiz-texte" data-reponse="V"><p class="quiz-question">Quel est le résultat de ¬A ∨ B quand A=F et B=F ?</p><input type="text" class="quiz-input"><button type="button" class="quiz-submit">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<h2>Aide IA</h2>
+<div class="component-aide-ia"><div class="aide-ia-label">💡 Comment l'IA peut t'aider</div><pre class="aide-ia-prompt">Je suis étudiant en BTS SIO et je révise la logique propositionnelle.
+Je dois construire une table de vérité de ¬A ∨ B.
+Aide-moi pas à pas à raisonner sur chaque ligne, sans me donner
+directement la réponse finale.</pre><button type="button" class="aide-ia-copy">Copier le prompt</button></div>
+<h2>Solution</h2>
+<details class="component-reveal"><summary>Voir la table de vérité complète</summary><div class="reveal-content">| A | B | ¬A | ¬A ∨ B |
+|---|---|---|---|
+| V | V | F | V |
+| V | F | F | F |
+| F | V | V | V |
+| F | F | V | V |
+Cette colonne est identique à A → B, ce qui démontre l&#x27;équivalence
+¬A ∨ B ≡ A → B.
+En programmation, cela correspond à : si A est vrai ET que B est faux,
+alors la condition est fausse. Dans tous les autres cas, elle est vraie.
+C&#x27;est exactement le comportement d&#x27;un `if` avec implication.</div></details>
+<h2>Auto-évaluation</h2>
+<div class="component-auto-eval" data-auto-eval><p>Où en es-tu ?</p><button data-eval="ok">😊 Compris</button><button data-eval="hesitant">🤔 À revoir</button><button data-eval="bloque">😣 Bloqué</button></div>
+      </section>
+    
+      <section id="section-3" data-section-index="3">
+        <h2>
+          <span class="section-badge">3</span>
+          Prédicats et quantificateurs
+        </h2>
+        
+          <details class="objectifs">
+            <summary>Objectifs de cette section</summary>
+            <ul>
+              <li>Comprendre la différence entre ∀ et ∃</li><li>Traduire une phrase en langage logique</li><li>Utiliser la négation des quantificateurs</li>
+            </ul>
+          </details>
+        
+        <h2>Rappel de cours</h2>
+<p>Un <strong>prédicat</strong> est une propriété qui dépend d'une variable. Par exemple : P(x) = "x est pair".</p>
+<p>Les deux <strong>quantificateurs</strong> fondamentaux :</p>
+<table>
+<thead>
+<tr>
+<th>Symbole</th>
+<th>Nom</th>
+<th>Signification</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>∀ x</td>
+<td>Pour tout x</td>
+<td>La propriété est vraie pour tous les éléments</td>
+</tr>
+<tr>
+<td>∃ x</td>
+<td>Il existe x</td>
+<td>La propriété est vraie pour au moins un élément</td>
+</tr>
+</tbody>
+</table>
+<h3>Exemples concrets</h3>
+<ul>
+<li>∀ utilisateur, l'utilisateur a un identifiant → <strong>tous</strong> les utilisateurs ont un ID</li>
+<li>∃ serveur, le serveur est en panne → <strong>au moins un</strong> serveur est en panne</li>
+</ul>
+<h3>Négation des quantificateurs</h3>
+<table>
+<thead>
+<tr>
+<th>Formule</th>
+<th>Négation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>∀ x, P(x)</td>
+<td>∃ x, ¬P(x)</td>
+</tr>
+<tr>
+<td>∃ x, P(x)</td>
+<td>∀ x, ¬P(x)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Lien IT :</strong> en programmation, <code>∀ x, P(x)</code> correspond à une boucle <code>for</code> qui vérifie une condition sur tous les éléments. <code>∃ x, P(x)</code> correspond à chercher un élément qui satisfait une condition (comme <code>any()</code> en Python).</p>
+<div class="component-code"><pre><code class="language-python"># ∀ x dans liste, x &gt; 0  →  all(x &gt; 0 for x in liste)
+liste = [1, 3, 5, 7]
+print(all(x &gt; 0 for x in liste))   # True
+# ∃ x dans liste, x &gt; 4  →  any(x &gt; 4 for x in liste)
+print(any(x &gt; 4 for x in liste))   # True</code></pre><button type="button" class="code-copy">Copier</button></div>
+<h2>Activité 1 — Lire les quantificateurs</h2>
+<div class="component-quiz-qcm" data-quiz><p class="quiz-question">La phrase &quot;Tous les ports HTTP utilisent le port 80&quot; se traduit par ?</p><div class="quiz-choices"><label><input type="radio" name="q-174" data-correct="false"> ∃ port, port = 80</label><label><input type="radio" name="q-174" data-correct="true"> ∀ port HTTP, port = 80</label><label><input type="radio" name="q-174" data-correct="false"> ∀ port, port est HTTP</label><label><input type="radio" name="q-174" data-correct="false"> ∃ port HTTP, port ≠ 80</label></div><button class="quiz-submit" type="button">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<div class="component-quiz-qcm" data-quiz><p class="quiz-question">La négation de &quot;∀ x, x est connecté&quot; est ?</p><div class="quiz-choices"><label><input type="radio" name="q-175" data-correct="false"> ∀ x, x n&#x27;est pas connecté</label><label><input type="radio" name="q-175" data-correct="false"> ∃ x, x est connecté</label><label><input type="radio" name="q-175" data-correct="true"> ∃ x, x n&#x27;est pas connecté</label><label><input type="radio" name="q-175" data-correct="false"> ∀ x, x est déconnecté</label></div><button class="quiz-submit" type="button">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<h2>Activité 2 — Traduire en logique</h2>
+<p>Traduis ces affirmations informatiques en formules logiques.</p>
+<div class="component-quiz-texte" data-reponse="∃"><p class="quiz-question">Pour l&#x27;affirmation — il existe au moins un fichier corrompu — quel quantificateur utiliser (symbole) ?</p><input type="text" class="quiz-input"><button type="button" class="quiz-submit">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<div class="component-quiz-texte" data-reponse="∀"><p class="quiz-question">Pour l&#x27;affirmation — tous les utilisateurs ont un mot de passe — quel quantificateur utiliser (symbole) ?</p><input type="text" class="quiz-input"><button type="button" class="quiz-submit">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<h2>Aide IA</h2>
+<div class="component-aide-ia"><div class="aide-ia-label">💡 Comment l'IA peut t'aider</div><pre class="aide-ia-prompt">Je suis étudiant en BTS SIO et j&#x27;étudie les prédicats et quantificateurs.
+J&#x27;ai du mal à comprendre la différence entre ∀ et ∃, et surtout comment
+construire leur négation.
+Peux-tu m&#x27;expliquer avec des exemples tirés de l&#x27;informatique (serveurs,
+utilisateurs, fichiers), pas à pas, sans me donner directement les réponses
+des exercices ?</pre><button type="button" class="aide-ia-copy">Copier le prompt</button></div>
+<h2>Solution</h2>
+<details class="component-reveal"><summary>Voir les corrections complètes</summary><div class="reveal-content">Activité 1 :
+- &quot;Tous les ports HTTP utilisent le port 80&quot; → ∀ port HTTP, port = 80
+- La négation de &quot;∀ x, x est connecté&quot; → ∃ x, x n&#x27;est pas connecté
+  (il suffit qu&#x27;un seul utilisateur ne soit pas connecté pour nier la phrase)
+Activité 2 :
+- &quot;Il existe au moins un fichier corrompu&quot; → ∃ (il suffit d&#x27;un seul)
+- &quot;Tous les utilisateurs ont un mot de passe&quot; → ∀ (doit être vrai pour chacun)
+Astuce : si tu lis &quot;au moins un&quot; ou &quot;il existe&quot;, c&#x27;est ∃.
+Si tu lis &quot;tous&quot;, &quot;chaque&quot;, &quot;pour tout&quot;, c&#x27;est ∀.</div></details>
+<h2>Auto-évaluation</h2>
+<div class="component-auto-eval" data-auto-eval><p>Où en es-tu ?</p><button data-eval="ok">😊 Compris</button><button data-eval="hesitant">🤔 À revoir</button><button data-eval="bloque">😣 Bloqué</button></div>
+      </section>
+    
+      <section id="section-4" data-section-index="4">
+        <h2>
+          <span class="section-badge">4</span>
+          Numération binaire et hexadécimale
+        </h2>
+        
+          <details class="objectifs">
+            <summary>Objectifs de cette section</summary>
+            <ul>
+              <li>Convertir un entier décimal en binaire et en hexadécimal</li><li>Convertir du binaire vers le décimal</li><li>Comprendre l&#39;utilité du binaire et de l&#39;hex en informatique</li>
+            </ul>
+          </details>
+        
+        <h2>Rappel de cours</h2>
+<p>Les ordinateurs stockent tout en <strong>binaire</strong> (base 2 : chiffres 0 et 1).</p>
+<h3>Base 2 → Base 10</h3>
+<p>Chaque bit a un poids qui double en allant de droite à gauche.</p>
+<p>Exemple : <code>1011</code> en binaire</p>
+<table>
+<thead>
+<tr>
+<th>bit</th>
+<th>1</th>
+<th>0</th>
+<th>1</th>
+<th>1</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>poids</td>
+<td>2³=8</td>
+<td>2²=4</td>
+<td>2¹=2</td>
+<td>2⁰=1</td>
+</tr>
+<tr>
+<td>valeur</td>
+<td>8</td>
+<td>0</td>
+<td>2</td>
+<td>1</td>
+</tr>
+</tbody>
+</table>
+<p>Total : 8 + 0 + 2 + 1 = <strong>11</strong> en décimal</p>
+<h3>Base 10 → Base 2 (divisions successives)</h3>
+<p>Pour convertir 13 en binaire : on divise par 2 et on lit les restes <strong>de bas en haut</strong>.</p>
+<pre><code>13 ÷ 2 = 6  reste 1
+ 6 ÷ 2 = 3  reste 0
+ 3 ÷ 2 = 1  reste 1
+ 1 ÷ 2 = 0  reste 1
+</code></pre>
+<p>Résultat (de bas en haut) : <strong>1101</strong></p>
+<h3>Hexadécimal (base 16)</h3>
+<p>On utilise les chiffres 0-9 puis les lettres A-F :</p>
+<table>
+<thead>
+<tr>
+<th>Dec</th>
+<th>Hex</th>
+<th>Bin</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>10</td>
+<td>A</td>
+<td>1010</td>
+</tr>
+<tr>
+<td>11</td>
+<td>B</td>
+<td>1011</td>
+</tr>
+<tr>
+<td>12</td>
+<td>C</td>
+<td>1100</td>
+</tr>
+<tr>
+<td>13</td>
+<td>D</td>
+<td>1101</td>
+</tr>
+<tr>
+<td>14</td>
+<td>E</td>
+<td>1110</td>
+</tr>
+<tr>
+<td>15</td>
+<td>F</td>
+<td>1111</td>
+</tr>
+</tbody>
+</table>
+<p><strong>1 chiffre hexadécimal = 4 bits</strong> (un "nibble").</p>
+<h3>Liens IT</h3>
+<ul>
+<li><strong>Adresse IP</strong> : 192.168.1.1 en décimal, mais le réseau travaille en binaire</li>
+<li><strong>Adresse MAC</strong> : affichée en hex (ex: <code>A4:C3:F0:1B:2D:9E</code>)</li>
+<li><strong>Couleurs HTML</strong> : <code>#FF6600</code> = rouge 255, vert 102, bleu 0</li>
+<li><strong>Droits Linux</strong> : <code>chmod 755</code> = <code>rwxr-xr-x</code> en binaire (111 101 101)</li>
+</ul>
+<h2>Activité 1 — Binaire vers décimal</h2>
+<div class="component-quiz-texte" data-reponse="10"><p class="quiz-question">Convertis 1010 (binaire) en décimal.</p><input type="text" class="quiz-input"><button type="button" class="quiz-submit">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<div class="component-quiz-texte" data-reponse="15"><p class="quiz-question">Convertis 1111 (binaire) en décimal.</p><input type="text" class="quiz-input"><button type="button" class="quiz-submit">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<div class="component-quiz-texte" data-reponse="16"><p class="quiz-question">Convertis 10000 (binaire) en décimal.</p><input type="text" class="quiz-input"><button type="button" class="quiz-submit">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<h2>Activité 2 — Décimal vers binaire</h2>
+<div class="component-quiz-texte" data-reponse="73"><p class="quiz-question">Convertis 7 en binaire (4 bits, avec zéros en tête si besoin).</p><input type="text" class="quiz-input"><button type="button" class="quiz-submit">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<div class="component-quiz-texte" data-reponse="1100"><p class="quiz-question">Convertis 12 en binaire (4 bits).</p><input type="text" class="quiz-input"><button type="button" class="quiz-submit">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<h2>Activité 3 — Hexadécimal</h2>
+<div class="component-quiz-texte" data-reponse="255"><p class="quiz-question">Convertis le nombre hex FF en décimal.</p><input type="text" class="quiz-input"><button type="button" class="quiz-submit">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<div class="component-quiz-qcm" data-quiz><p class="quiz-question">La couleur HTML</p><div class="quiz-choices"><label><input type="radio" name="q-176" data-correct="false"> Rouge</label><label><input type="radio" name="q-176" data-correct="false"> Vert</label><label><input type="radio" name="q-176" data-correct="true"> Bleu</label><label><input type="radio" name="q-176" data-correct="false"> Blanc</label></div><button class="quiz-submit" type="button">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<div class="component-quiz-qcm" data-quiz><p class="quiz-question">Le droit Linux &quot;rwx&quot; (lire, écrire, exécuter) en binaire vaut ?</p><div class="quiz-choices"><label><input type="radio" name="q-177" data-correct="false"> 100</label><label><input type="radio" name="q-177" data-correct="false"> 110</label><label><input type="radio" name="q-177" data-correct="false"> 8</label><label><input type="radio" name="q-177" data-correct="true"> 111</label></div><button class="quiz-submit" type="button">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<h2>Aide IA</h2>
+<div class="component-aide-ia"><div class="aide-ia-label">💡 Comment l'IA peut t'aider</div><pre class="aide-ia-prompt">Je suis étudiant en BTS SIO et je révise la numération binaire et hexadécimale.
+Je n&#x27;arrive pas bien à faire les conversions décimal ↔ binaire.
+Montre-moi la méthode des divisions successives pas à pas avec un exemple,
+sans faire les exercices à ma place. Explique aussi pourquoi on utilise
+l&#x27;hexadécimal en informatique.</pre><button type="button" class="aide-ia-copy">Copier le prompt</button></div>
+<h2>Solution</h2>
+<details class="component-reveal"><summary>Voir les corrections</summary><div class="reveal-content">Activité 1 — Binaire vers décimal :
+- 1010 = 1×8 + 0×4 + 1×2 + 0×1 = 8 + 2 = 10
+- 1111 = 8 + 4 + 2 + 1 = 15
+- 10000 = 1×16 = 16
+Activité 2 — Décimal vers binaire :
+- 7 : 7÷2=3r1, 3÷2=1r1, 1÷2=0r1 → 111 → sur 4 bits : 0111
+- 12 : 12÷2=6r0, 6÷2=3r0, 3÷2=1r1, 1÷2=0r1 → 1100
+Activité 3 — Hexadécimal :
+- FF = F×16 + F = 15×16 + 15 = 240 + 15 = 255
+  (C&#x27;est le maximum sur 1 octet : 255 = 11111111 en binaire)
+- #0000FF : rouge=00, vert=00, bleu=FF → bleu pur
+- rwx = lecture(4) + écriture(2) + exécution(1) = 7 = 111 en binaire</div></details>
+<h2>Auto-évaluation</h2>
+<div class="component-auto-eval" data-auto-eval><p>Où en es-tu ?</p><button data-eval="ok">😊 Compris</button><button data-eval="hesitant">🤔 À revoir</button><button data-eval="bloque">😣 Bloqué</button></div>
+      </section>
+    
+      <section id="section-5" data-section-index="5">
+        <h2>
+          <span class="section-badge">5</span>
+          Algèbre de Boole et portes logiques
+        </h2>
+        
+          <details class="objectifs">
+            <summary>Objectifs de cette section</summary>
+            <ul>
+              <li>Appliquer les lois de l&#39;algèbre de Boole</li><li>Simplifier une expression booléenne</li><li>Comprendre les portes logiques AND, OR, NOT, XOR</li>
+            </ul>
+          </details>
+        
+        <h2>Rappel de cours</h2>
+<p>L'algèbre de Boole travaille avec des variables qui valent <strong>0</strong> (faux) ou <strong>1</strong> (vrai).</p>
+<h3>Opérateurs de base</h3>
+<table>
+<thead>
+<tr>
+<th>Opérateur</th>
+<th>Symbole</th>
+<th>Notation texte</th>
+<th>Exemple</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ET</td>
+<td>∧</td>
+<td>AND</td>
+<td>A AND B</td>
+</tr>
+<tr>
+<td>OU</td>
+<td>∨</td>
+<td>OR</td>
+<td>A OR B</td>
+</tr>
+<tr>
+<td>NON</td>
+<td>¬</td>
+<td>NOT</td>
+<td>NOT A</td>
+</tr>
+<tr>
+<td>OU exclusif</td>
+<td>⊕</td>
+<td>XOR</td>
+<td>A XOR B</td>
+</tr>
+</tbody>
+</table>
+<h3>Tables de vérité des opérateurs</h3>
+<table>
+<thead>
+<tr>
+<th>A</th>
+<th>B</th>
+<th>A AND B</th>
+<th>A OR B</th>
+<th>A XOR B</th>
+<th>NOT A</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+</tr>
+<tr>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+</tr>
+<tr>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+</tr>
+<tr>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+</tr>
+</tbody>
+</table>
+<p><strong>XOR vaut 1 quand les deux entrées sont différentes.</strong></p>
+<h3>Lois importantes</h3>
+<ul>
+<li>Idempotence : <code>A AND A = A</code>, <code>A OR A = A</code></li>
+<li>Neutre : <code>A AND 1 = A</code>, <code>A OR 0 = A</code></li>
+<li>Absorbant : <code>A AND 0 = 0</code>, <code>A OR 1 = 1</code></li>
+<li>Complémentaire : <code>A AND (NOT A) = 0</code>, <code>A OR (NOT A) = 1</code></li>
+<li>De Morgan : <code>NOT (A AND B) = (NOT A) OR (NOT B)</code></li>
+<li>De Morgan : <code>NOT (A OR B) = (NOT A) AND (NOT B)</code></li>
+</ul>
+<h3>Liens IT</h3>
+<ul>
+<li><strong>Droits Linux</strong> : <code>chmod</code> combine des bits avec des AND/OR (ex: masque)</li>
+<li><strong>Chiffrement XOR</strong> : XOR est utilisé dans les algorithmes de chiffrement car <code>(A XOR K) XOR K = A</code></li>
+<li><strong>Filtres réseau</strong> : un masque de sous-réseau applique un AND binaire sur une adresse IP</li>
+<li><strong>Conditions de code</strong> : <code>if (connecte AND admin)</code> = A AND B</li>
+</ul>
+<h2>Activité 1 — Tables de vérité</h2>
+<div class="component-quiz-texte" data-reponse="0"><p class="quiz-question">Quel est le résultat de 1 XOR 1 ?</p><input type="text" class="quiz-input"><button type="button" class="quiz-submit">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<div class="component-quiz-texte" data-reponse="1"><p class="quiz-question">Quel est le résultat de NOT (1 AND 0) ?</p><input type="text" class="quiz-input"><button type="button" class="quiz-submit">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<div class="component-quiz-qcm" data-quiz><p class="quiz-question">La loi de De Morgan dit que NOT (A AND B) est équivalent à ?</p><div class="quiz-choices"><label><input type="radio" name="q-178" data-correct="false"> NOT A AND NOT B</label><label><input type="radio" name="q-178" data-correct="true"> NOT A OR NOT B</label><label><input type="radio" name="q-178" data-correct="false"> A OR B</label><label><input type="radio" name="q-178" data-correct="false"> NOT (A OR B)</label></div><button class="quiz-submit" type="button">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<h2>Activité 2 — Simplification booléenne</h2>
+<p>Simplifie l'expression suivante : <code>A AND (A OR B)</code></p>
+<p>Astuce : applique la loi d'absorption.</p>
+<div class="component-quiz-texte" data-reponse="A"><p class="quiz-question">A AND (A OR B) se simplifie en ?</p><input type="text" class="quiz-input"><button type="button" class="quiz-submit">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<p>Simplifie : <code>NOT (NOT A)</code></p>
+<div class="component-quiz-texte" data-reponse="A"><p class="quiz-question">NOT (NOT A) se simplifie en ?</p><input type="text" class="quiz-input"><button type="button" class="quiz-submit">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<h2>Activité 3 — Application IT</h2>
+<p>Une adresse IP <code>192.168.1.25</code> applique un masque <code>255.255.255.0</code> via AND.</p>
+<p>Le dernier octet de l'IP est <code>25</code> = <code>00011001</code> en binaire.
+Le dernier octet du masque est <code>0</code> = <code>00000000</code> en binaire.</p>
+<div class="component-quiz-texte" data-reponse="0"><p class="quiz-question">Quel est le dernier octet du résultat de 00011001 AND 00000000 (en décimal) ?</p><input type="text" class="quiz-input"><button type="button" class="quiz-submit">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<div class="component-quiz-qcm" data-quiz><p class="quiz-question">À quoi sert l&#x27;opération AND avec le masque de sous-réseau ?</p><div class="quiz-choices"><label><input type="radio" name="q-179" data-correct="false"> Chiffrer l&#x27;adresse IP</label><label><input type="radio" name="q-179" data-correct="true"> Extraire la partie réseau de l&#x27;adresse IP</label><label><input type="radio" name="q-179" data-correct="false"> Convertir l&#x27;IP en hexadécimal</label><label><input type="radio" name="q-179" data-correct="false"> Vérifier si deux IPs sont identiques</label></div><button class="quiz-submit" type="button">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<h2>Aide IA</h2>
+<div class="component-aide-ia"><div class="aide-ia-label">💡 Comment l'IA peut t'aider</div><pre class="aide-ia-prompt">Je suis étudiant en BTS SIO et j&#x27;étudie l&#x27;algèbre de Boole.
+J&#x27;ai du mal à comprendre les lois de De Morgan et comment les appliquer
+pour simplifier des expressions.
+Explique-moi les lois de De Morgan avec un exemple informatique concret
+(comme des conditions dans du code), pas à pas, sans faire les exercices
+à ma place.</pre><button type="button" class="aide-ia-copy">Copier le prompt</button></div>
+<h2>Solution</h2>
+<details class="component-reveal"><summary>Voir les corrections</summary><div class="reveal-content">Activité 1 :
+- 1 XOR 1 = 0 (les deux entrées sont identiques, XOR donne 0)
+- NOT (1 AND 0) = NOT 0 = 1
+- De Morgan : NOT (A AND B) = NOT A OR NOT B
+Activité 2 :
+- A AND (A OR B) = A  (loi d&#x27;absorption : A absorbe A OR B)
+  Preuve intuitive : si A est vrai ET (A ou B) est vrai, alors A est forcément vrai.
+  Si A est faux, alors A AND (quoi que ce soit) est faux.
+- NOT (NOT A) = A  (double négation)
+Activité 3 :
+- 00011001 AND 00000000 = 00000000 = 0
+  AND avec 0 donne toujours 0 (loi de l&#x27;absorbant)
+- Le masque AND l&#x27;adresse IP extrait la partie réseau :
+  les bits à 1 dans le masque conservent les bits de l&#x27;IP,
+  les bits à 0 dans le masque effacent les bits de l&#x27;IP.</div></details>
+<h2>Auto-évaluation</h2>
+<div class="component-auto-eval" data-auto-eval><p>Où en es-tu ?</p><button data-eval="ok">😊 Compris</button><button data-eval="hesitant">🤔 À revoir</button><button data-eval="bloque">😣 Bloqué</button></div>
+      </section>
+    
+      <section id="section-6" data-section-index="6">
+        <h2>
+          <span class="section-badge">6</span>
+          Probabilités élémentaires
+        </h2>
+        
+          <details class="objectifs">
+            <summary>Objectifs de cette section</summary>
+            <ul>
+              <li>Calculer la probabilité d&#39;un événement simple</li><li>Utiliser la règle du complémentaire</li><li>Comprendre l&#39;indépendance et l&#39;intersection</li><li>Faire le lien avec les systèmes de recommandation</li>
+            </ul>
+          </details>
+        
+        <h2>Rappel de cours</h2>
+<p>La <strong>probabilité</strong> d'un événement A, notée P(A), mesure la chance que A se produise.</p>
+<h3>Propriétés fondamentales</h3>
+<ul>
+<li>P(A) est compris entre 0 et 1 (ou 0% et 100%)</li>
+<li>P(événement certain) = 1</li>
+<li>P(événement impossible) = 0</li>
+<li><strong>Complémentaire</strong> : P(non-A) = 1 − P(A)</li>
+</ul>
+<h3>Calcul de base</h3>
+<p>Si tous les résultats sont également probables :</p>
+<pre><code>P(A) = nombre de cas favorables / nombre de cas totaux
+</code></pre>
+<h3>Événements indépendants</h3>
+<p>Deux événements A et B sont <strong>indépendants</strong> si la réalisation de l'un ne change pas la probabilité de l'autre.</p>
+<p>Dans ce cas : <code>P(A et B) = P(A) × P(B)</code></p>
+<h3>Lien IT — Systèmes de recommandation</h3>
+<p>Netflix, Spotify, Amazon utilisent des probabilités pour recommander du contenu :</p>
+<ul>
+<li>P(tu aimes un film) = nombre de films similaires que tu as aimés / total des films similaires</li>
+<li>Un moteur de recommandation calcule des probabilités pour chaque contenu et affiche celui avec P la plus élevée</li>
+</ul>
+<p>Les filtres anti-spam utilisent aussi des probabilités (filtres bayésiens) :</p>
+<ul>
+<li>P(spam | contient "urgent") est estimée à partir de millions d'emails analysés</li>
+</ul>
+<h2>Activité 1 — Probabilités simples</h2>
+<p>On lance un dé à 6 faces équilibré.</p>
+<div class="component-quiz-texte" data-reponse="1/6"><p class="quiz-question">Quelle est la probabilité d&#x27;obtenir un 6 (écris sous forme de fraction, ex 1/6) ?</p><input type="text" class="quiz-input"><button type="button" class="quiz-submit">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<div class="component-quiz-texte" data-reponse="1/2"><p class="quiz-question">Quelle est la probabilité d&#x27;obtenir un nombre pair (2, 4 ou 6) ? Écris sous forme de fraction.</p><input type="text" class="quiz-input"><button type="button" class="quiz-submit">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<div class="component-quiz-texte" data-reponse="5/6"><p class="quiz-question">Quelle est la probabilité de ne PAS obtenir un 1 (utilise le complémentaire) ? Écris sous forme de fraction.</p><input type="text" class="quiz-input"><button type="button" class="quiz-submit">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<h2>Activité 2 — Indépendance</h2>
+<p>Un serveur tombe en panne avec une probabilité de 1/10 par jour (indépendamment pour chaque serveur).</p>
+<div class="component-quiz-qcm" data-quiz><p class="quiz-question">Si deux serveurs A et B sont indépendants, quelle est la probabilité que les deux tombent en panne le même jour ?</p><div class="quiz-choices"><label><input type="radio" name="q-180" data-correct="false"> 2/10</label><label><input type="radio" name="q-180" data-correct="false"> 1/10</label><label><input type="radio" name="q-180" data-correct="true"> 1/100</label><label><input type="radio" name="q-180" data-correct="false"> 1/20</label></div><button class="quiz-submit" type="button">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<div class="component-quiz-texte" data-reponse="9/10"><p class="quiz-question">La probabilité qu&#x27;un serveur NE tombe PAS en panne vaut ? (Réponse sous forme de fraction)</p><input type="text" class="quiz-input"><button type="button" class="quiz-submit">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<h2>Activité 3 — Raisonnement IT</h2>
+<p>Un filtre spam estime que 30% des emails reçus sont des spams. Un email contient le mot "urgent". On sait que 70% des spams contiennent ce mot, et seulement 10% des emails légitimes contiennent ce mot.</p>
+<div class="component-quiz-qcm" data-quiz><p class="quiz-question">Parmi 100 emails, combien sont des spams en moyenne ?</p><div class="quiz-choices"><label><input type="radio" name="q-181" data-correct="false"> 10</label><label><input type="radio" name="q-181" data-correct="false"> 20</label><label><input type="radio" name="q-181" data-correct="true"> 30</label><label><input type="radio" name="q-181" data-correct="false"> 70</label></div><button class="quiz-submit" type="button">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<div class="component-quiz-qcm" data-quiz><p class="quiz-question">Le filtre bayésien compare P(spam|urgent) et P(légitime|urgent). À quoi sert cette comparaison ?</p><div class="quiz-choices"><label><input type="radio" name="q-182" data-correct="false"> Calculer la taille de l&#x27;email</label><label><input type="radio" name="q-182" data-correct="true"> Décider si l&#x27;email est spam ou non</label><label><input type="radio" name="q-182" data-correct="false"> Chiffrer l&#x27;email</label><label><input type="radio" name="q-182" data-correct="false"> Compresser l&#x27;email</label></div><button class="quiz-submit" type="button">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<h2>Aide IA</h2>
+<div class="component-aide-ia"><div class="aide-ia-label">💡 Comment l'IA peut t'aider</div><pre class="aide-ia-prompt">Je suis étudiant en BTS SIO et j&#x27;apprends les probabilités élémentaires.
+J&#x27;ai du mal à comprendre la règle du complémentaire et celle de
+l&#x27;indépendance (P(A et B) = P(A) × P(B)).
+Explique-moi ces deux règles avec des exemples tirés de l&#x27;informatique
+(serveurs, emails, réseau), pas à pas, sans résoudre mes exercices.</pre><button type="button" class="aide-ia-copy">Copier le prompt</button></div>
+<h2>Solution</h2>
+<details class="component-reveal"><summary>Voir les corrections</summary><div class="reveal-content">Activité 1 :
+- P(6) = 1/6 (1 cas favorable, 6 cas totaux)
+- P(pair) = 3/6 = 1/2 (les nombres pairs sont 2, 4, 6)
+- P(non 1) = 1 - P(1) = 1 - 1/6 = 5/6
+Activité 2 :
+- P(A tombe EN PANNE ET B tombe EN PANNE) = P(A) × P(B) = 1/10 × 1/10 = 1/100
+  Donc il y a 1% de chance que les deux tombent en panne le même jour.
+  C&#x27;est pour cela que les serveurs critiques sont dupliqués.
+- P(pas de panne) = 1 - 1/10 = 9/10
+Activité 3 :
+- Sur 100 emails, 30% = 30 sont des spams (par définition de la probabilité)
+- Le filtre bayésien calcule la probabilité d&#x27;être spam sachant qu&#x27;il contient
+  le mot &quot;urgent&quot;, et compare avec la probabilité d&#x27;être légitime. Il classe
+  l&#x27;email dans la catégorie la plus probable.</div></details>
+<h2>Auto-évaluation</h2>
+<div class="component-auto-eval" data-auto-eval><p>Où en es-tu ?</p><button data-eval="ok">😊 Compris</button><button data-eval="hesitant">🤔 À revoir</button><button data-eval="bloque">😣 Bloqué</button></div>
+      </section>
+    
+      <section id="section-7" data-section-index="7">
+        <h2>
+          <span class="section-badge">7</span>
+          Suites arithmétiques et géométriques
+        </h2>
+        
+          <details class="objectifs">
+            <summary>Objectifs de cette section</summary>
+            <ul>
+              <li>Calculer le terme général d&#39;une suite arithmétique ou géométrique</li><li>Reconnaître le type d&#39;une suite</li><li>Faire le lien entre suites et complexité algorithmique</li>
+            </ul>
+          </details>
+        
+        <h2>Rappel de cours</h2>
+<h3>Suite arithmétique</h3>
+<p>Chaque terme s'obtient en <strong>ajoutant</strong> une valeur constante r (la raison) au précédent.</p>
+<ul>
+<li>Formule du terme général : <code>u(n) = u(0) + n × r</code></li>
+<li>Exemple : 2, 5, 8, 11, 14 … (raison r = 3)</li>
+</ul>
+<h3>Suite géométrique</h3>
+<p>Chaque terme s'obtient en <strong>multipliant</strong> par une valeur constante q (la raison) le précédent.</p>
+<ul>
+<li>Formule du terme général : <code>u(n) = u(0) × q^n</code></li>
+<li>Exemple : 1, 2, 4, 8, 16 … (raison q = 2)</li>
+</ul>
+<h3>Lien avec la complexité des algorithmes</h3>
+<p>En informatique, la <strong>complexité</strong> mesure le nombre d'opérations qu'un algorithme effectue selon la taille n des données :</p>
+<table>
+<thead>
+<tr>
+<th>Type de suite</th>
+<th>Complexité</th>
+<th>Exemple d'algo</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Suite arithmétique (linéaire)</td>
+<td>O(n)</td>
+<td>Parcourir un tableau</td>
+</tr>
+<tr>
+<td>Suite géométrique (raison 2)</td>
+<td>O(log n)</td>
+<td>Recherche dichotomique</td>
+</tr>
+<tr>
+<td>Produit de suites</td>
+<td>O(n log n)</td>
+<td>Tri fusion</td>
+</tr>
+<tr>
+<td>Puissance</td>
+<td>O(n²)</td>
+<td>Tri à bulles</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Intuition :</strong> Une recherche dichotomique divise le problème par 2 à chaque étape. Si on a n=1024 éléments, il faut au maximum log₂(1024) = 10 étapes — c'est une suite géométrique de raison 1/2 !</p>
+<div class="component-code"><pre><code class="language-python"># Suite arithmétique : liste de n valeurs = O(n)
+def creer_liste(n):
+    return list(range(n))   # n opérations
+# Recherche dichotomique = O(log n)
+def dichotomie(liste, cible):
+    gauche, droite = 0, len(liste) - 1
+    etapes = 0
+    while gauche &lt;= droite:
+        milieu = (gauche + droite) // 2
+        etapes += 1
+        if liste[milieu] == cible:
+            return milieu, etapes
+        elif liste[milieu] &lt; cible:
+            gauche = milieu + 1
+        else:
+            droite = milieu - 1
+    return -1, etapes</code></pre><button type="button" class="code-copy">Copier</button></div>
+<h2>Activité 1 — Suite arithmétique</h2>
+<p>Une imprimante imprime 5 pages par minute. Le nombre de pages imprimées forme une suite arithmétique.</p>
+<div class="component-quiz-texte" data-reponse="15"><p class="quiz-question">Si u(0) = 0 et r = 5, quel est u(3) (après 3 minutes) ?</p><input type="text" class="quiz-input"><button type="button" class="quiz-submit">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<div class="component-quiz-texte" data-reponse="50"><p class="quiz-question">Quel est le terme général u(n) ? Écris sous la forme u0 + n*r puis donne la valeur de u(10).</p><input type="text" class="quiz-input"><button type="button" class="quiz-submit">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<h2>Activité 2 — Suite géométrique</h2>
+<p>Un virus informatique double le nombre de machines infectées chaque heure. Au départ, 1 machine est infectée.</p>
+<div class="component-quiz-texte" data-reponse="2"><p class="quiz-question">Combien de machines sont infectées après 1 heure (u(1)) ?</p><input type="text" class="quiz-input"><button type="button" class="quiz-submit">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<div class="component-quiz-texte" data-reponse="8"><p class="quiz-question">Combien de machines sont infectées après 3 heures (u(3)) ?</p><input type="text" class="quiz-input"><button type="button" class="quiz-submit">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<div class="component-quiz-texte" data-reponse="1024"><p class="quiz-question">Combien de machines sont infectées après 10 heures (u(10)) ?</p><input type="text" class="quiz-input"><button type="button" class="quiz-submit">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<h2>Activité 3 — Complexité</h2>
+<div class="component-quiz-qcm" data-quiz><p class="quiz-question">Un algorithme qui divise son problème par 2 à chaque étape a une complexité en ?</p><div class="quiz-choices"><label><input type="radio" name="q-183" data-correct="false"> O(n)</label><label><input type="radio" name="q-183" data-correct="false"> O(n²)</label><label><input type="radio" name="q-183" data-correct="true"> O(log n)</label><label><input type="radio" name="q-183" data-correct="false"> O(1)</label></div><button class="quiz-submit" type="button">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<div class="component-quiz-qcm" data-quiz><p class="quiz-question">Pour trier 1 000 000 éléments, quel algorithme est le plus rapide ?</p><div class="quiz-choices"><label><input type="radio" name="q-184" data-correct="false"> Tri à bulles en O(n²) — 1 000 000 000 000 opérations</label><label><input type="radio" name="q-184" data-correct="false"> Recherche linéaire en O(n) — 1 000 000 opérations</label><label><input type="radio" name="q-184" data-correct="true"> Tri fusion en O(n log n) — environ 20 000 000 opérations</label><label><input type="radio" name="q-184" data-correct="false"> Tri aléatoire</label></div><button class="quiz-submit" type="button">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<h2>Aide IA</h2>
+<div class="component-aide-ia"><div class="aide-ia-label">💡 Comment l'IA peut t'aider</div><pre class="aide-ia-prompt">Je suis étudiant en BTS SIO et j&#x27;étudie les suites et la complexité des
+algorithmes.
+J&#x27;ai du mal à comprendre pourquoi la recherche dichotomique est en O(log n).
+Explique-moi le lien entre la suite géométrique de raison 1/2 et le nombre
+d&#x27;étapes de la recherche dichotomique, pas à pas, avec un exemple petit
+(comme 8 ou 16 éléments), sans faire mes exercices à ma place.</pre><button type="button" class="aide-ia-copy">Copier le prompt</button></div>
+<h2>Solution</h2>
+<details class="component-reveal"><summary>Voir les corrections</summary><div class="reveal-content">Activité 1 :
+- u(n) = 0 + n × 5, donc u(3) = 3 × 5 = 15 pages
+- u(10) = 10 × 5 = 50 pages
+Activité 2 :
+- u(n) = 1 × 2^n
+- u(1) = 2^1 = 2
+- u(3) = 2^3 = 8
+- u(10) = 2^10 = 1024
+Note : en 10 heures, 1 machine devient 1024 machines infectées.
+C&#x27;est la croissance exponentielle des virus — d&#x27;où l&#x27;importance de couper
+rapidement un réseau infecté.
+Activité 3 :
+- O(log n) : à chaque étape, la moitié des données est éliminée.
+  Pour n=1024 éléments, il faut au plus log₂(1024) = 10 étapes.
+- Le tri fusion en O(n log n) est bien plus rapide que le tri à bulles
+  en O(n²) pour de grandes quantités de données.</div></details>
+<h2>Auto-évaluation</h2>
+<div class="component-auto-eval" data-auto-eval><p>Où en es-tu ?</p><button data-eval="ok">😊 Compris</button><button data-eval="hesitant">🤔 À revoir</button><button data-eval="bloque">😣 Bloqué</button></div>
+      </section>
+    
+      <section id="section-8" data-section-index="8">
+        <h2>
+          <span class="section-badge">8</span>
+          Théorie des graphes — bases
+        </h2>
+        
+          <details class="objectifs">
+            <summary>Objectifs de cette section</summary>
+            <ul>
+              <li>Identifier sommets, arêtes, chemins et cycles dans un graphe</li><li>Calculer le degré d&#39;un sommet</li><li>Distinguer graphe orienté et non-orienté</li><li>Faire le lien avec les topologies réseau</li>
+            </ul>
+          </details>
+        
+        <h2>Rappel de cours</h2>
+<p>Un <strong>graphe</strong> est une structure composée de :</p>
+<ul>
+<li><strong>Sommets</strong> (ou nœuds) : les entités représentées</li>
+<li><strong>Arêtes</strong> : les liens entre les entités (non orientées) ou <strong>arcs</strong> (orientées)</li>
+</ul>
+<h3>Graphe non-orienté vs orienté</h3>
+<ul>
+<li><strong>Non-orienté</strong> : l'arête A — B signifie que la connexion est bidirectionnelle (réseau Ethernet classique)</li>
+<li><strong>Orienté</strong> : l'arc A → B signifie que la connexion va dans un seul sens (flux de données, routage)</li>
+</ul>
+<h3>Vocabulaire essentiel</h3>
+<table>
+<thead>
+<tr>
+<th>Terme</th>
+<th>Définition</th>
+<th>Exemple IT</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Degré d'un sommet</td>
+<td>Nombre d'arêtes reliées à ce sommet</td>
+<td>Nombre de connexions d'un switch</td>
+</tr>
+<tr>
+<td>Chemin</td>
+<td>Suite de sommets reliés</td>
+<td>Route d'un paquet réseau</td>
+</tr>
+<tr>
+<td>Cycle</td>
+<td>Chemin qui revient au point de départ</td>
+<td>Boucle réseau (problème STP)</td>
+</tr>
+<tr>
+<td>Sommet isolé</td>
+<td>Degré = 0</td>
+<td>Machine déconnectée</td>
+</tr>
+<tr>
+<td>Graphe connexe</td>
+<td>Tout sommet est atteignable depuis tout autre</td>
+<td>Réseau sans île</td>
+</tr>
+</tbody>
+</table>
+<h3>Lien IT — Topologies réseau</h3>
+<p>Les topologies réseau sont des graphes :</p>
+<ul>
+<li><strong>Topologie en étoile</strong> : un switch central (hub) relié à toutes les machines → degré élevé pour le centre</li>
+<li><strong>Topologie en anneau</strong> : chaque machine a exactement 2 connexions → degré 2 partout</li>
+<li><strong>Topologie maillée</strong> : chaque machine est reliée à toutes les autres → résistant aux pannes</li>
+</ul>
+<p>Un graphe simple à 4 sommets :</p>
+<pre><code>    A
+   / \
+  B   C
+   \ /
+    D
+</code></pre>
+<p>Sommets : A, B, C, D
+Arêtes : A-B, A-C, B-D, C-D
+Degré de A : 2 (relié à B et C)
+Degré de D : 2 (relié à B et C)</p>
+<h2>Activité 1 — Lire un graphe</h2>
+<p>Graphe G avec 5 sommets : {1, 2, 3, 4, 5}
+Arêtes : {1-2, 1-3, 2-4, 3-4, 4-5}</p>
+<div class="component-quiz-texte" data-reponse="3"><p class="quiz-question">Quel est le degré du sommet 4 (nombre d&#x27;arêtes reliées à 4) ?</p><input type="text" class="quiz-input"><button type="button" class="quiz-submit">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<div class="component-quiz-texte" data-reponse="1"><p class="quiz-question">Quel est le degré du sommet 5 ?</p><input type="text" class="quiz-input"><button type="button" class="quiz-submit">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<div class="component-quiz-qcm" data-quiz><p class="quiz-question">Existe-t-il un chemin entre le sommet 1 et le sommet 5 ?</p><div class="quiz-choices"><label><input type="radio" name="q-185" data-correct="false"> Non, ils ne sont pas directement reliés</label><label><input type="radio" name="q-185" data-correct="true"> Oui, par exemple 1→2→4→5</label><label><input type="radio" name="q-185" data-correct="false"> Oui, mais uniquement via 3</label><label><input type="radio" name="q-185" data-correct="false"> Non, le graphe n&#x27;est pas connexe</label></div><button class="quiz-submit" type="button">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<h2>Activité 2 — Graphe orienté (routage)</h2>
+<p>Dans un réseau, les routeurs A, B, C, D échangent des paquets. Les arcs (connexions orientées) sont :
+A→B, A→C, B→D, C→D, D→A</p>
+<div class="component-quiz-qcm" data-quiz><p class="quiz-question">Ce graphe contient-il un cycle ?</p><div class="quiz-choices"><label><input type="radio" name="q-186" data-correct="false"> Non, c&#x27;est un graphe acyclique</label><label><input type="radio" name="q-186" data-correct="true"> Oui, par exemple A→B→D→A</label><label><input type="radio" name="q-186" data-correct="false"> Oui, mais uniquement A→C→D→A</label><label><input type="radio" name="q-186" data-correct="false"> On ne peut pas le savoir sans dessin</label></div><button class="quiz-submit" type="button">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<div class="component-quiz-texte" data-reponse="2"><p class="quiz-question">Combien d&#x27;arcs partent du sommet A (degré sortant de A) ?</p><input type="text" class="quiz-input"><button type="button" class="quiz-submit">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<h2>Activité 3 — Topologie réseau</h2>
+<p>Un réseau local a 4 machines (M1, M2, M3, M4) toutes connectées à un switch central (S).</p>
+<div class="component-quiz-texte" data-reponse="4"><p class="quiz-question">Quel est le degré du switch S dans ce graphe en étoile ?</p><input type="text" class="quiz-input"><button type="button" class="quiz-submit">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<div class="component-quiz-qcm" data-quiz><p class="quiz-question">Si le switch S tombe en panne dans une topologie étoile, que se passe-t-il ?</p><div class="quiz-choices"><label><input type="radio" name="q-187" data-correct="false"> Seules M1 et M2 sont déconnectées</label><label><input type="radio" name="q-187" data-correct="true"> Tout le réseau tombe</label><label><input type="radio" name="q-187" data-correct="false"> Le réseau continue de fonctionner en mode dégradé</label><label><input type="radio" name="q-187" data-correct="false"> Les machines communiquent directement entre elles</label></div><button class="quiz-submit" type="button">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<h2>Aide IA</h2>
+<div class="component-aide-ia"><div class="aide-ia-label">💡 Comment l'IA peut t'aider</div><pre class="aide-ia-prompt">Je suis étudiant en BTS SIO et j&#x27;étudie la théorie des graphes.
+Je comprends ce qu&#x27;est un sommet et une arête, mais j&#x27;ai du mal à voir
+comment ça s&#x27;applique aux réseaux informatiques.
+Explique-moi, avec un exemple de topologie réseau simple (3 ou 4 machines),
+comment dessiner le graphe correspondant et calculer les degrés.
+Ne fais pas les exercices à ma place.</pre><button type="button" class="aide-ia-copy">Copier le prompt</button></div>
+<h2>Solution</h2>
+<details class="component-reveal"><summary>Voir les corrections</summary><div class="reveal-content">Activité 1 :
+- Degré de 4 : arêtes 2-4, 3-4, 4-5 → degré = 3
+- Degré de 5 : seule l&#x27;arête 4-5 → degré = 1 (sommet &quot;terminal&quot;)
+- Chemin 1→5 : oui, 1→2→4→5 (ou 1→3→4→5)
+  Le graphe est connexe : on peut relier n&#x27;importe quel sommet à un autre.
+Activité 2 :
+- Cycle : A→B→D→A (ou A→C→D→A). Attention en réseau, un cycle peut
+  créer des boucles de routage — le protocole STP (Spanning Tree) sert
+  justement à supprimer les cycles tout en gardant la connexité.
+- Degré sortant de A : 2 (arcs A→B et A→C)
+Activité 3 :
+- Switch S connecté à M1, M2, M3, M4 → degré = 4
+- Si S tombe en panne, toutes les machines sont isolées.
+  C&#x27;est le point de défaillance unique (SPOF) de la topologie étoile.
+  Solution : doubler le switch ou passer à une topologie maillée.</div></details>
+<h2>Auto-évaluation</h2>
+<div class="component-auto-eval" data-auto-eval><p>Où en es-tu ?</p><button data-eval="ok">😊 Compris</button><button data-eval="hesitant">🤔 À revoir</button><button data-eval="bloque">😣 Bloqué</button></div>
+      </section>
+    
+      <section id="section-9" data-section-index="9">
+        <h2>
+          <span class="section-badge">9</span>
+          Mini-projet — Modéliser un réseau social en graphe
+        </h2>
+        
+          <details class="objectifs">
+            <summary>Objectifs de cette section</summary>
+            <ul>
+              <li>Modéliser un problème réel sous forme de graphe</li><li>Calculer des propriétés d&#39;un graphe (degrés, chemins, connexité)</li><li>Implémenter une représentation de graphe en Python</li><li>Relier les concepts mathématiques à une application concrète</li>
+            </ul>
+          </details>
+        
+        <h2>Contexte du projet</h2>
+<p>Tu vas modéliser un <strong>mini-réseau social</strong> — comme une version très simplifiée de LinkedIn ou Instagram — sous forme de graphe.</p>
+<p>Dans ce réseau social :</p>
+<ul>
+<li>Chaque <strong>utilisateur</strong> est un <strong>sommet</strong></li>
+<li>Chaque <strong>lien d'amitié</strong> est une <strong>arête</strong> (non orientée, car l'amitié est réciproque)</li>
+<li>Le <strong>nombre de connexions</strong> d'un utilisateur = son <strong>degré</strong> dans le graphe</li>
+</ul>
+<p>Le réseau comporte 6 utilisateurs : Alice, Bob, Clara, David, Eva, Fred.</p>
+<p>Les amitiés sont les suivantes :
+- Alice — Bob
+- Alice — Clara
+- Alice — David
+- Bob — Eva
+- Clara — Eva
+- David — Fred
+- Eva — Fred</p>
+<h2>Partie 1 — Analyse du graphe</h2>
+<h3>Question 1 : Degrés</h3>
+<div class="component-quiz-texte" data-reponse="3"><p class="quiz-question">Quel est le degré d&#x27;Alice (nombre d&#x27;amis) ?</p><input type="text" class="quiz-input"><button type="button" class="quiz-submit">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<div class="component-quiz-texte" data-reponse="3"><p class="quiz-question">Quel est le degré d&#x27;Eva ?</p><input type="text" class="quiz-input"><button type="button" class="quiz-submit">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<div class="component-quiz-texte" data-reponse="Fred"><p class="quiz-question">Qui a le degré le plus faible (1 ami seulement) ?</p><input type="text" class="quiz-input"><button type="button" class="quiz-submit">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<h3>Question 2 : Chemins</h3>
+<div class="component-quiz-qcm" data-quiz><p class="quiz-question">Quel est le chemin le plus court entre Bob et Fred ?</p><div class="quiz-choices"><label><input type="radio" name="q-188" data-correct="true"> Bob → Alice → David → Fred</label><label><input type="radio" name="q-188" data-correct="true"> Bob → Eva → Fred</label><label><input type="radio" name="q-188" data-correct="false"> Bob → Clara → Eva → Fred</label><label><input type="radio" name="q-188" data-correct="false"> Bob → Alice → Clara → Eva → Fred</label></div><button class="quiz-submit" type="button">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<div class="component-quiz-texte" data-reponse="2"><p class="quiz-question">Quelle est la longueur minimale du chemin entre Bob et Fred (nombre d&#x27;arêtes) ?</p><input type="text" class="quiz-input"><button type="button" class="quiz-submit">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<h3>Question 3 : Connexité</h3>
+<div class="component-quiz-qcm" data-quiz><p class="quiz-question">Le graphe est-il connexe (peut-on relier n&#x27;importe quel utilisateur à un autre) ?</p><div class="quiz-choices"><label><input type="radio" name="q-189" data-correct="false"> Non, Fred est isolé</label><label><input type="radio" name="q-189" data-correct="false"> Non, certains groupes ne communiquent pas</label><label><input type="radio" name="q-189" data-correct="true"> Oui, tous les utilisateurs sont reliés directement ou indirectement</label><label><input type="radio" name="q-189" data-correct="false"> On ne peut pas le savoir sans calcul</label></div><button class="quiz-submit" type="button">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<h2>Partie 2 — Implémentation Python</h2>
+<p>Voici une représentation du graphe en Python sous forme de <strong>liste d'adjacence</strong> (dictionnaire) :</p>
+<div class="component-code"><pre><code class="language-python"># Représentation du réseau social en graphe
+reseau = {
+    &quot;Alice&quot;: [&quot;Bob&quot;, &quot;Clara&quot;, &quot;David&quot;],
+    &quot;Bob&quot;:   [&quot;Alice&quot;, &quot;Eva&quot;],
+    &quot;Clara&quot;: [&quot;Alice&quot;, &quot;Eva&quot;],
+    &quot;David&quot;: [&quot;Alice&quot;, &quot;Fred&quot;],
+    &quot;Eva&quot;:   [&quot;Bob&quot;, &quot;Clara&quot;, &quot;Fred&quot;],
+    &quot;Fred&quot;:  [&quot;David&quot;, &quot;Eva&quot;]
+}
+# Calculer le degré de chaque utilisateur
+for utilisateur, amis in reseau.items():
+    print(f&quot;{utilisateur} : {len(amis)} ami(s)&quot;)
+# Trouver l&#x27;utilisateur le plus connecté
+influenceur = max(reseau, key=lambda u: len(reseau[u]))
+print(f&quot;\nL&#x27;utilisateur le plus connecté : {influenceur}&quot;)</code></pre><button type="button" class="code-copy">Copier</button></div>
+<h3>Question 4 : Lecture du code</h3>
+<div class="component-quiz-qcm" data-quiz><p class="quiz-question">Que fait la fonction max avec key=lambda u appliquée au dictionnaire reseau ?</p><div class="quiz-choices"><label><input type="radio" name="q-190" data-correct="false"> Trouve l&#x27;utilisateur dont le nom est le plus long</label><label><input type="radio" name="q-190" data-correct="true"> Trouve l&#x27;utilisateur avec le plus grand nombre d&#x27;amis</label><label><input type="radio" name="q-190" data-correct="false"> Trie le dictionnaire par ordre alphabétique</label><label><input type="radio" name="q-190" data-correct="false"> Compte le nombre total d&#x27;arêtes</label></div><button class="quiz-submit" type="button">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<div class="component-quiz-texte" data-reponse="3"><p class="quiz-question">Avec le réseau défini, quelle sera la valeur affichée pour le degré d&#x27;Eva ?</p><input type="text" class="quiz-input"><button type="button" class="quiz-submit">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<h2>Partie 3 — Analyse "influenceur"</h2>
+<p>Dans les réseaux sociaux réels, l'utilisateur avec le plus grand degré est souvent appelé "influenceur" (ou "hub" dans la terminologie des graphes).</p>
+<div class="component-quiz-qcm" data-quiz><p class="quiz-question">Alice et Eva ont toutes les deux un degré de 3. Lequel de ces critères supplémentaires permettrait de départager leur influence ?</p><div class="quiz-choices"><label><input type="radio" name="q-191" data-correct="false"> La longueur de leur nom</label><label><input type="radio" name="q-191" data-correct="true"> Le degré moyen de leurs amis (connectivité indirecte)</label><label><input type="radio" name="q-191" data-correct="false"> Le nombre de voyelles dans leur prénom</label><label><input type="radio" name="q-191" data-correct="false"> Leur position dans le dictionnaire Python</label></div><button class="quiz-submit" type="button">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<h2>Aide IA</h2>
+<div class="component-aide-ia"><div class="aide-ia-label">💡 Comment l'IA peut t'aider</div><pre class="aide-ia-prompt">Je suis étudiant en BTS SIO et je travaille sur un mini-projet de
+modélisation d&#x27;un réseau social en graphe.
+Je comprends les sommets et les arêtes, mais j&#x27;ai du mal à :
+1. Trouver le chemin le plus court entre deux sommets à la main
+2. Comprendre pourquoi la liste d&#x27;adjacence en Python est une bonne
+   représentation d&#x27;un graphe
+Guide-moi pas à pas sur ces deux points avec des exemples simples,
+sans faire le projet à ma place.</pre><button type="button" class="aide-ia-copy">Copier le prompt</button></div>
+<h2>Solution</h2>
+<details class="component-reveal"><summary>Voir les corrections complètes</summary><div class="reveal-content">Partie 1 — Analyse :
+- Degré d&#x27;Alice : 3 (amis = Bob, Clara, David)
+- Degré d&#x27;Eva : 3 (amis = Bob, Clara, Fred)
+- Fred a le degré le plus faible : 1... non, 2 (David et Eva).
+  En réalité c&#x27;est Bob et Clara qui ont degré 2. Fred a degré 2 aussi.
+  Avec cette liste d&#x27;amitiés, tous les degrés sont 2 ou 3.
+  Alice (3), Bob (2), Clara (2), David (2), Eva (3), Fred (2).
+  Fred a degré 2. La question portait sur &quot;1 ami seulement&quot; — avec ce graphe
+  personne n&#x27;est isolé à 1, ce qui montre que le réseau est bien connecté.
+- Chemin le plus court Bob → Fred :
+  * Bob → Eva → Fred (2 arêtes)
+  * Bob → Alice → David → Fred (3 arêtes)
+  Le plus court est Bob → Eva → Fred, longueur 2.
+- Le graphe est connexe : on peut vérifier en partant de n&#x27;importe quel
+  sommet et en explorant les voisins.
+Partie 2 — Code Python :
+- `max(reseau, key=lambda u: len(reseau[u]))` retourne la clé (utilisateur)
+  dont la valeur associée (liste d&#x27;amis) est la plus longue.
+- Eva a 3 amis → degré = 3.
+Partie 3 :
+- Pour départager deux hubs de même degré, on regarde la &quot;centralité
+  d&#x27;intermédiarité&quot; ou le degré moyen des voisins.
+  Alice est connectée à David (degré 2), Bob (degré 2), Clara (degré 2).
+  Eva est connectée à Bob (2), Clara (2), Fred (2).
+  Même résultat ici ! Dans un vrai réseau, on utiliserait des algorithmes
+  comme PageRank (Google) ou la centralité de degré pondérée.</div></details>
+<h2>Auto-évaluation</h2>
+<div class="component-auto-eval" data-auto-eval><p>Où en es-tu ?</p><button data-eval="ok">😊 Compris</button><button data-eval="hesitant">🤔 À revoir</button><button data-eval="bloque">😣 Bloqué</button></div>
+      </section>
+    
+      <section id="section-10" data-section-index="10">
+        <h2>
+          <span class="section-badge">10</span>
+          Bilan final — Mathématiques pour l&#39;informatique
+        </h2>
+        
+          <details class="objectifs">
+            <summary>Objectifs de cette section</summary>
+            <ul>
+              <li>Faire le point sur les notions maîtrisées</li><li>Identifier les points à retravailler</li><li>Relier toutes les notions entre elles</li>
+            </ul>
+          </details>
+        
+        <h2>Ce que tu as appris dans ce cahier</h2>
+<p>Voici un récapitulatif des 8 activités :</p>
+<table>
+<thead>
+<tr>
+<th>Activité</th>
+<th>Notion</th>
+<th>Lien informatique</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>Logique propositionnelle</td>
+<td>Conditions if/else, tests booléens</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Prédicats et quantificateurs</td>
+<td>Boucles for, fonctions all()/any()</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Numération binaire et hex</td>
+<td>Adresses IP, couleurs HTML, chmod</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Algèbre de Boole</td>
+<td>Masques réseau, chiffrement XOR</td>
+</tr>
+<tr>
+<td>5</td>
+<td>Probabilités</td>
+<td>Filtres spam, recommandation Netflix</td>
+</tr>
+<tr>
+<td>6</td>
+<td>Suites et complexité</td>
+<td>O(n), O(log n), choix d'algorithmes</td>
+</tr>
+<tr>
+<td>7</td>
+<td>Graphes — bases</td>
+<td>Topologies réseau, routage</td>
+</tr>
+<tr>
+<td>8</td>
+<td>Mini-projet graphe</td>
+<td>Réseau social, centralité, Python</td>
+</tr>
+</tbody>
+</table>
+<h2>Quiz de révision finale</h2>
+<div class="component-quiz-qcm" data-quiz><p class="quiz-question">En logique, A → B est équivalent à ?</p><div class="quiz-choices"><label><input type="radio" name="q-192" data-correct="false"> A AND B</label><label><input type="radio" name="q-192" data-correct="false"> NOT A AND B</label><label><input type="radio" name="q-192" data-correct="true"> NOT A OR B</label><label><input type="radio" name="q-192" data-correct="false"> A OR NOT B</label></div><button class="quiz-submit" type="button">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<div class="component-quiz-texte" data-reponse="255"><p class="quiz-question">Convertis FF (hexadécimal) en décimal.</p><input type="text" class="quiz-input"><button type="button" class="quiz-submit">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<div class="component-quiz-qcm" data-quiz><p class="quiz-question">La complexité O(log n) correspond à quel type de croissance ?</p><div class="quiz-choices"><label><input type="radio" name="q-193" data-correct="false"> Suite arithmétique de raison 1</label><label><input type="radio" name="q-193" data-correct="true"> Suite géométrique de raison 1/2</label><label><input type="radio" name="q-193" data-correct="false"> Suite géométrique de raison 2</label><label><input type="radio" name="q-193" data-correct="false"> Constante</label></div><button class="quiz-submit" type="button">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<div class="component-quiz-texte" data-reponse="5"><p class="quiz-question">Dans un graphe en étoile à 5 machines autour d&#x27;un switch, quel est le degré du switch ?</p><input type="text" class="quiz-input"><button type="button" class="quiz-submit">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<div class="component-quiz-qcm" data-quiz><p class="quiz-question">La loi de De Morgan dit que NOT (A OR B) est équivalent à ?</p><div class="quiz-choices"><label><input type="radio" name="q-194" data-correct="false"> NOT A OR NOT B</label><label><input type="radio" name="q-194" data-correct="true"> NOT A AND NOT B</label><label><input type="radio" name="q-194" data-correct="false"> A AND B</label><label><input type="radio" name="q-194" data-correct="false"> NOT A AND B</label></div><button class="quiz-submit" type="button">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<h2>Les connexions entre les notions</h2>
+<p>Ces mathématiques ne sont pas des îles isolées. Elles se relient entre elles :</p>
+<ul>
+<li><strong>Logique + Boole</strong> → Les circuits logiques sont la base physique des ordinateurs</li>
+<li><strong>Binaire + Boole</strong> → Les masques réseau sont des opérations booléennes sur des octets</li>
+<li><strong>Probabilités + Graphes</strong> → Les algorithmes de recommandation combinent les deux (PageRank)</li>
+<li><strong>Suites + Graphes</strong> → La complexité des algorithmes de graphe (BFS, Dijkstra) s'analyse avec des suites</li>
+</ul>
+<h2>Que faire si tu as encore des lacunes ?</h2>
+<p><strong>Logique/Boole</strong> : relis les activités 1 et 4, refais les tables de vérité à la main.</p>
+<p><strong>Binaire/Hex</strong> : pratique les conversions sur papier. C'est une compétence qui s'automatise avec la répétition.</p>
+<p><strong>Probabilités</strong> : les formules sont simples — l'essentiel est de bien identifier les événements et de savoir quand multiplier.</p>
+<p><strong>Graphes</strong> : dessine des graphes à la main. Compte les arêtes, les degrés, les chemins. C'est visuel.</p>
+<h2>Ton bilan personnel</h2>
+<p>Utilise cet espace pour noter ce que tu retiens, ce que tu veux retravailler, et tes questions pour la rentrée.</p>
+<div class="component-bilan" data-bilan><p>Mon bilan personnel (sauvegardé en local, exportable)</p><textarea rows="8" placeholder="Ce que j'ai appris, ce qui reste flou…"></textarea><button type="button" class="bilan-export">Exporter en .txt</button></div>
+      </section>
+    
+  </main>
+
+</div>
+
+<footer>
+  <p>Cahier de vacances BTS SIO · Travail autonome estival · Bonne continuation !</p>
+</footer>
+
+<script>/* 00-progress.js */
+/* Storage core — shared by quiz, auto-eval, bilan, progress-bar */
+(function () {
+  const KEY_PREFIX = "c2v:";
+
+  function cahierKey() {
+    // derive a stable key from the document title
+    return KEY_PREFIX + (document.title || "default").replace(/\s+/g, "_");
+  }
+
+  function load() {
+    try {
+      return JSON.parse(localStorage.getItem(cahierKey()) || "{}");
+    } catch {
+      return {};
+    }
+  }
+
+  function save(state) {
+    try {
+      localStorage.setItem(cahierKey(), JSON.stringify(state));
+    } catch (e) {
+      console.warn("storage failed", e);
+    }
+  }
+
+  function update(path, value) {
+    const state = load();
+    state[path] = value;
+    save(state);
+    window.dispatchEvent(new CustomEvent("c2v:update"));
+  }
+
+  function get(path) {
+    return load()[path];
+  }
+
+  window.C2V = { load, save, update, get };
+})();
+
+
+/* 10-quiz-qcm.js */
+/* Quiz QCM — single/multi choice with feedback */
+(function () {
+  function init(root) {
+    const submit = root.querySelector(".quiz-submit");
+    const feedback = root.querySelector(".quiz-feedback");
+    if (!submit || !feedback) return;
+
+    submit.addEventListener("click", () => {
+      const inputs = root.querySelectorAll('input[type="radio"], input[type="checkbox"]');
+      let allCorrect = true;
+      let anyChecked = false;
+      inputs.forEach((inp) => {
+        if (inp.checked) {
+          anyChecked = true;
+          if (inp.dataset.correct !== "true") allCorrect = false;
+        } else {
+          if (inp.dataset.correct === "true") allCorrect = false;
+        }
+      });
+      if (!anyChecked) {
+        feedback.textContent = "Choisis au moins une réponse.";
+        feedback.className = "quiz-feedback ko";
+        return;
+      }
+      if (allCorrect) {
+        feedback.textContent = "✅ Correct !";
+        feedback.className = "quiz-feedback ok";
+      } else {
+        feedback.textContent = "❌ Pas tout à fait — réessaie ou consulte le rappel de cours.";
+        feedback.className = "quiz-feedback ko";
+      }
+    });
+  }
+
+  document.addEventListener("DOMContentLoaded", () => {
+    document.querySelectorAll(".component-quiz-qcm").forEach(init);
+  });
+})();
+
+
+/* 11-quiz-texte.js */
+/* Quiz texte — tolerant comparison */
+(function () {
+  function normalise(s) {
+    return s
+      .toLowerCase()
+      .normalize("NFD")
+      .replace(/[̀-ͯ]/g, "")
+      .replace(/\s+/g, " ")
+      .trim();
+  }
+
+  function init(root) {
+    const expected = root.dataset.reponse || "";
+    const input = root.querySelector(".quiz-input");
+    const submit = root.querySelector(".quiz-submit");
+    const feedback = root.querySelector(".quiz-feedback");
+    if (!input || !submit || !feedback) return;
+
+    submit.addEventListener("click", () => {
+      if (normalise(input.value) === normalise(expected)) {
+        feedback.textContent = "✅ Correct !";
+        feedback.className = "quiz-feedback ok";
+      } else {
+        feedback.textContent = "❌ Pas la bonne réponse — réessaie.";
+        feedback.className = "quiz-feedback ko";
+      }
+    });
+  }
+
+  document.addEventListener("DOMContentLoaded", () => {
+    document.querySelectorAll(".component-quiz-texte").forEach(init);
+  });
+})();
+
+
+/* 20-auto-eval.js */
+/* Auto-eval — 3 buttons, saves to storage, drives progress-bar */
+(function () {
+  function init(root) {
+    const section = root.closest("section[data-section-index]");
+    const sectionIdx = section ? section.dataset.sectionIndex : "0";
+    const key = "eval:section-" + sectionIdx;
+
+    const current = window.C2V.get(key);
+    if (current) {
+      const btn = root.querySelector(`button[data-eval="${current}"]`);
+      if (btn) btn.classList.add("selected");
+    }
+
+    root.querySelectorAll("button[data-eval]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        root.querySelectorAll("button").forEach((b) => b.classList.remove("selected"));
+        btn.classList.add("selected");
+        window.C2V.update(key, btn.dataset.eval);
+      });
+    });
+  }
+
+  document.addEventListener("DOMContentLoaded", () => {
+    document.querySelectorAll(".component-auto-eval").forEach(init);
+  });
+})();
+
+
+/* 30-progress-bar.js */
+/* Progress-bar component — now handled by sidebar (50-sidebar-nav.js).
+   This stub keeps the component-progress-bar div harmless. */
+(function () {
+  document.addEventListener("DOMContentLoaded", () => {
+    document.querySelectorAll(".component-progress-bar").forEach((el) => {
+      el.style.display = "none";
+    });
+  });
+})();
+
+
+/* 40-bilan.js */
+/* Bilan — autosave + export .txt */
+(function () {
+  function init(root) {
+    const textarea = root.querySelector("textarea");
+    const exportBtn = root.querySelector(".bilan-export");
+    if (!textarea) return;
+
+    textarea.value = window.C2V.get("bilan") || "";
+    textarea.addEventListener("input", () => {
+      window.C2V.update("bilan", textarea.value);
+    });
+
+    if (exportBtn) {
+      exportBtn.addEventListener("click", () => {
+        const title = document.title.replace(/[^\w-]+/g, "_");
+        const content = "Bilan — " + document.title + "\n\n" + (textarea.value || "");
+        const blob = new Blob([content], { type: "text/plain;charset=utf-8" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = `bilan-${title}.txt`;
+        a.click();
+        URL.revokeObjectURL(url);
+      });
+    }
+  }
+
+  document.addEventListener("DOMContentLoaded", () => {
+    document.querySelectorAll(".component-bilan").forEach(init);
+  });
+})();
+
+
+/* 41-aide-ia.js */
+/* Aide IA — copy prompt to clipboard */
+(function () {
+  function init(root) {
+    const btn = root.querySelector(".aide-ia-copy");
+    const pre = root.querySelector(".aide-ia-prompt");
+    if (!btn || !pre) return;
+
+    btn.addEventListener("click", async () => {
+      try {
+        await navigator.clipboard.writeText(pre.textContent);
+        btn.textContent = "Copié ✓";
+        setTimeout(() => (btn.textContent = "Copier le prompt"), 2000);
+      } catch {
+        btn.textContent = "Sélectionne le texte et copie manuellement";
+      }
+    });
+  }
+
+  document.addEventListener("DOMContentLoaded", () => {
+    document.querySelectorAll(".component-aide-ia").forEach(init);
+  });
+})();
+
+
+/* 42-code-copy.js */
+/* Code-block — copy button */
+(function () {
+  function init(root) {
+    const btn = root.querySelector(".code-copy");
+    const code = root.querySelector("code");
+    if (!btn || !code) return;
+    btn.addEventListener("click", async () => {
+      try {
+        await navigator.clipboard.writeText(code.textContent);
+        btn.textContent = "Copié ✓";
+        setTimeout(() => (btn.textContent = "Copier"), 2000);
+      } catch {
+        btn.textContent = "Sélectionne et copie manuellement";
+      }
+    });
+  }
+  document.addEventListener("DOMContentLoaded", () => {
+    document.querySelectorAll(".component-code").forEach(init);
+  });
+})();
+
+
+/* 50-sidebar-nav.js */
+/* Sidebar nav — active section highlight + progress */
+(function () {
+  const sections = document.querySelectorAll("main section[data-section-index]");
+  const navLinks = document.querySelectorAll("nav.sommaire a[data-nav-index]");
+  const fill     = document.querySelector(".nav-progress-fill");
+  const label    = document.querySelector(".nav-progress-text");
+  const total    = sections.length;
+
+  if (!sections.length || !navLinks.length) return;
+
+  let visited = new Set();
+
+  function updateProgress() {
+    const pct = total > 0 ? Math.round((visited.size / total) * 100) : 0;
+    if (fill)  fill.style.width = pct + "%";
+    if (label) label.textContent = visited.size + " / " + total;
+  }
+
+  const observer = new IntersectionObserver(
+    (entries) => {
+      let topVisible = null;
+      entries.forEach((e) => {
+        if (e.isIntersecting) {
+          const idx = e.target.dataset.sectionIndex;
+          visited.add(idx);
+          if (!topVisible || e.boundingClientRect.top < topVisible.top) {
+            topVisible = { idx, top: e.boundingClientRect.top };
+          }
+        }
+      });
+
+      if (topVisible) {
+        navLinks.forEach((a) => {
+          a.classList.toggle("active", a.dataset.navIndex === topVisible.idx);
+        });
+      }
+
+      updateProgress();
+    },
+    { threshold: 0.15 }
+  );
+
+  sections.forEach((s) => observer.observe(s));
+})();
+</script>
+</body>
+</html>

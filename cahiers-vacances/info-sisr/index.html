@@ -1,0 +1,2239 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Info-SISR — Réseaux et systèmes</title>
+<style>/* ============================================================
+   Cahiers de Vacances BTS SIO — Thème Estival ☀️
+   ============================================================ */
+
+:root {
+  --color-bg:           #fffcf0;
+  --color-text:         #1c1917;
+  --color-muted:        #78716c;
+  --color-primary:      #f97316;
+  --color-primary-dark: #c2410c;
+  --color-primary-soft: #ffedd5;
+  --color-secondary:    #0891b2;
+  --color-success:      #16a34a;
+  --color-success-soft: #dcfce7;
+  --color-warning:      #d97706;
+  --color-warning-soft: #fef3c7;
+  --color-danger:       #dc2626;
+  --color-danger-soft:  #fee2e2;
+  --color-border:       #fed7aa;
+  --color-card:         #ffffff;
+  --radius:             14px;
+  --radius-sm:          10px;
+  --radius-xs:          6px;
+  --shadow:             0 2px 6px rgba(249,115,22,.08), 0 6px 24px rgba(0,0,0,.06);
+  --shadow-sm:          0 1px 4px rgba(0,0,0,.08);
+  --sidebar-w:          240px;
+  --font-base:          -apple-system, BlinkMacSystemFont, &#34;Segoe UI&#34;, Roboto, &#34;Helvetica Neue&#34;, Arial, sans-serif;
+  --font-mono:          ui-monospace, SFMono-Regular, &#34;SF Mono&#34;, Menlo, Consolas, monospace;
+  --transition:         0.15s ease;
+}
+
+/* ── Reset ── */
+*, *::before, *::after { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+
+body {
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-base);
+  font-size: 16px;
+  line-height: 1.7;
+}
+
+/* ── Header ── */
+.cahier-header {
+  background: linear-gradient(135deg, #f97316 0%, #fb923c 35%, #fbbf24 70%, #f59e0b 100%);
+  color: #fff;
+  padding: 2.5rem 2rem 3.5rem;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Wavy bottom border */
+.cahier-header::after {
+  content: &#34;&#34;;
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  right: 0;
+  height: 40px;
+  background: var(--color-bg);
+  clip-path: ellipse(55% 100% at 50% 100%);
+}
+
+/* Decorative sunrays */
+.cahier-header::before {
+  content: &#34;&#34;;
+  position: absolute;
+  top: -60px;
+  right: -60px;
+  width: 220px;
+  height: 220px;
+  background: rgba(255,255,255,.1);
+  border-radius: 50%;
+}
+
+.cahier-header-inner {
+  max-width: calc(var(--sidebar-w) + 860px + 3rem);
+  margin: 0 auto;
+  position: relative;
+  z-index: 1;
+}
+
+.cahier-header h1 {
+  font-size: 2rem;
+  font-weight: 800;
+  margin: 0 0 0.4rem;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+  text-shadow: 0 1px 3px rgba(0,0,0,.15);
+}
+
+.cahier-meta {
+  opacity: 0.92;
+  font-size: 0.95rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.25rem;
+  margin: 0;
+}
+
+.cahier-meta-badge {
+  background: rgba(255,255,255,.22);
+  border-radius: 20px;
+  padding: 0.2rem 0.8rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  border: 1px solid rgba(255,255,255,.35);
+}
+
+/* ── Page body (sidebar + content) ── */
+.page-body {
+  display: grid;
+  grid-template-columns: var(--sidebar-w) 1fr;
+  gap: 2rem;
+  max-width: calc(var(--sidebar-w) + 860px + 3rem);
+  margin: 0 auto;
+  padding: 1.5rem 1rem 3rem;
+  align-items: start;
+}
+
+/* ── Sidebar ── */
+nav.sommaire {
+  position: sticky;
+  top: 1.5rem;
+  background: var(--color-card);
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+  padding: 1.25rem;
+  max-height: calc(100vh - 3rem);
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-border) transparent;
+}
+
+nav.sommaire h2 {
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--color-muted);
+  margin: 0 0 0.75rem;
+}
+
+nav.sommaire ol {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+nav.sommaire li { margin: 0; }
+
+nav.sommaire a {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  padding: 0.35rem 0.5rem;
+  border-radius: var(--radius-xs);
+  color: var(--color-muted);
+  text-decoration: none;
+  font-size: 0.82rem;
+  line-height: 1.35;
+  transition: background var(--transition), color var(--transition);
+}
+
+nav.sommaire a:hover {
+  background: var(--color-primary-soft);
+  color: var(--color-primary-dark);
+}
+
+nav.sommaire a.active {
+  background: var(--color-primary-soft);
+  color: var(--color-primary-dark);
+  font-weight: 600;
+}
+
+nav.sommaire .nav-num {
+  flex-shrink: 0;
+  background: var(--color-primary-soft);
+  color: var(--color-primary);
+  font-size: 0.68rem;
+  font-weight: 700;
+  border-radius: 4px;
+  padding: 0.1rem 0.35rem;
+  min-width: 1.4rem;
+  text-align: center;
+}
+
+nav.sommaire a.active .nav-num {
+  background: var(--color-primary);
+  color: #fff;
+}
+
+.nav-duree {
+  color: var(--color-muted);
+  font-size: 0.72rem;
+  margin-left: auto;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+/* Progress in sidebar */
+.nav-progress {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--color-border);
+}
+
+.nav-progress-label {
+  font-size: 0.72rem;
+  color: var(--color-muted);
+  margin-bottom: 0.4rem;
+  display: flex;
+  justify-content: space-between;
+}
+
+.nav-progress-track {
+  height: 6px;
+  background: var(--color-border);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.nav-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--color-primary), #fbbf24);
+  border-radius: 4px;
+  width: 0%;
+  transition: width 0.4s ease;
+}
+
+/* ── Main content ── */
+main { min-width: 0; }
+
+main section {
+  background: var(--color-card);
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 1.75rem 2rem;
+  margin-bottom: 1.5rem;
+  scroll-margin-top: 1.5rem;
+  position: relative;
+}
+
+/* Subtle left accent per section */
+main section::before {
+  content: &#34;&#34;;
+  position: absolute;
+  top: 1rem;
+  bottom: 1rem;
+  left: 0;
+  width: 4px;
+  background: linear-gradient(180deg, var(--color-primary) 0%, #fbbf24 100%);
+  border-radius: 0 2px 2px 0;
+  opacity: 0.6;
+}
+
+main section h2 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin: 0 0 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  color: var(--color-text);
+}
+
+.section-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 8px;
+  background: linear-gradient(135deg, var(--color-primary), #fbbf24);
+  color: #fff;
+  font-size: 0.8rem;
+  font-weight: 700;
+  flex-shrink: 0;
+  box-shadow: 0 2px 6px rgba(249,115,22,.35);
+}
+
+/* ── Typography ── */
+h1 { font-size: 1.9rem; font-weight: 800; margin: 0 0 0.75rem; }
+h2 { font-size: 1.25rem; font-weight: 700; margin: 1.75rem 0 0.75rem; }
+h3 { font-size: 1.05rem; font-weight: 600; margin: 1.25rem 0 0.5rem; color: var(--color-primary-dark); }
+p  { margin: 0 0 1rem; }
+a  { color: var(--color-secondary); }
+
+ul, ol { margin: 0 0 1rem; padding-left: 1.5rem; }
+li { margin: 0.2rem 0; }
+strong { font-weight: 600; }
+
+/* ── Objectifs block ── */
+details.objectifs {
+  background: linear-gradient(135deg, #fff7ed, #ffedd5);
+  border-left: 3px solid var(--color-primary);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  padding: 0.6rem 1rem;
+  margin-bottom: 1.25rem;
+}
+
+details.objectifs summary {
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: var(--color-primary-dark);
+  list-style: none;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+details.objectifs summary::before {
+  content: &#34;▶&#34;;
+  font-size: 0.6rem;
+  transition: transform var(--transition);
+}
+
+details.objectifs[open] summary::before { transform: rotate(90deg); }
+details.objectifs ul { margin: 0.5rem 0 0; }
+
+/* ── Quiz QCM ── */
+.component-quiz-qcm {
+  background: linear-gradient(135deg, #fff9f0, #fff7ed);
+  border: 1.5px solid #fed7aa;
+  border-radius: var(--radius-sm);
+  padding: 1.25rem 1.5rem;
+  margin: 1.25rem 0;
+}
+
+.quiz-question {
+  font-weight: 600;
+  margin: 0 0 0.9rem;
+  line-height: 1.45;
+}
+
+.quiz-choices {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  margin-bottom: 0.9rem;
+}
+
+.quiz-choices label {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.55rem 0.9rem;
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-xs);
+  cursor: pointer;
+  transition: border-color var(--transition), background var(--transition);
+  font-size: 0.95rem;
+  line-height: 1.35;
+  background: var(--color-card);
+}
+
+.quiz-choices label:hover {
+  border-color: var(--color-primary);
+  background: var(--color-primary-soft);
+}
+
+.quiz-choices input[type=&#34;radio&#34;] {
+  accent-color: var(--color-primary);
+  width: 1rem;
+  height: 1rem;
+  flex-shrink: 0;
+}
+
+/* ── Quiz texte ── */
+.component-quiz-texte {
+  background: linear-gradient(135deg, #fff9f0, #fff7ed);
+  border: 1.5px solid #fed7aa;
+  border-radius: var(--radius-sm);
+  padding: 1.25rem 1.5rem;
+  margin: 1.25rem 0;
+}
+
+.quiz-input {
+  display: block;
+  width: 100%;
+  max-width: 22rem;
+  padding: 0.5rem 0.75rem;
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-xs);
+  font-family: var(--font-base);
+  font-size: 1rem;
+  margin: 0.5rem 0 0.9rem;
+  transition: border-color var(--transition);
+  background: var(--color-card);
+}
+
+.quiz-input:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(249,115,22,.15);
+}
+
+/* ── Shared button ── */
+.quiz-submit, .code-copy, .aide-ia-copy, .bilan-export {
+  background: var(--color-primary);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius-xs);
+  padding: 0.45rem 1.1rem;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-family: var(--font-base);
+  font-weight: 600;
+  transition: background var(--transition), transform var(--transition), box-shadow var(--transition);
+  box-shadow: 0 2px 6px rgba(249,115,22,.3);
+}
+
+.quiz-submit:hover, .code-copy:hover, .aide-ia-copy:hover, .bilan-export:hover {
+  background: var(--color-primary-dark);
+  box-shadow: 0 3px 10px rgba(249,115,22,.4);
+}
+
+.quiz-submit:active { transform: scale(0.97); }
+
+/* ── Quiz feedback ── */
+.quiz-feedback {
+  margin-top: 0.6rem;
+  font-weight: 600;
+  font-size: 0.95rem;
+  min-height: 1.4em;
+}
+.quiz-feedback.ok { color: var(--color-success); }
+.quiz-feedback.ko { color: var(--color-danger); }
+
+/* ── Code block ── */
+.component-code {
+  position: relative;
+  background: #1c1917;
+  color: #fef3c7;
+  border-radius: var(--radius-sm);
+  padding: 1.1rem 1.25rem;
+  font-family: var(--font-mono);
+  font-size: 0.88rem;
+  line-height: 1.6;
+  overflow-x: auto;
+  margin: 1.25rem 0;
+  border: 1px solid #292524;
+}
+
+.component-code pre { margin: 0; }
+.component-code code { background: none; padding: 0; color: inherit; }
+
+.code-copy {
+  position: absolute;
+  top: 0.6rem;
+  right: 0.6rem;
+  font-size: 0.78rem;
+  padding: 0.25rem 0.6rem;
+  opacity: 0.65;
+  box-shadow: none;
+}
+.code-copy:hover { opacity: 1; box-shadow: none; }
+
+/* ── Reveal / correction ── */
+.component-reveal {
+  border: 1.5px solid #fdba74;
+  background: linear-gradient(135deg, #fff7ed, #ffedd5);
+  border-radius: var(--radius-sm);
+  margin: 1.25rem 0;
+  overflow: hidden;
+}
+
+.component-reveal summary {
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.92rem;
+  color: var(--color-primary-dark);
+  padding: 0.7rem 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  list-style: none;
+  user-select: none;
+}
+
+.component-reveal summary::before {
+  content: &#34;▶&#34;;
+  font-size: 0.6rem;
+  transition: transform var(--transition);
+}
+
+.component-reveal[open] summary::before { transform: rotate(90deg); }
+
+.reveal-content {
+  padding: 0 1rem 0.9rem;
+  white-space: pre-wrap;
+  font-size: 0.95rem;
+  color: var(--color-primary-dark);
+  border-top: 1px solid #fdba74;
+}
+
+/* ── Aide IA ── */
+.component-aide-ia {
+  background: linear-gradient(135deg, #f0fdf4, #dcfce7);
+  border: 1.5px solid #86efac;
+  border-radius: var(--radius-sm);
+  padding: 1rem 1.25rem;
+  margin: 1.25rem 0;
+}
+
+.aide-ia-label {
+  font-weight: 700;
+  font-size: 0.88rem;
+  color: #14532d;
+  margin-bottom: 0.5rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.aide-ia-prompt {
+  background: rgba(255,255,255,.75);
+  border: 1px solid #86efac;
+  border-radius: var(--radius-xs);
+  padding: 0.75rem 1rem;
+  white-space: pre-wrap;
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  color: #14532d;
+  margin: 0 0 0.75rem;
+}
+
+.aide-ia-copy { background: #16a34a; font-size: 0.82rem; padding: 0.3rem 0.75rem; box-shadow: 0 2px 6px rgba(22,163,74,.3); }
+.aide-ia-copy:hover { background: #15803d; }
+
+/* ── Auto-eval ── */
+.component-auto-eval {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem 0.75rem;
+  background: linear-gradient(135deg, #fff9f0, #fef3c7);
+  border: 1.5px solid #fed7aa;
+  border-radius: var(--radius-sm);
+  padding: 0.85rem 1.1rem;
+  margin: 1.25rem 0;
+}
+
+.component-auto-eval p {
+  margin: 0;
+  font-weight: 600;
+  font-size: 0.9rem;
+  flex-basis: 100%;
+  color: var(--color-muted);
+}
+
+.component-auto-eval button {
+  background: var(--color-card);
+  border: 1.5px solid var(--color-border);
+  border-radius: 20px;
+  padding: 0.35rem 1rem;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-family: var(--font-base);
+  transition: border-color var(--transition), background var(--transition);
+}
+
+.component-auto-eval button:hover { border-color: var(--color-primary); }
+
+.component-auto-eval button[data-eval=&#34;ok&#34;].selected {
+  background: var(--color-success-soft);
+  border-color: var(--color-success);
+  color: #14532d;
+  font-weight: 600;
+}
+
+.component-auto-eval button[data-eval=&#34;hesitant&#34;].selected {
+  background: var(--color-warning-soft);
+  border-color: var(--color-warning);
+  color: #78350f;
+  font-weight: 600;
+}
+
+.component-auto-eval button[data-eval=&#34;bloque&#34;].selected {
+  background: var(--color-danger-soft);
+  border-color: var(--color-danger);
+  color: #7f1d1d;
+  font-weight: 600;
+}
+
+/* ── Progress bar (inside sidebar, managed by JS) ── */
+.component-progress-bar { display: none; }
+
+/* ── Bilan ── */
+.component-bilan {
+  background: linear-gradient(135deg, #f0fdf4, #dcfce7);
+  border: 1.5px solid #86efac;
+  border-radius: var(--radius-sm);
+  padding: 1.25rem 1.5rem;
+  margin: 1.5rem 0;
+}
+
+.component-bilan &gt; p { font-weight: 600; color: #14532d; margin-bottom: 0.6rem; }
+
+.component-bilan textarea {
+  width: 100%;
+  font-family: var(--font-base);
+  font-size: 0.95rem;
+  padding: 0.6rem 0.75rem;
+  border: 1.5px solid #86efac;
+  border-radius: var(--radius-xs);
+  background: rgba(255,255,255,.75);
+  resize: vertical;
+  min-height: 8rem;
+  margin-bottom: 0.75rem;
+  line-height: 1.6;
+}
+
+.component-bilan textarea:focus {
+  outline: none;
+  border-color: var(--color-success);
+  box-shadow: 0 0 0 3px rgba(22,163,74,.15);
+}
+
+.bilan-export { background: var(--color-success); box-shadow: 0 2px 6px rgba(22,163,74,.3); }
+.bilan-export:hover { background: #15803d; }
+
+/* ── Ressources externes ── */
+.component-ressources {
+  background: linear-gradient(135deg, #ecfeff, #cffafe);
+  border: 1.5px solid #67e8f9;
+  border-radius: var(--radius-sm);
+  padding: 1rem 1.25rem;
+  margin: 1.25rem 0;
+}
+
+.ressources-label {
+  font-weight: 700;
+  font-size: 0.88rem;
+  color: #0e7490;
+  margin-bottom: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.ressources-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
+.ressource-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.5rem 0.75rem;
+  background: rgba(255,255,255,.7);
+  border: 1px solid #a5f3fc;
+  border-radius: var(--radius-xs);
+  text-decoration: none;
+  color: var(--color-text);
+  transition: background var(--transition), border-color var(--transition), transform var(--transition);
+}
+
+.ressource-item:hover {
+  background: #fff;
+  border-color: #0891b2;
+  transform: translateX(3px);
+  color: var(--color-text);
+}
+
+.ressource-icon {
+  font-size: 1rem;
+  width: 2rem;
+  height: 2rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  flex-shrink: 0;
+}
+
+.ressource-badge-video {
+  background: #fee2e2;
+  color: #dc2626;
+}
+
+.ressource-badge-doc {
+  background: var(--color-primary-soft);
+  color: var(--color-primary-dark);
+}
+
+.ressource-badge-lien {
+  background: #e0f2fe;
+  color: #0369a1;
+}
+
+.ressource-text {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  min-width: 0;
+}
+
+.ressource-titre {
+  font-weight: 600;
+  font-size: 0.92rem;
+  line-height: 1.3;
+}
+
+.ressource-meta {
+  font-size: 0.78rem;
+  color: var(--color-muted);
+}
+
+/* ── Unknown component ── */
+.component-unknown {
+  background: var(--color-danger-soft);
+  border: 1px dashed var(--color-danger);
+  padding: 0.5rem 0.75rem;
+  border-radius: var(--radius-xs);
+  color: #7f1d1d;
+  font-size: 0.9rem;
+  margin: 1rem 0;
+}
+
+/* ── Footer ── */
+footer {
+  text-align: center;
+  color: var(--color-muted);
+  padding: 2rem 0 2.5rem;
+  font-size: 0.85rem;
+  border-top: 1px solid var(--color-border);
+  margin-top: 1rem;
+}
+
+/* ── Tables ── */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1rem 0;
+  font-size: 0.93rem;
+}
+th, td {
+  border: 1px solid var(--color-border);
+  padding: 0.5rem 0.75rem;
+  text-align: left;
+}
+th {
+  background: var(--color-primary-soft);
+  font-weight: 600;
+  color: var(--color-primary-dark);
+}
+tr:nth-child(even) td { background: #fffbf5; }
+
+/* ── Inline code ── */
+code {
+  font-family: var(--font-mono);
+  font-size: 0.88em;
+  background: #fff7ed;
+  border: 1px solid #fed7aa;
+  border-radius: 4px;
+  padding: 0.1em 0.35em;
+  color: var(--color-primary-dark);
+}
+
+pre code { background: none; border: none; padding: 0; font-size: inherit; color: inherit; }
+
+/* ── Responsive ── */
+@media (max-width: 768px) {
+  .page-body {
+    grid-template-columns: 1fr;
+    padding: 1rem 0.75rem 2rem;
+  }
+
+  nav.sommaire {
+    position: static;
+    max-height: none;
+  }
+
+  .cahier-header { padding: 1.5rem 1rem 2.5rem; }
+  .cahier-header h1 { font-size: 1.5rem; }
+
+  main section { padding: 1.25rem 1rem; }
+}
+</style>
+</head>
+<body>
+
+<header class="cahier-header">
+  <div class="cahier-header-inner">
+    <h1>Info-SISR — Réseaux et systèmes</h1>
+    <p class="cahier-meta">
+      <span class="cahier-meta-badge">BTS SIO</span>
+      <span class="cahier-meta-badge">info-sisr</span>
+      <span class="cahier-meta-badge">⏱ 10h estimées</span>
+    </p>
+  </div>
+</header>
+
+<div class="page-body">
+
+  <nav class="sommaire" aria-label="Sommaire">
+    <h2>Plan du cahier</h2>
+    <ol>
+      
+        <li>
+          <a href="#section-1" data-nav-index="1">
+            <span class="nav-num">1</span>
+            <span>Bienvenue dans ton cahier Info-SISR</span>
+            <span class="nav-duree">15min</span>
+          </a>
+        </li>
+      
+        <li>
+          <a href="#section-2" data-nav-index="2">
+            <span class="nav-num">2</span>
+            <span>Ton outil pratique — VM Alpine Linux sur VirtualBox</span>
+            <span class="nav-duree">25min</span>
+          </a>
+        </li>
+      
+        <li>
+          <a href="#section-3" data-nav-index="3">
+            <span class="nav-num">3</span>
+            <span>Adressage IP — bases, classes, privé/public</span>
+            <span class="nav-duree">60min</span>
+          </a>
+        </li>
+      
+        <li>
+          <a href="#section-4" data-nav-index="4">
+            <span class="nav-num">4</span>
+            <span>Sous-réseaux et masque CIDR</span>
+            <span class="nav-duree">60min</span>
+          </a>
+        </li>
+      
+        <li>
+          <a href="#section-5" data-nav-index="5">
+            <span class="nav-num">5</span>
+            <span>Routage statique — comprendre une table de routage</span>
+            <span class="nav-duree">75min</span>
+          </a>
+        </li>
+      
+        <li>
+          <a href="#section-6" data-nav-index="6">
+            <span class="nav-num">6</span>
+            <span>Commandes Linux essentielles</span>
+            <span class="nav-duree">75min</span>
+          </a>
+        </li>
+      
+        <li>
+          <a href="#section-7" data-nav-index="7">
+            <span class="nav-num">7</span>
+            <span>Services réseau — DHCP, DNS, NAT</span>
+            <span class="nav-duree">75min</span>
+          </a>
+        </li>
+      
+        <li>
+          <a href="#section-8" data-nav-index="8">
+            <span class="nav-num">8</span>
+            <span>Pare-feu — règles de base avec iptables</span>
+            <span class="nav-duree">75min</span>
+          </a>
+        </li>
+      
+        <li>
+          <a href="#section-9" data-nav-index="9">
+            <span class="nav-num">9</span>
+            <span>Diagnostic réseau — ping, traceroute, nslookup, ss</span>
+            <span class="nav-duree">75min</span>
+          </a>
+        </li>
+      
+        <li>
+          <a href="#section-10" data-nav-index="10">
+            <span class="nav-num">10</span>
+            <span>Mini-projet — Maquette d&#39;un petit réseau d&#39;entreprise</span>
+            <span class="nav-duree">90min</span>
+          </a>
+        </li>
+      
+        <li>
+          <a href="#section-11" data-nav-index="11">
+            <span class="nav-num">11</span>
+            <span>Bilan final — Quiz de synthèse</span>
+            <span class="nav-duree">30min</span>
+          </a>
+        </li>
+      
+    </ol>
+    <div class="nav-progress">
+      <div class="nav-progress-label">
+        <span>Progression</span>
+        <span class="nav-progress-text">0 / 11</span>
+      </div>
+      <div class="nav-progress-track">
+        <div class="nav-progress-fill"></div>
+      </div>
+    </div>
+  </nav>
+
+  <main>
+    
+      <section id="section-1" data-section-index="1">
+        <h2>
+          <span class="section-badge">1</span>
+          Bienvenue dans ton cahier Info-SISR
+        </h2>
+        
+        <h2>Bonjour !</h2>
+<p>Ce cahier de vacances est là pour t'aider à <strong>consolider tes bases en réseaux et systèmes</strong> avant la 2ème année de BTS SIO SISR. Il n'est pas un examen, il n'y a pas de note — c'est un outil pour toi, à ton rythme.</p>
+<p>Si certains thèmes te semblent déjà clairs, tant mieux : les activités te permettront de le vérifier. Si d'autres te semblent flous, les rappels de cours et les aides IA sont là pour t'accompagner.</p>
+<h2>Ce que tu vas travailler</h2>
+<p>Ce cahier couvre <strong>8 thèmes</strong>, pour environ 10 heures de travail au total :</p>
+<table>
+<thead>
+<tr>
+<th>Activité</th>
+<th>Thème</th>
+<th>Durée</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>01</td>
+<td>Adressage IP — bases, classes, privé/public</td>
+<td>60 min</td>
+</tr>
+<tr>
+<td>02</td>
+<td>Sous-réseaux et masques CIDR</td>
+<td>60 min</td>
+</tr>
+<tr>
+<td>03</td>
+<td>Routage statique</td>
+<td>75 min</td>
+</tr>
+<tr>
+<td>04</td>
+<td>Commandes Linux essentielles</td>
+<td>75 min</td>
+</tr>
+<tr>
+<td>05</td>
+<td>Services réseau : DHCP, DNS, NAT</td>
+<td>75 min</td>
+</tr>
+<tr>
+<td>06</td>
+<td>Pare-feu — règles de base</td>
+<td>75 min</td>
+</tr>
+<tr>
+<td>07</td>
+<td>Diagnostic réseau</td>
+<td>75 min</td>
+</tr>
+<tr>
+<td>08</td>
+<td>Mini-projet — maquette d'un petit réseau</td>
+<td>90 min</td>
+</tr>
+</tbody>
+</table>
+<h2>Comment utiliser ce cahier</h2>
+<ol>
+<li><strong>Lis le rappel de cours</strong> — quelques paragraphes, l'essentiel.</li>
+<li><strong>Fais les activités</strong> — QCM, exercices, commandes à analyser.</li>
+<li><strong>Utilise l'aide IA si tu bloques</strong> — chaque activité a un prompt tout prêt à copier dans ChatGPT ou Claude. Il te guidera <strong>sans te donner la réponse directe</strong>.</li>
+<li><strong>Regarde la solution</strong> après avoir essayé — elle t'explique le raisonnement.</li>
+<li><strong>Fais ton auto-évaluation</strong> — sois honnête avec toi-même, ça t'aide à savoir sur quoi revenir.</li>
+</ol>
+<h2>Un conseil avant de commencer</h2>
+<p>Ne cherche pas à tout faire d'un coup. <strong>Une activité par jour</strong> pendant les vacances, c'est bien suffisant. Le but est de rentrer en septembre avec les fondamentaux solides, pas de tout réviser en une nuit.</p>
+<p>Tu peux commencer dans l'ordre ou sauter à un thème qui te semble prioritaire. Les activités 01 et 02 sont les plus accessibles — un bon point de départ si tu n'es pas sûr de tes bases.</p>
+<h2>Aide IA — utiliser l'intelligence artificielle pour apprendre</h2>
+<p>Chaque activité propose un <strong>encart Aide IA</strong> avec un prompt-type. L'idée : si tu bloques, tu colles ce prompt dans ChatGPT ou Claude, et tu demandes de l'aide à comprendre — pas à copier une réponse.</p>
+<p>Voici un premier exemple de ce que ça donne :</p>
+<div class="component-aide-ia"><div class="aide-ia-label">💡 Comment l'IA peut t'aider</div><pre class="aide-ia-prompt">Je suis étudiant en BTS SIO SISR et je reprends mes révisions réseaux.
+J&#x27;ai du mal à me souvenir de la différence entre une adresse IP publique
+et une adresse IP privée.
+Explique-moi simplement, avec un exemple concret, sans jargon inutile.
+Ne me donne pas juste une définition — aide-moi à vraiment comprendre à
+quoi ça sert dans un réseau réel.</pre><button type="button" class="aide-ia-copy">Copier le prompt</button></div>
+<p>Bonne révision !</p>
+      </section>
+    
+      <section id="section-2" data-section-index="2">
+        <h2>
+          <span class="section-badge">2</span>
+          Ton outil pratique — VM Alpine Linux sur VirtualBox
+        </h2>
+        
+          <details class="objectifs">
+            <summary>Objectifs de cette section</summary>
+            <ul>
+              <li>Installer une VM Alpine Linux légère sur VirtualBox</li><li>Configurer les interfaces réseau NAT + Host-Only</li><li>Tester les premières commandes du cahier dans un environnement réel</li>
+            </ul>
+          </details>
+        
+        <h2>Pourquoi Alpine Linux sur VirtualBox ?</h2>
+<p>Les exercices de ce cahier utilisent de vraies commandes Linux. Alpine Linux est la distribution idéale pour une VM d'entraînement : <strong>~150 Mo de RAM</strong>, boot en 5 secondes, gestionnaire de paquets <code>apk</code> simple.</p>
+<hr />
+<h2>Prérequis</h2>
+<ul>
+<li><strong>VirtualBox</strong> installé (gratuit — <a href="https://www.virtualbox.org">virtualbox.org</a>)</li>
+<li><strong>ISO Alpine Linux</strong> : <a href="https://alpinelinux.org/downloads">alpinelinux.org/downloads</a> → choisis <strong>Standard x86_64</strong> (~200 Mo)</li>
+</ul>
+<hr />
+<h2>Création de la VM</h2>
+<p>Dans VirtualBox, clique <strong>Nouvelle</strong> et utilise ces paramètres :</p>
+<div class="component-code"><pre><code class="language-bash">Nom      : Alpine-BTS-SISR
+Type     : Linux / Other Linux (64-bit)
+RAM      : 512 Mo (minimum viable)
+Disque   : 8 Go, format VDI, allocation dynamique</code></pre><button type="button" class="code-copy">Copier</button></div>
+<p><strong>Réseau (important) :</strong> dans les paramètres de la VM → Réseau :
+- <strong>Carte 1</strong> : NAT → pour accéder à internet depuis la VM
+- <strong>Carte 2</strong> : Réseau hôte uniquement (Host-Only) → pour accéder à la VM depuis ton PC (SSH, etc.)</p>
+<hr />
+<h2>Installation d'Alpine (5 minutes)</h2>
+<ol>
+<li>Démarre la VM avec l'ISO monté → tu arrives sur un shell <code>root</code></li>
+<li>Lance l'installeur interactif :</li>
+</ol>
+<div class="component-code"><pre><code class="language-bash">setup-alpine</code></pre><button type="button" class="code-copy">Copier</button></div>
+<ol>
+<li>Réponds aux questions :</li>
+</ol>
+<table>
+<thead>
+<tr>
+<th>Question</th>
+<th>Réponse</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Clavier</td>
+<td><code>fr</code> puis <code>fr</code></td>
+</tr>
+<tr>
+<td>Hostname</td>
+<td><code>alpine-bts</code></td>
+</tr>
+<tr>
+<td>Interface réseau</td>
+<td><code>eth0</code>, DHCP</td>
+</tr>
+<tr>
+<td>Mot de passe root</td>
+<td>au choix</td>
+</tr>
+<tr>
+<td>Fuseau horaire</td>
+<td><code>Europe/Paris</code></td>
+</tr>
+<tr>
+<td>Miroir APK</td>
+<td><code>1</code> (premier)</td>
+</tr>
+<tr>
+<td>Disque</td>
+<td><code>sda</code> → mode <code>sys</code></td>
+</tr>
+</tbody>
+</table>
+<ol>
+<li>Quand l'installation est terminée : <code>reboot</code>, puis éjecte l'ISO dans VirtualBox</li>
+</ol>
+<hr />
+<h2>Premiers packages utiles</h2>
+<p>Une fois redémarré, connecte-toi en <code>root</code> et installe les outils réseau :</p>
+<div class="component-code"><pre><code class="language-bash"># Mettre à jour les dépôts
+apk update
+# Outils réseau essentiels
+apk add iproute2 iputils bind-tools tcpdump
+# Éditeur de texte
+apk add nano vim
+# Serveur SSH (pour se connecter depuis le PC)
+apk add openssh
+rc-service sshd start
+rc-update add sshd</code></pre><button type="button" class="code-copy">Copier</button></div>
+<hr />
+<h2>Test de l'installation</h2>
+<div class="component-code"><pre><code class="language-bash"># Interfaces réseau et adresses IP
+ip addr
+# Table de routage
+ip route
+# Test connectivité
+ping -c 3 8.8.8.8
+# Résolution DNS
+nslookup google.com
+# Trace de route
+traceroute 8.8.8.8</code></pre><button type="button" class="code-copy">Copier</button></div>
+<div class="component-quiz-qcm" data-quiz><p class="quiz-question">Quelle commande installe un paquet sur Alpine Linux ?
+</p><div class="quiz-choices"><label><input type="radio" name="q-91" data-correct="false"> apt install</label><label><input type="radio" name="q-91" data-correct="false"> yum install</label><label><input type="radio" name="q-91" data-correct="true"> apk add</label><label><input type="radio" name="q-91" data-correct="false"> dnf install</label></div><button class="quiz-submit" type="button">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<div class="component-quiz-qcm" data-quiz><p class="quiz-question">Quelle commande affiche les interfaces réseau et leurs adresses IP sous Linux moderne ?
+</p><div class="quiz-choices"><label><input type="radio" name="q-92" data-correct="false"> ifconfig</label><label><input type="radio" name="q-92" data-correct="true"> ip addr</label><label><input type="radio" name="q-92" data-correct="false"> netstat -i</label><label><input type="radio" name="q-92" data-correct="false"> route show</label></div><button class="quiz-submit" type="button">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<div class="component-quiz-qcm" data-quiz><p class="quiz-question">Pourquoi ajoute-t-on une interface &quot;Host-Only&quot; en plus du NAT ?
+</p><div class="quiz-choices"><label><input type="radio" name="q-93" data-correct="false"> Pour aller plus vite sur internet</label><label><input type="radio" name="q-93" data-correct="true"> Pour accéder à la VM depuis le PC hôte par SSH, sans passer par internet</label><label><input type="radio" name="q-93" data-correct="false"> Parce que le NAT ne supporte pas Linux</label><label><input type="radio" name="q-93" data-correct="false"> Pour partager des fichiers avec d&#x27;autres VMs</label></div><button class="quiz-submit" type="button">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<hr />
+<h2>Se connecter en SSH depuis ton PC</h2>
+<p>Récupère l'adresse de l'interface Host-Only dans la VM (<code>ip addr</code> → <code>eth1</code>), puis depuis ton PC :</p>
+<div class="component-code"><pre><code class="language-bash"># Depuis Windows (PowerShell) ou Linux/macOS (Terminal)
+ssh root@192.168.56.X   # remplace X par l&#x27;adresse affichée dans ip addr</code></pre><button type="button" class="code-copy">Copier</button></div>
+<p>Travailler en SSH est plus confortable que dans la fenêtre VirtualBox.</p>
+<h2>Aide IA</h2>
+<div class="component-aide-ia"><div class="aide-ia-label">💡 Comment l'IA peut t'aider</div><pre class="aide-ia-prompt">Je suis étudiant en BTS SIO option SISR. J&#x27;utilise une VM Alpine Linux
+sur VirtualBox. J&#x27;ai un problème avec la commande suivante :
+[colle ta commande et le message d&#x27;erreur]
+Explique-moi ce qui se passe et comment le corriger.</pre><button type="button" class="aide-ia-copy">Copier le prompt</button></div>
+      </section>
+    
+      <section id="section-3" data-section-index="3">
+        <h2>
+          <span class="section-badge">3</span>
+          Adressage IP — bases, classes, privé/public
+        </h2>
+        
+          <details class="objectifs">
+            <summary>Objectifs de cette section</summary>
+            <ul>
+              <li>Lire et décomposer une adresse IPv4</li><li>Distinguer adresse réseau, hôte et diffusion</li><li>Identifier les plages d&#39;adresses privées</li><li>Reconnaître une adresse publique vs privée</li>
+            </ul>
+          </details>
+        
+        <h2>Rappel de cours</h2>
+<p>Une adresse <strong>IPv4</strong> est une suite de 32 bits, écrite en 4 octets séparés par des points. Chaque octet va de 0 à 255.</p>
+<p>Exemple : <code>192.168.1.10</code></p>
+<p>Une adresse IP, associée à un <strong>masque de sous-réseau</strong>, permet d'identifier :
+- la <strong>partie réseau</strong> (bits identiques à tous les hôtes du réseau)
+- la <strong>partie hôte</strong> (bits qui varient d'un équipement à l'autre)</p>
+<p><strong>Adresses spéciales d'un sous-réseau :</strong>
+- Adresse du <strong>réseau</strong> : tous les bits hôtes à 0 (ex. <code>192.168.1.0</code>)
+- Adresse de <strong>diffusion</strong> (broadcast) : tous les bits hôtes à 1 (ex. <code>192.168.1.255</code>)
+- Les adresses <strong>utilisables</strong> pour des hôtes : entre les deux</p>
+<p><strong>Plages d'adresses privées (RFC 1918) — à connaître par cœur :</strong></p>
+<table>
+<thead>
+<tr>
+<th>Plage</th>
+<th>Notation CIDR</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>10.0.0.0 — 10.255.255.255</td>
+<td>10.0.0.0/8</td>
+</tr>
+<tr>
+<td>172.16.0.0 — 172.31.255.255</td>
+<td>172.16.0.0/12</td>
+</tr>
+<tr>
+<td>192.168.0.0 — 192.168.255.255</td>
+<td>192.168.0.0/16</td>
+</tr>
+</tbody>
+</table>
+<p>Toutes les autres adresses sont <strong>publiques</strong> (routables sur Internet).</p>
+<h2>Activité 1 — Identifier les composantes d'une adresse</h2>
+<p>Le réseau d'une entreprise utilise l'adresse <code>172.16.5.42</code> avec le masque <code>255.255.255.0</code>.</p>
+<div class="component-quiz-qcm" data-quiz><p class="quiz-question">Quelle est l&#x27;adresse du réseau ?</p><div class="quiz-choices"><label><input type="radio" name="q-94" data-correct="true"> 172.16.5.0</label><label><input type="radio" name="q-94" data-correct="false"> 172.16.5.42</label><label><input type="radio" name="q-94" data-correct="false"> 172.16.5.255</label><label><input type="radio" name="q-94" data-correct="false"> 172.0.0.0</label></div><button class="quiz-submit" type="button">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<div class="component-quiz-qcm" data-quiz><p class="quiz-question">Quelle est l&#x27;adresse de diffusion (broadcast) de ce réseau ?</p><div class="quiz-choices"><label><input type="radio" name="q-95" data-correct="false"> 172.16.5.42</label><label><input type="radio" name="q-95" data-correct="false"> 172.16.5.0</label><label><input type="radio" name="q-95" data-correct="true"> 172.16.5.255</label><label><input type="radio" name="q-95" data-correct="false"> 172.16.255.255</label></div><button class="quiz-submit" type="button">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<h2>Activité 2 — Privé ou public ?</h2>
+<div class="component-quiz-qcm" data-quiz><p class="quiz-question">Laquelle de ces adresses est une adresse privée ?</p><div class="quiz-choices"><label><input type="radio" name="q-96" data-correct="false"> 8.8.8.8</label><label><input type="radio" name="q-96" data-correct="true"> 172.20.0.1</label><label><input type="radio" name="q-96" data-correct="false"> 203.0.113.5</label><label><input type="radio" name="q-96" data-correct="false"> 1.1.1.1</label></div><button class="quiz-submit" type="button">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<div class="component-quiz-qcm" data-quiz><p class="quiz-question">L&#x27;adresse 192.168.10.254 est-elle utilisable comme adresse d&#x27;hôte dans le réseau 192.168.10.0/24 ?</p><div class="quiz-choices"><label><input type="radio" name="q-97" data-correct="false"> Non, c&#x27;est l&#x27;adresse de broadcast</label><label><input type="radio" name="q-97" data-correct="true"> Oui, c&#x27;est une adresse hôte valide</label><label><input type="radio" name="q-97" data-correct="false"> Non, c&#x27;est l&#x27;adresse réseau</label><label><input type="radio" name="q-97" data-correct="false"> Non, elle est publique</label></div><button class="quiz-submit" type="button">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<h2>Activité 3 — Compter les hôtes</h2>
+<p>Dans un réseau <code>192.168.50.0/24</code> :</p>
+<div class="component-quiz-texte" data-reponse="254"><p class="quiz-question">Combien d&#x27;adresses IP sont utilisables pour des hôtes ? (entier)</p><input type="text" class="quiz-input"><button type="button" class="quiz-submit">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<h2>Aide IA</h2>
+<div class="component-aide-ia"><div class="aide-ia-label">💡 Comment l'IA peut t'aider</div><pre class="aide-ia-prompt">Je suis étudiant en BTS SIO SISR et je révise l&#x27;adressage IP.
+Je comprends qu&#x27;une adresse IP est découpée en partie réseau et partie hôte,
+mais j&#x27;ai du mal à retrouver l&#x27;adresse réseau et le broadcast à partir d&#x27;une
+adresse et d&#x27;un masque.
+Prends l&#x27;exemple de 172.16.5.42 avec le masque 255.255.255.0 et explique-moi
+pas à pas comment on trouve l&#x27;adresse réseau, le broadcast, et les adresses
+utilisables. Ne me donne pas juste les réponses — guide-moi pour que je
+comprenne le raisonnement.</pre><button type="button" class="aide-ia-copy">Copier le prompt</button></div>
+<h2>Solution</h2>
+<details class="component-reveal"><summary>Voir la solution</summary><div class="reveal-content">**Activité 1 :**
+Le masque 255.255.255.0 signifie que les 3 premiers octets identifient le réseau,
+le 4ème octet identifie l&#x27;hôte.
+- Adresse réseau : 172.16.5.0 (4ème octet = 0)
+- Adresse broadcast : 172.16.5.255 (4ème octet = 255)
+- Hôtes utilisables : 172.16.5.1 à 172.16.5.254
+**Activité 2 :**
+- 172.20.0.1 est dans la plage 172.16.0.0/12 → adresse privée.
+- 8.8.8.8, 203.0.113.5, 1.1.1.1 sont des adresses publiques.
+- 192.168.10.254 est bien un hôte valide (le broadcast serait .255).
+**Activité 3 :**
+Un /24 donne 256 adresses. On retire l&#x27;adresse réseau (.0) et le broadcast (.255),
+soit 256 - 2 = 254 hôtes utilisables.</div></details>
+<h2>Ressources</h2>
+<div class="component-ressources"><div class="ressources-label">📚 Pour aller plus loin</div><div class="ressources-list"><a href="https://www.netacad.com/courses/networking" target="_blank" rel="noopener" class="ressource-item"><span class="ressource-icon ressource-badge-lien">🔗</span><span class="ressource-text"><span class="ressource-titre">Adressage IPv4 — cours complet (Cisco NetAcad)</span><span class="ressource-meta">Cisco NetAcad</span></span></a><a href="https://www.ipcisco.com/lesson/ip-addressing/" target="_blank" rel="noopener" class="ressource-item"><span class="ressource-icon ressource-badge-lien">🔗</span><span class="ressource-text"><span class="ressource-titre">Adressage IP — tutoriel interactif</span><span class="ressource-meta">ipcisco.com</span></span></a><a href="https://www.youtube.com/results?search_query=adressage+IP+IPv4+cours+fran%C3%A7ais" target="_blank" rel="noopener" class="ressource-item"><span class="ressource-icon ressource-badge-video">▶</span><span class="ressource-text"><span class="ressource-titre">Adressage IP v4 expliqué en français</span><span class="ressource-meta">YouTube · recherche</span></span></a><a href="https://www.rfc-editor.org/rfc/rfc1918" target="_blank" rel="noopener" class="ressource-item"><span class="ressource-icon ressource-badge-doc">📖</span><span class="ressource-text"><span class="ressource-titre">RFC 1918 — plages d&#x27;adresses privées</span><span class="ressource-meta">RFC Editor</span></span></a></div></div>
+<h2>Auto-évaluation</h2>
+<div class="component-auto-eval" data-auto-eval><p>Où en es-tu ?</p><button data-eval="ok">😊 Compris</button><button data-eval="hesitant">🤔 À revoir</button><button data-eval="bloque">😣 Bloqué</button></div>
+      </section>
+    
+      <section id="section-4" data-section-index="4">
+        <h2>
+          <span class="section-badge">4</span>
+          Sous-réseaux et masque CIDR
+        </h2>
+        
+          <details class="objectifs">
+            <summary>Objectifs de cette section</summary>
+            <ul>
+              <li>Lire un masque CIDR /N</li><li>Calculer le masque en notation décimale</li><li>Identifier le nombre d&#39;hôtes disponibles</li><li>Choisir le bon masque pour un besoin donné</li>
+            </ul>
+          </details>
+        
+        <h2>Rappel de cours</h2>
+<p>Un masque CIDR <code>/N</code> indique que les <code>N</code> premiers bits de l'adresse IPv4
+sont réservés au réseau, et les <code>32 - N</code> bits restants identifient les hôtes
+dans ce réseau.</p>
+<p><strong>Exemples :</strong>
+- <code>/24</code> → masque <code>255.255.255.0</code> → 256 adresses (254 hôtes utilisables)
+- <code>/26</code> → masque <code>255.255.255.192</code> → 64 adresses (62 hôtes utilisables)
+- <code>/30</code> → masque <code>255.255.255.252</code> → 4 adresses (2 hôtes utilisables, typique
+  d'une liaison point-à-point)</p>
+<p><strong>Astuce mentale :</strong> chaque bit retiré aux hôtes divise par 2 le nombre
+d'adresses. /24 = 256 → /25 = 128 → /26 = 64 → /27 = 32 → /28 = 16…</p>
+<p><strong>Tableau de référence rapide :</strong></p>
+<table>
+<thead>
+<tr>
+<th>Notation CIDR</th>
+<th>Masque</th>
+<th>Nb d'adresses</th>
+<th>Hôtes utilisables</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>/24</td>
+<td>255.255.255.0</td>
+<td>256</td>
+<td>254</td>
+</tr>
+<tr>
+<td>/25</td>
+<td>255.255.255.128</td>
+<td>128</td>
+<td>126</td>
+</tr>
+<tr>
+<td>/26</td>
+<td>255.255.255.192</td>
+<td>64</td>
+<td>62</td>
+</tr>
+<tr>
+<td>/27</td>
+<td>255.255.255.224</td>
+<td>32</td>
+<td>30</td>
+</tr>
+<tr>
+<td>/28</td>
+<td>255.255.255.240</td>
+<td>16</td>
+<td>14</td>
+</tr>
+<tr>
+<td>/29</td>
+<td>255.255.255.248</td>
+<td>8</td>
+<td>6</td>
+</tr>
+<tr>
+<td>/30</td>
+<td>255.255.255.252</td>
+<td>4</td>
+<td>2</td>
+</tr>
+</tbody>
+</table>
+<h2>Activité 1 — Lire un masque</h2>
+<div class="component-quiz-qcm" data-quiz><p class="quiz-question">Quel masque correspond à /26 ?</p><div class="quiz-choices"><label><input type="radio" name="q-98" data-correct="false"> 255.255.255.128</label><label><input type="radio" name="q-98" data-correct="true"> 255.255.255.192</label><label><input type="radio" name="q-98" data-correct="false"> 255.255.255.224</label><label><input type="radio" name="q-98" data-correct="false"> 255.255.255.240</label></div><button class="quiz-submit" type="button">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<div class="component-quiz-qcm" data-quiz><p class="quiz-question">Combien d&#x27;hôtes utilisables dans un /28 ?</p><div class="quiz-choices"><label><input type="radio" name="q-99" data-correct="true"> 14</label><label><input type="radio" name="q-99" data-correct="false"> 16</label><label><input type="radio" name="q-99" data-correct="false"> 30</label><label><input type="radio" name="q-99" data-correct="false"> 6</label></div><button class="quiz-submit" type="button">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<h2>Activité 2 — Choisir le bon masque</h2>
+<p>On veut créer un sous-réseau pour 50 postes de travail. Quel masque CIDR
+choisis-tu pour avoir juste assez d'adresses, sans en gaspiller ?</p>
+<div class="component-quiz-texte" data-reponse="/26"><p class="quiz-question">Saisis le masque sous la forme /N (ex. /24)</p><input type="text" class="quiz-input"><button type="button" class="quiz-submit">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<h2>Activité 3 — Découper un réseau</h2>
+<p>L'administrateur réseau doit créer 4 sous-réseaux à partir du réseau <code>192.168.10.0/24</code>, chacun devant accueillir au maximum 30 hôtes.</p>
+<div class="component-quiz-qcm" data-quiz><p class="quiz-question">Quel masque CIDR faut-il utiliser pour chaque sous-réseau ?</p><div class="quiz-choices"><label><input type="radio" name="q-100" data-correct="false"> /26</label><label><input type="radio" name="q-100" data-correct="true"> /27</label><label><input type="radio" name="q-100" data-correct="false"> /28</label><label><input type="radio" name="q-100" data-correct="false"> /25</label></div><button class="quiz-submit" type="button">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<div class="component-quiz-texte" data-reponse="192.168.10.32"><p class="quiz-question">Quelle est l&#x27;adresse du 2ème sous-réseau ? (adresse réseau, ex. 192.168.10.0)</p><input type="text" class="quiz-input"><button type="button" class="quiz-submit">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<h2>Aide IA</h2>
+<div class="component-aide-ia"><div class="aide-ia-label">💡 Comment l'IA peut t'aider</div><pre class="aide-ia-prompt">Je suis étudiant en BTS SIO et je révise l&#x27;adressage IP. Je dois choisir
+un masque CIDR pour un sous-réseau de 50 hôtes. Je sais qu&#x27;un /N me donne
+2^(32-N) adresses, mais je n&#x27;arrive pas à fixer N. Guide-moi pas à pas
+sans me donner la réponse, en me posant des questions pour me faire
+trouver moi-même.</pre><button type="button" class="aide-ia-copy">Copier le prompt</button></div>
+<h2>Solution</h2>
+<details class="component-reveal"><summary>Voir la solution</summary><div class="reveal-content">**Activité 2 — Choisir le bon masque pour 50 hôtes :**
+Pour 50 hôtes utilisables, il faut au moins 52 adresses (50 hôtes
++ adresse réseau + adresse de diffusion).
+En puissances de 2 : 2^5 = 32 (trop peu), 2^6 = 64 (suffit).
+Il faut donc 6 bits pour les hôtes → masque /(32-6) = /26.
+En notation décimale : 255.255.255.192. 64 adresses au total, 62 hôtes
+utilisables, on en utilise 50, on a une petite marge.
+**Activité 3 — Découper 192.168.10.0/24 en sous-réseaux de 30 hôtes max :**
+30 hôtes → il faut 2^5 = 32 adresses → /27 (255.255.255.224)
+Les 4 sous-réseaux /27 dans 192.168.10.0/24 :
+- Sous-réseau 1 : 192.168.10.0/27  (hôtes .1 à .30,  broadcast .31)
+- Sous-réseau 2 : 192.168.10.32/27 (hôtes .33 à .62, broadcast .63)
+- Sous-réseau 3 : 192.168.10.64/27 (hôtes .65 à .94, broadcast .95)
+- Sous-réseau 4 : 192.168.10.96/27 (hôtes .97 à .126, broadcast .127)</div></details>
+<h2>Ressources</h2>
+<div class="component-ressources"><div class="ressources-label">📚 Pour aller plus loin</div><div class="ressources-list"><a href="https://www.subnet-calculator.com/" target="_blank" rel="noopener" class="ressource-item"><span class="ressource-icon ressource-badge-lien">🔗</span><span class="ressource-text"><span class="ressource-titre">Calculateur de sous-réseaux en ligne</span><span class="ressource-meta">subnet-calculator.com</span></span></a><a href="https://www.ipaddressguide.com/cidr" target="_blank" rel="noopener" class="ressource-item"><span class="ressource-icon ressource-badge-lien">🔗</span><span class="ressource-text"><span class="ressource-titre">CIDR — aide-mémoire des masques</span><span class="ressource-meta">ipaddressguide.com</span></span></a><a href="https://www.youtube.com/results?search_query=sous-r%C3%A9seaux+CIDR+masque+cours+fran%C3%A7ais" target="_blank" rel="noopener" class="ressource-item"><span class="ressource-icon ressource-badge-video">▶</span><span class="ressource-text"><span class="ressource-titre">Sous-réseaux et CIDR expliqués en français</span><span class="ressource-meta">YouTube · recherche</span></span></a><a href="https://jodies.de/ipcalc" target="_blank" rel="noopener" class="ressource-item"><span class="ressource-icon ressource-badge-lien">🔗</span><span class="ressource-text"><span class="ressource-titre">ipcalc — outil de calcul réseau en ligne</span><span class="ressource-meta">jodies.de</span></span></a></div></div>
+<h2>Auto-évaluation</h2>
+<div class="component-auto-eval" data-auto-eval><p>Où en es-tu ?</p><button data-eval="ok">😊 Compris</button><button data-eval="hesitant">🤔 À revoir</button><button data-eval="bloque">😣 Bloqué</button></div>
+      </section>
+    
+      <section id="section-5" data-section-index="5">
+        <h2>
+          <span class="section-badge">5</span>
+          Routage statique — comprendre une table de routage
+        </h2>
+        
+          <details class="objectifs">
+            <summary>Objectifs de cette section</summary>
+            <ul>
+              <li>Comprendre le rôle d&#39;une table de routage</li><li>Lire les champs d&#39;une entrée de routage (destination, masque, passerelle, interface)</li><li>Identifier la route par défaut</li><li>Raisonner sur le chemin emprunté par un paquet</li>
+            </ul>
+          </details>
+        
+        <h2>Rappel de cours</h2>
+<p>Le <strong>routage</strong> est le mécanisme qui permet à un paquet IP de trouver son chemin entre deux équipements qui ne sont pas sur le même réseau local.</p>
+<p>Un <strong>routeur</strong> consulte sa <strong>table de routage</strong> pour décider par quelle interface envoyer chaque paquet.</p>
+<h3>Structure d'une entrée de routage</h3>
+<p>Chaque ligne de la table contient :
+- <strong>Destination</strong> : le réseau cible (adresse réseau + masque)
+- <strong>Passerelle (Gateway)</strong> : l'adresse IP du prochain routeur à contacter
+- <strong>Interface</strong> : la carte réseau locale à utiliser
+- <strong>Métrique</strong> : le coût de la route (plus c'est bas, mieux c'est)</p>
+<h3>Route par défaut</h3>
+<p>La route <code>0.0.0.0/0</code> (ou <code>default</code>) est la <strong>route par défaut</strong>. Si aucune autre route ne correspond à la destination du paquet, le routeur utilise cette route. C'est la "sortie de secours" vers Internet ou vers un autre routeur.</p>
+<h3>Algorithme de sélection</h3>
+<p>Quand un paquet arrive, le routeur cherche la route dont le préfixe <strong>le plus long</strong> correspond à la destination. On appelle ça le <strong>Longest Prefix Match</strong>.</p>
+<p>Exemple de table de routage simplifiée :</p>
+<pre><code>Destination      Masque           Passerelle       Interface
+192.168.1.0      255.255.255.0    0.0.0.0          eth0     ← réseau local
+10.0.0.0         255.0.0.0        192.168.1.254    eth0     ← réseau distant
+0.0.0.0          0.0.0.0          192.168.1.1      eth0     ← route par défaut
+</code></pre>
+<h2>Activité 1 — Lire une table de routage</h2>
+<p>Voici la table de routage d'un routeur :</p>
+<table>
+<thead>
+<tr>
+<th>Destination</th>
+<th>Masque</th>
+<th>Passerelle</th>
+<th>Interface</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>192.168.10.0</td>
+<td>/24</td>
+<td>—</td>
+<td>eth0</td>
+</tr>
+<tr>
+<td>192.168.20.0</td>
+<td>/24</td>
+<td>—</td>
+<td>eth1</td>
+</tr>
+<tr>
+<td>10.10.0.0</td>
+<td>/16</td>
+<td>192.168.10.254</td>
+<td>eth0</td>
+</tr>
+<tr>
+<td>0.0.0.0</td>
+<td>/0</td>
+<td>192.168.10.1</td>
+<td>eth0</td>
+</tr>
+</tbody>
+</table>
+<div class="component-quiz-qcm" data-quiz><p class="quiz-question">Un paquet destiné à 192.168.20.42 emprunte quelle route ?</p><div class="quiz-choices"><label><input type="radio" name="q-101" data-correct="false"> La route vers 192.168.10.0/24</label><label><input type="radio" name="q-101" data-correct="true"> La route vers 192.168.20.0/24</label><label><input type="radio" name="q-101" data-correct="false"> La route par défaut</label><label><input type="radio" name="q-101" data-correct="false"> La route vers 10.10.0.0/16</label></div><button class="quiz-submit" type="button">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<div class="component-quiz-qcm" data-quiz><p class="quiz-question">Un paquet destiné à 8.8.8.8 emprunte quelle route ?</p><div class="quiz-choices"><label><input type="radio" name="q-102" data-correct="false"> La route vers 192.168.10.0/24</label><label><input type="radio" name="q-102" data-correct="false"> La route vers 10.10.0.0/16</label><label><input type="radio" name="q-102" data-correct="true"> La route par défaut via 192.168.10.1</label><label><input type="radio" name="q-102" data-correct="false"> Aucune, le paquet est rejeté</label></div><button class="quiz-submit" type="button">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<h2>Activité 2 — Ajouter une route statique</h2>
+<p>Un technicien veut que le routeur puisse joindre le réseau <code>172.16.5.0/24</code> via la passerelle <code>192.168.10.254</code>.</p>
+<div class="component-quiz-texte" data-reponse="172.16.5.0"><p class="quiz-question">Quelle est la destination à saisir dans la table de routage ? (ex. 10.0.0.0)</p><input type="text" class="quiz-input"><button type="button" class="quiz-submit">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<div class="component-quiz-qcm" data-quiz><p class="quiz-question">Quelle commande Linux permet d&#x27;ajouter cette route statique ?</p><div class="quiz-choices"><label><input type="radio" name="q-103" data-correct="true"> ip route add 172.16.5.0/24 via 192.168.10.254</label><label><input type="radio" name="q-103" data-correct="false"> ip route del 172.16.5.0/24</label><label><input type="radio" name="q-103" data-correct="false"> route -n add 172.16.5.0</label><label><input type="radio" name="q-103" data-correct="false"> ip addr add 172.16.5.0/24</label></div><button class="quiz-submit" type="button">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<h2>Activité 3 — Commandes de diagnostic du routage</h2>
+<div class="component-code"><pre><code class="language-bash"># Afficher la table de routage sous Linux
+ip route show
+# Exemple de sortie :
+# default via 192.168.1.1 dev eth0
+# 192.168.1.0/24 dev eth0 proto kernel scope link src 192.168.1.10
+# Ajouter une route statique
+ip route add 10.10.0.0/16 via 192.168.1.254
+# Supprimer une route
+ip route del 10.10.0.0/16
+# Voir si un paquet suivrait une route particulière
+ip route get 8.8.8.8</code></pre><button type="button" class="code-copy">Copier</button></div>
+<div class="component-quiz-qcm" data-quiz><p class="quiz-question">Que signifie &quot;default via 192.168.1.1&quot; dans la table de routage ?</p><div class="quiz-choices"><label><input type="radio" name="q-104" data-correct="false"> 192.168.1.1 est l&#x27;adresse de ce routeur</label><label><input type="radio" name="q-104" data-correct="true"> Tout paquet sans route explicite sera envoyé à 192.168.1.1</label><label><input type="radio" name="q-104" data-correct="false"> 192.168.1.1 est le serveur DNS</label><label><input type="radio" name="q-104" data-correct="false"> C&#x27;est l&#x27;adresse du réseau local</label></div><button class="quiz-submit" type="button">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<h2>Aide IA</h2>
+<div class="component-aide-ia"><div class="aide-ia-label">💡 Comment l'IA peut t'aider</div><pre class="aide-ia-prompt">Je suis étudiant en BTS SIO SISR et j&#x27;apprends le routage statique.
+Voici la table de routage d&#x27;un routeur :
+- 192.168.10.0/24 via eth0
+- 192.168.20.0/24 via eth1
+- 10.10.0.0/16 via 192.168.10.254
+- 0.0.0.0/0 via 192.168.10.1
+Un paquet arrive, destination 10.10.5.30. Je ne suis pas sûr quelle route
+est choisie et pourquoi. Explique-moi le raisonnement du routeur, pas à pas,
+sans me donner la conclusion avant que je l&#x27;aie trouvée.</pre><button type="button" class="aide-ia-copy">Copier le prompt</button></div>
+<h2>Solution</h2>
+<details class="component-reveal"><summary>Voir la solution</summary><div class="reveal-content">**Activité 1 :**
+- 192.168.20.42 : la route 192.168.20.0/24 correspond exactement → eth1.
+- 8.8.8.8 : aucune route spécifique ne correspond → route par défaut via 192.168.10.1.
+**Activité 2 :**
+La destination est 172.16.5.0 (adresse réseau, pas une adresse hôte).
+La commande complète :
+  ip route add 172.16.5.0/24 via 192.168.10.254
+**Activité 3 :**
+&quot;default via 192.168.1.1&quot; = route par défaut. Tout paquet dont la destination
+ne correspond à aucune autre entrée de la table est envoyé à 192.168.1.1
+(typiquement la box ou le routeur de bordure).</div></details>
+<h2>Ressources</h2>
+<div class="component-ressources"><div class="ressources-label">📚 Pour aller plus loin</div><div class="ressources-list"><a href="https://man7.org/linux/man-pages/man8/ip-route.8.html" target="_blank" rel="noopener" class="ressource-item"><span class="ressource-icon ressource-badge-doc">📖</span><span class="ressource-text"><span class="ressource-titre">Routage IP — Documentation Linux ip-route</span><span class="ressource-meta">man7.org</span></span></a><a href="https://www.youtube.com/results?search_query=routage+statique+cours+fran%C3%A7ais+r%C3%A9seau" target="_blank" rel="noopener" class="ressource-item"><span class="ressource-icon ressource-badge-video">▶</span><span class="ressource-text"><span class="ressource-titre">Routage statique — cours et exercices</span><span class="ressource-meta">YouTube · recherche</span></span></a><a href="https://www.netacad.com/courses/packet-tracer" target="_blank" rel="noopener" class="ressource-item"><span class="ressource-icon ressource-badge-lien">🔗</span><span class="ressource-text"><span class="ressource-titre">Packet Tracer — simuler un réseau Cisco (gratuit)</span><span class="ressource-meta">Cisco NetAcad</span></span></a></div></div>
+<h2>Auto-évaluation</h2>
+<div class="component-auto-eval" data-auto-eval><p>Où en es-tu ?</p><button data-eval="ok">😊 Compris</button><button data-eval="hesitant">🤔 À revoir</button><button data-eval="bloque">😣 Bloqué</button></div>
+      </section>
+    
+      <section id="section-6" data-section-index="6">
+        <h2>
+          <span class="section-badge">6</span>
+          Commandes Linux essentielles
+        </h2>
+        
+          <details class="objectifs">
+            <summary>Objectifs de cette section</summary>
+            <ul>
+              <li>Naviguer dans l&#39;arborescence de fichiers Linux</li><li>Manipuler fichiers et répertoires (ls, cd, cp, mv, rm)</li><li>Gérer les permissions avec chmod</li><li>Surveiller les processus avec ps et grep</li><li>Filtrer la sortie d&#39;une commande avec grep et pipe</li>
+            </ul>
+          </details>
+        
+        <h2>Rappel de cours</h2>
+<p>Linux se pilote en grande partie via un <strong>terminal</strong> (aussi appelé shell, ou ligne de commande). En BTS SIO SISR, c'est une compétence centrale : les serveurs Linux n'ont souvent pas d'interface graphique.</p>
+<h3>Navigation et fichiers</h3>
+<div class="component-code"><pre><code class="language-bash">pwd              # Afficher le répertoire courant
+ls               # Lister les fichiers
+ls -l            # Lister avec détails (permissions, taille, date)
+ls -la           # Idem + fichiers cachés (commençant par .)
+cd /etc          # Aller dans /etc
+cd ..            # Remonter d&#x27;un niveau
+cd ~             # Aller dans son répertoire personnel</code></pre><button type="button" class="code-copy">Copier</button></div>
+<h3>Manipulation de fichiers</h3>
+<div class="component-code"><pre><code class="language-bash">cp fichier.txt copie.txt          # Copier un fichier
+cp -r dossier/ dossier_copie/     # Copier un dossier (récursif)
+mv fichier.txt /tmp/              # Déplacer (ou renommer)
+rm fichier.txt                    # Supprimer un fichier
+rm -r dossier/                    # Supprimer un dossier et son contenu
+mkdir nouveau-dossier             # Créer un répertoire</code></pre><button type="button" class="code-copy">Copier</button></div>
+<h3>Permissions avec chmod</h3>
+<p>Les permissions Linux sont affichées sous la forme <code>rwxr-xr--</code> :
+- <code>r</code> = lecture (4), <code>w</code> = écriture (2), <code>x</code> = exécution (1)
+- 3 groupes : propriétaire | groupe | autres</p>
+<div class="component-code"><pre><code class="language-bash">chmod 755 script.sh    # rwxr-xr-x (propriétaire: tout, groupe+autres: lire+exécuter)
+chmod 644 fichier.txt  # rw-r--r-- (propriétaire: lire+écrire, autres: lire)
+chmod +x script.sh     # Ajouter le droit d&#x27;exécution à tous</code></pre><button type="button" class="code-copy">Copier</button></div>
+<h3>Processus et filtrage</h3>
+<div class="component-code"><pre><code class="language-bash">ps aux               # Lister tous les processus
+ps aux | grep nginx  # Filtrer les processus contenant &quot;nginx&quot;
+grep &quot;erreur&quot; /var/log/syslog   # Chercher &quot;erreur&quot; dans un fichier
+grep -i &quot;error&quot; /var/log/syslog # Idem, insensible à la casse</code></pre><button type="button" class="code-copy">Copier</button></div>
+<h2>Activité 1 — Lire une sortie de commande</h2>
+<p>Voici la sortie de <code>ls -l</code> :</p>
+<pre><code>-rw-r--r-- 1 alice alice  2048 mai 15 10:30 rapport.txt
+-rwxr-xr-x 1 alice alice   512 mai 14 09:00 script.sh
+drwxr-xr-x 2 alice alice  4096 mai 13 14:20 logs
+</code></pre>
+<div class="component-quiz-qcm" data-quiz><p class="quiz-question">Qui peut modifier le fichier rapport.txt ?</p><div class="quiz-choices"><label><input type="radio" name="q-105" data-correct="false"> Tout le monde</label><label><input type="radio" name="q-105" data-correct="true"> Seulement alice</label><label><input type="radio" name="q-105" data-correct="false"> alice et les membres du groupe alice</label><label><input type="radio" name="q-105" data-correct="false"> Personne</label></div><button class="quiz-submit" type="button">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<div class="component-quiz-qcm" data-quiz><p class="quiz-question">Que signifie le &quot;d&quot; au début de la ligne de &quot;logs&quot; ?</p><div class="quiz-choices"><label><input type="radio" name="q-106" data-correct="false"> C&#x27;est un fichier &quot;dangereux&quot;</label><label><input type="radio" name="q-106" data-correct="true"> C&#x27;est un répertoire</label><label><input type="radio" name="q-106" data-correct="false"> C&#x27;est un fichier supprimé</label><label><input type="radio" name="q-106" data-correct="false"> C&#x27;est un lien symbolique</label></div><button class="quiz-submit" type="button">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<h2>Activité 2 — Compléter les commandes</h2>
+<div class="component-quiz-texte" data-reponse="cp -r /var/www /backup/www"><p class="quiz-question">Quelle commande permet de copier récursivement le dossier /var/www vers /backup/www ?</p><input type="text" class="quiz-input"><button type="button" class="quiz-submit">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<div class="component-quiz-qcm" data-quiz><p class="quiz-question">On veut que seul le propriétaire puisse lire et écrire un fichier secret.txt, les autres n&#x27;ont aucun droit. Quelle commande utiliser ?</p><div class="quiz-choices"><label><input type="radio" name="q-107" data-correct="false"> chmod 644 secret.txt</label><label><input type="radio" name="q-107" data-correct="false"> chmod 755 secret.txt</label><label><input type="radio" name="q-107" data-correct="true"> chmod 600 secret.txt</label><label><input type="radio" name="q-107" data-correct="false"> chmod 777 secret.txt</label></div><button class="quiz-submit" type="button">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<h2>Activité 3 — Filtrer avec grep et pipe</h2>
+<div class="component-code"><pre><code class="language-bash"># On veut savoir si le service SSH tourne
+ps aux | grep sshd
+# Chercher les lignes d&#x27;erreur dans un log
+grep -i &quot;error&quot; /var/log/auth.log | grep &quot;failed&quot;</code></pre><button type="button" class="code-copy">Copier</button></div>
+<div class="component-quiz-qcm" data-quiz><p class="quiz-question">Que fait la commande &quot;ps aux | grep sshd&quot; ?</p><div class="quiz-choices"><label><input type="radio" name="q-108" data-correct="false"> Elle démarre le service SSH</label><label><input type="radio" name="q-108" data-correct="true"> Elle liste tous les processus puis filtre ceux qui contiennent &quot;sshd&quot;</label><label><input type="radio" name="q-108" data-correct="false"> Elle supprime le processus sshd</label><label><input type="radio" name="q-108" data-correct="false"> Elle affiche le fichier de configuration SSH</label></div><button class="quiz-submit" type="button">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<h2>Aide IA</h2>
+<div class="component-aide-ia"><div class="aide-ia-label">💡 Comment l'IA peut t'aider</div><pre class="aide-ia-prompt">Je suis étudiant en BTS SIO SISR et je travaille sur les commandes Linux.
+Je ne comprends pas bien comment fonctionnent les permissions en notation
+octale (comme chmod 755 ou chmod 644).
+Explique-moi comment on calcule ces chiffres à partir des lettres rwx,
+avec un exemple pour 755 et un pour 644.
+Pose-moi des questions pour vérifier que j&#x27;ai compris, sans me donner
+toutes les réponses d&#x27;un coup.</pre><button type="button" class="aide-ia-copy">Copier le prompt</button></div>
+<h2>Solution</h2>
+<details class="component-reveal"><summary>Voir la solution</summary><div class="reveal-content">**Activité 1 :**
+- rapport.txt : permissions rw-r--r-- → propriétaire (alice) peut lire et écrire,
+  groupe et autres ne peuvent que lire. Seule alice peut modifier.
+- &quot;d&quot; en début de ligne = directory (répertoire). Un &quot;-&quot; indique un fichier normal.
+**Activité 2 :**
+- cp -r /var/www /backup/www (le -r est obligatoire pour copier un dossier)
+- chmod 600 = rw------- : 6 = r+w pour le propriétaire, 0+0 = rien pour les autres.
+**Notation octale rappel :**
+r=4, w=2, x=1 → on additionne pour chaque groupe.
+755 = rwxr-xr-x (7=4+2+1, 5=4+1, 5=4+1)
+644 = rw-r--r-- (6=4+2, 4=4, 4=4)
+600 = rw------- (6=4+2, 0, 0)
+**Activité 3 :**
+ps aux | grep sshd : &quot;ps aux&quot; liste tous les processus, &quot;|&quot; passe la sortie
+à &quot;grep&quot; qui ne garde que les lignes contenant &quot;sshd&quot;.</div></details>
+<h2>Ressources</h2>
+<div class="component-ressources"><div class="ressources-label">📚 Pour aller plus loin</div><div class="ressources-list"><a href="https://explainshell.com/" target="_blank" rel="noopener" class="ressource-item"><span class="ressource-icon ressource-badge-lien">🔗</span><span class="ressource-text"><span class="ressource-titre">ExplainShell — décortiquer n&#x27;importe quelle commande</span><span class="ressource-meta">explainshell.com</span></span></a><a href="https://tldr.sh/" target="_blank" rel="noopener" class="ressource-item"><span class="ressource-icon ressource-badge-lien">🔗</span><span class="ressource-text"><span class="ressource-titre">tldr pages — aide-mémoire des commandes Linux</span><span class="ressource-meta">tldr.sh</span></span></a><a href="https://www.youtube.com/results?search_query=commandes+Linux+essentielles+d%C3%A9butant+fran%C3%A7ais" target="_blank" rel="noopener" class="ressource-item"><span class="ressource-icon ressource-badge-video">▶</span><span class="ressource-text"><span class="ressource-titre">Linux en français — commandes essentielles</span><span class="ressource-meta">YouTube · recherche</span></span></a><a href="https://linuxcommand.org/tlcl.php" target="_blank" rel="noopener" class="ressource-item"><span class="ressource-icon ressource-badge-doc">📖</span><span class="ressource-text"><span class="ressource-titre">The Linux Command Line — livre gratuit en ligne</span><span class="ressource-meta">linuxcommand.org</span></span></a></div></div>
+<h2>Auto-évaluation</h2>
+<div class="component-auto-eval" data-auto-eval><p>Où en es-tu ?</p><button data-eval="ok">😊 Compris</button><button data-eval="hesitant">🤔 À revoir</button><button data-eval="bloque">😣 Bloqué</button></div>
+      </section>
+    
+      <section id="section-7" data-section-index="7">
+        <h2>
+          <span class="section-badge">7</span>
+          Services réseau — DHCP, DNS, NAT
+        </h2>
+        
+          <details class="objectifs">
+            <summary>Objectifs de cette section</summary>
+            <ul>
+              <li>Expliquer simplement le rôle de DHCP</li><li>Comprendre la résolution de noms DNS</li><li>Distinguer NAT source et destination</li><li>Relier ces trois services à des situations concrètes</li>
+            </ul>
+          </details>
+        
+        <h2>Rappel de cours</h2>
+<p>Ces trois services sont omniprésents dans tout réseau d'entreprise. Tu les utilises sans le savoir chaque jour.</p>
+<h3>DHCP — Distribution automatique d'adresses IP</h3>
+<p>Le <strong>DHCP</strong> (Dynamic Host Configuration Protocol) permet à un équipement de recevoir automatiquement sa configuration réseau au démarrage :
+- Adresse IP
+- Masque de sous-réseau
+- Passerelle par défaut
+- Serveur DNS</p>
+<p>Sans DHCP, il faudrait configurer manuellement chaque poste. Le serveur DHCP maintient un <strong>bail</strong> (lease) : il attribue l'adresse pour une durée limitée.</p>
+<p><strong>Échanges DHCP (DORA) :</strong>
+1. <strong>Discover</strong> : le client diffuse "Y a-t-il un serveur DHCP ?"
+2. <strong>Offer</strong> : le serveur répond "Je t'offre 192.168.1.10"
+3. <strong>Request</strong> : le client accepte "Je prends 192.168.1.10"
+4. <strong>Acknowledge</strong> : le serveur confirme "C'est à toi"</p>
+<h3>DNS — Résolution de noms</h3>
+<p>Le <strong>DNS</strong> (Domain Name System) traduit un nom de domaine (www.google.com) en adresse IP (142.250.74.196).</p>
+<p>Sans DNS, il faudrait mémoriser l'adresse IP de chaque site. La résolution se fait en cascade :
+1. Cache local
+2. Serveur DNS configuré (souvent la box ou le serveur d'entreprise)
+3. Serveurs DNS racines si nécessaire</p>
+<h3>NAT — Traduction d'adresses réseau</h3>
+<p>Le <strong>NAT</strong> (Network Address Translation) permet à plusieurs équipements avec des adresses privées de partager une seule adresse publique.</p>
+<ul>
+<li>Le routeur remplace l'adresse source privée par son adresse publique</li>
+<li>Il maintient une table de correspondance pour faire revenir les réponses au bon hôte</li>
+<li>C'est pourquoi tous les ordinateurs d'un réseau domestique semblent avoir la même adresse vue d'Internet</li>
+</ul>
+<h2>Activité 1 — DHCP en situation</h2>
+<p>Un technicien branche un nouveau PC sur le réseau de l'entreprise. Quelques secondes plus tard, le PC a une adresse IP sans aucune configuration manuelle.</p>
+<div class="component-quiz-qcm" data-quiz><p class="quiz-question">Quel service réseau est responsable de cette attribution automatique ?</p><div class="quiz-choices"><label><input type="radio" name="q-109" data-correct="false"> DNS</label><label><input type="radio" name="q-109" data-correct="false"> NAT</label><label><input type="radio" name="q-109" data-correct="true"> DHCP</label><label><input type="radio" name="q-109" data-correct="false"> VLAN</label></div><button class="quiz-submit" type="button">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<div class="component-quiz-qcm" data-quiz><p class="quiz-question">Dans l&#x27;échange DHCP, quelle étape le client fait-il en premier ?</p><div class="quiz-choices"><label><input type="radio" name="q-110" data-correct="false"> Il envoie un Acknowledge</label><label><input type="radio" name="q-110" data-correct="true"> Il envoie un Discover en broadcast</label><label><input type="radio" name="q-110" data-correct="false"> Il envoie un Request à l&#x27;adresse du serveur</label><label><input type="radio" name="q-110" data-correct="false"> Il attend que le serveur l&#x27;appelle</label></div><button class="quiz-submit" type="button">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<h2>Activité 2 — DNS en situation</h2>
+<p>Un utilisateur tape <code>www.entreprise.fr</code> dans son navigateur.</p>
+<div class="component-quiz-qcm" data-quiz><p class="quiz-question">Quel est le rôle du serveur DNS dans cette situation ?</p><div class="quiz-choices"><label><input type="radio" name="q-111" data-correct="false"> Attribuer une adresse IP à l&#x27;utilisateur</label><label><input type="radio" name="q-111" data-correct="true"> Traduire www.entreprise.fr en adresse IP</label><label><input type="radio" name="q-111" data-correct="false"> Bloquer l&#x27;accès au site si non autorisé</label><label><input type="radio" name="q-111" data-correct="false"> Chiffrer la connexion</label></div><button class="quiz-submit" type="button">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<div class="component-quiz-texte" data-reponse="adresse ip"><p class="quiz-question">On dit que le DNS résout un nom de domaine en quoi ? (2 mots)</p><input type="text" class="quiz-input"><button type="button" class="quiz-submit">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<h2>Activité 3 — NAT en situation</h2>
+<div class="component-quiz-qcm" data-quiz><p class="quiz-question">Pourquoi le NAT est-il indispensable dans la plupart des réseaux d&#x27;entreprise ?</p><div class="quiz-choices"><label><input type="radio" name="q-112" data-correct="false"> Il accélère la connexion Internet</label><label><input type="radio" name="q-112" data-correct="true"> Il permet aux machines avec des adresses privées d&#x27;accéder à Internet via une seule adresse publique</label><label><input type="radio" name="q-112" data-correct="false"> Il chiffre tout le trafic réseau</label><label><input type="radio" name="q-112" data-correct="false"> Il attribue les noms de domaine aux adresses IP</label></div><button class="quiz-submit" type="button">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<div class="component-quiz-qcm" data-quiz><p class="quiz-question">Qu&#x27;est-ce que le routeur NAT maintient pour faire revenir les réponses au bon hôte interne ?</p><div class="quiz-choices"><label><input type="radio" name="q-113" data-correct="false"> Une table DNS</label><label><input type="radio" name="q-113" data-correct="false"> Une table de routage statique</label><label><input type="radio" name="q-113" data-correct="true"> Une table de correspondance (table NAT)</label><label><input type="radio" name="q-113" data-correct="false"> Un pare-feu applicatif</label></div><button class="quiz-submit" type="button">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<h2>Aide IA</h2>
+<div class="component-aide-ia"><div class="aide-ia-label">💡 Comment l'IA peut t'aider</div><pre class="aide-ia-prompt">Je suis étudiant en BTS SIO SISR. Je comprends à peu près ce que font DHCP,
+DNS et NAT séparément, mais j&#x27;ai du mal à voir comment les trois travaillent
+ensemble quand je me connecte à Internet depuis mon PC.
+Peux-tu me décrire, étape par étape, ce qui se passe depuis le moment où je
+branche mon PC jusqu&#x27;au moment où la page web s&#x27;affiche, en faisant intervenir
+DHCP, DNS et NAT au bon moment ?
+Ne me donne pas tout d&#x27;un coup — pose-moi des questions intermédiaires.</pre><button type="button" class="aide-ia-copy">Copier le prompt</button></div>
+<h2>Solution</h2>
+<details class="component-reveal"><summary>Voir la solution</summary><div class="reveal-content">**Activité 1 :**
+- C&#x27;est le DHCP qui attribue automatiquement l&#x27;adresse IP.
+- Le premier message du client est un Discover (broadcast, car il ne connaît
+  pas encore l&#x27;adresse du serveur DHCP).
+**Activité 2 :**
+- Le DNS traduit le nom www.entreprise.fr en adresse IP.
+- On dit qu&#x27;il résout le nom en &quot;adresse IP&quot;.
+**Activité 3 :**
+- Le NAT permet aux adresses privées (192.168.x.x, 10.x.x.x…) d&#x27;accéder à Internet
+  via une seule adresse publique portée par le routeur.
+- Le routeur maintient une table NAT : il sait que la connexion vers 80.80.80.1:443
+  vient en réalité de 192.168.1.10:52341 en interne.
+**La chaîne complète quand tu ouvres un site web :**
+1. PC branché → DHCP donne IP, masque, passerelle, DNS
+2. Saisie de www.google.com → requête DNS → réponse : 142.250.74.196
+3. PC envoie le paquet vers 142.250.74.196 via la passerelle
+4. Routeur NAT substitue l&#x27;IP privée par l&#x27;IP publique
+5. La réponse revient, le NAT la renvoie au bon PC interne</div></details>
+<h2>Ressources</h2>
+<div class="component-ressources"><div class="ressources-label">📚 Pour aller plus loin</div><div class="ressources-list"><a href="https://www.cloudflare.com/fr-fr/learning/network-layer/what-is-dhcp/" target="_blank" rel="noopener" class="ressource-item"><span class="ressource-icon ressource-badge-doc">📖</span><span class="ressource-text"><span class="ressource-titre">DHCP — comment ça marche ? (Cloudflare)</span><span class="ressource-meta">Cloudflare</span></span></a><a href="https://www.cloudflare.com/fr-fr/learning/dns/what-is-dns/" target="_blank" rel="noopener" class="ressource-item"><span class="ressource-icon ressource-badge-doc">📖</span><span class="ressource-text"><span class="ressource-titre">DNS — comment ça marche ? (Cloudflare)</span><span class="ressource-meta">Cloudflare</span></span></a><a href="https://www.cloudflare.com/fr-fr/learning/network-layer/what-is-nat/" target="_blank" rel="noopener" class="ressource-item"><span class="ressource-icon ressource-badge-doc">📖</span><span class="ressource-text"><span class="ressource-titre">NAT — explication et fonctionnement</span><span class="ressource-meta">Cloudflare</span></span></a><a href="https://www.youtube.com/results?search_query=DHCP+DNS+NAT+cours+fran%C3%A7ais+r%C3%A9seau" target="_blank" rel="noopener" class="ressource-item"><span class="ressource-icon ressource-badge-video">▶</span><span class="ressource-text"><span class="ressource-titre">DHCP, DNS, NAT expliqués en français</span><span class="ressource-meta">YouTube · recherche</span></span></a></div></div>
+<h2>Auto-évaluation</h2>
+<div class="component-auto-eval" data-auto-eval><p>Où en es-tu ?</p><button data-eval="ok">😊 Compris</button><button data-eval="hesitant">🤔 À revoir</button><button data-eval="bloque">😣 Bloqué</button></div>
+      </section>
+    
+      <section id="section-8" data-section-index="8">
+        <h2>
+          <span class="section-badge">8</span>
+          Pare-feu — règles de base avec iptables
+        </h2>
+        
+          <details class="objectifs">
+            <summary>Objectifs de cette section</summary>
+            <ul>
+              <li>Comprendre le principe de filtrage par règles</li><li>Lire une règle iptables simple</li><li>Identifier les chaînes INPUT, OUTPUT, FORWARD</li><li>Écrire une règle de base pour autoriser ou bloquer du trafic</li>
+            </ul>
+          </details>
+        
+        <h2>Rappel de cours</h2>
+<p>Un <strong>pare-feu</strong> (firewall) filtre le trafic réseau selon des <strong>règles</strong>. Il examine chaque paquet et décide de l'accepter (ACCEPT), le rejeter silencieusement (DROP) ou le refuser avec une notification (REJECT).</p>
+<h3>Les chaînes iptables</h3>
+<p>Sous Linux, <code>iptables</code> organise les règles en <strong>chaînes</strong> selon le flux du trafic :</p>
+<table>
+<thead>
+<tr>
+<th>Chaîne</th>
+<th>S'applique à</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>INPUT</strong></td>
+<td>Trafic entrant à destination de cette machine</td>
+</tr>
+<tr>
+<td><strong>OUTPUT</strong></td>
+<td>Trafic sortant généré par cette machine</td>
+</tr>
+<tr>
+<td><strong>FORWARD</strong></td>
+<td>Trafic qui traverse la machine (routage)</td>
+</tr>
+</tbody>
+</table>
+<h3>Syntaxe d'une règle iptables</h3>
+<div class="component-code"><pre><code class="language-bash"># Structure générale
+iptables -A CHAINE -p PROTOCOLE --dport PORT -j ACTION
+# Exemples :
+iptables -A INPUT -p tcp --dport 22 -j ACCEPT   # Autoriser SSH entrant
+iptables -A INPUT -p tcp --dport 80 -j ACCEPT   # Autoriser HTTP entrant
+iptables -A INPUT -p tcp --dport 443 -j ACCEPT  # Autoriser HTTPS entrant
+# Bloquer tout le reste en INPUT (politique par défaut)
+iptables -P INPUT DROP
+# Autoriser le trafic établi (réponses aux connexions initiées par nous)
+iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+# Voir les règles actuelles
+iptables -L -n -v</code></pre><button type="button" class="code-copy">Copier</button></div>
+<h3>Principe de liste blanche vs liste noire</h3>
+<ul>
+<li><strong>Liste blanche (whitelist)</strong> : tout est bloqué par défaut, on n'autorise que ce qui est explicitement listé. Plus sécurisé.</li>
+<li><strong>Liste noire (blacklist)</strong> : tout est autorisé par défaut, on bloque ce qui est listé. Plus simple mais moins sécurisé.</li>
+</ul>
+<p>La bonne pratique en SISR : <strong>politique par défaut = DROP</strong> (liste blanche).</p>
+<h2>Activité 1 — Lire des règles iptables</h2>
+<p>Voici les règles d'un serveur web :</p>
+<pre><code>iptables -P INPUT DROP
+iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+iptables -A INPUT -p tcp --dport 80 -j ACCEPT
+iptables -A INPUT -p tcp --dport 443 -j ACCEPT
+iptables -A INPUT -p tcp --dport 22 -s 192.168.1.0/24 -j ACCEPT
+</code></pre>
+<div class="component-quiz-qcm" data-quiz><p class="quiz-question">Un utilisateur externe tente de se connecter en SSH sur ce serveur. Que se passe-t-il ?</p><div class="quiz-choices"><label><input type="radio" name="q-114" data-correct="false"> La connexion est acceptée</label><label><input type="radio" name="q-114" data-correct="true"> La connexion est refusée car SSH n&#x27;est autorisé que depuis 192.168.1.0/24</label><label><input type="radio" name="q-114" data-correct="false"> La connexion est redirigée vers le port 443</label><label><input type="radio" name="q-114" data-correct="false"> Le pare-feu est désactivé pour SSH</label></div><button class="quiz-submit" type="button">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<div class="component-quiz-qcm" data-quiz><p class="quiz-question">Quelle est la politique par défaut de la chaîne INPUT ?</p><div class="quiz-choices"><label><input type="radio" name="q-115" data-correct="false"> ACCEPT</label><label><input type="radio" name="q-115" data-correct="false"> REJECT</label><label><input type="radio" name="q-115" data-correct="true"> DROP</label><label><input type="radio" name="q-115" data-correct="false"> FORWARD</label></div><button class="quiz-submit" type="button">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<h2>Activité 2 — Écrire une règle</h2>
+<p>Un serveur héberge un service FTP sur le port 21. On veut autoriser uniquement les connexions FTP depuis le réseau interne <code>10.0.0.0/8</code>.</p>
+<div class="component-quiz-qcm" data-quiz><p class="quiz-question">Quelle règle iptables est correcte ?</p><div class="quiz-choices"><label><input type="radio" name="q-116" data-correct="false"> iptables -A INPUT -p tcp --dport 21 -j ACCEPT</label><label><input type="radio" name="q-116" data-correct="true"> iptables -A INPUT -p tcp --dport 21 -s 10.0.0.0/8 -j ACCEPT</label><label><input type="radio" name="q-116" data-correct="false"> iptables -A OUTPUT -p tcp --dport 21 -s 10.0.0.0/8 -j ACCEPT</label><label><input type="radio" name="q-116" data-correct="false"> iptables -A FORWARD -p udp --dport 21 -j DROP</label></div><button class="quiz-submit" type="button">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<h2>Activité 3 — Identifier la chaîne</h2>
+<div class="component-quiz-qcm" data-quiz><p class="quiz-question">Un administrateur veut empêcher son serveur Linux d&#x27;envoyer des emails (port 25 en sortie). Quelle chaîne faut-il utiliser ?</p><div class="quiz-choices"><label><input type="radio" name="q-117" data-correct="false"> INPUT</label><label><input type="radio" name="q-117" data-correct="true"> OUTPUT</label><label><input type="radio" name="q-117" data-correct="false"> FORWARD</label><label><input type="radio" name="q-117" data-correct="false"> PREROUTING</label></div><button class="quiz-submit" type="button">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<div class="component-quiz-qcm" data-quiz><p class="quiz-question">Un routeur Linux fait transiter des paquets entre deux réseaux. Les règles de filtrage sur ce flux doivent être dans quelle chaîne ?</p><div class="quiz-choices"><label><input type="radio" name="q-118" data-correct="false"> INPUT</label><label><input type="radio" name="q-118" data-correct="false"> OUTPUT</label><label><input type="radio" name="q-118" data-correct="true"> FORWARD</label><label><input type="radio" name="q-118" data-correct="false"> POSTROUTING</label></div><button class="quiz-submit" type="button">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<h2>Aide IA</h2>
+<div class="component-aide-ia"><div class="aide-ia-label">💡 Comment l'IA peut t'aider</div><pre class="aide-ia-prompt">Je suis étudiant en BTS SIO SISR et j&#x27;apprends iptables.
+J&#x27;ai du mal à comprendre la différence entre les chaînes INPUT, OUTPUT et
+FORWARD. Je sais qu&#x27;elles existent mais je confonds quand utiliser l&#x27;une
+ou l&#x27;autre.
+Donne-moi un scénario concret pour chacune des trois chaînes, avec un exemple
+de règle correspondant. Ensuite pose-moi une question pour vérifier que j&#x27;ai
+compris la distinction.</pre><button type="button" class="aide-ia-copy">Copier le prompt</button></div>
+<h2>Solution</h2>
+<details class="component-reveal"><summary>Voir la solution</summary><div class="reveal-content">**Activité 1 :**
+- Un utilisateur externe tente SSH : la règle SSH a &quot;-s 192.168.1.0/24&quot; donc
+  seules les connexions venant de ce réseau interne sont autorisées.
+  Un externe est bloqué par la politique DROP.
+- Politique par défaut INPUT = DROP (liste blanche).
+**Activité 2 :**
+La bonne règle est :
+  iptables -A INPUT -p tcp --dport 21 -s 10.0.0.0/8 -j ACCEPT
+- &quot;-A INPUT&quot; car c&#x27;est du trafic entrant sur le serveur
+- &quot;-p tcp&quot; car FTP utilise TCP
+- &quot;--dport 21&quot; = port de destination 21
+- &quot;-s 10.0.0.0/8&quot; = uniquement depuis ce réseau source
+**Activité 3 :**
+- Bloquer l&#x27;envoi d&#x27;emails depuis le serveur = trafic sortant → chaîne OUTPUT.
+- Filtrer le trafic qui traverse un routeur = chaîne FORWARD (le paquet n&#x27;est
+  ni à destination ni en provenance du routeur lui-même).</div></details>
+<h2>Ressources</h2>
+<div class="component-ressources"><div class="ressources-label">📚 Pour aller plus loin</div><div class="ressources-list"><a href="https://help.ubuntu.com/community/IptablesHowTo" target="_blank" rel="noopener" class="ressource-item"><span class="ressource-icon ressource-badge-doc">📖</span><span class="ressource-text"><span class="ressource-titre">iptables — documentation Ubuntu</span><span class="ressource-meta">Ubuntu</span></span></a><a href="https://wiki.nftables.org/wiki-nftables/index.php/Main_Page" target="_blank" rel="noopener" class="ressource-item"><span class="ressource-icon ressource-badge-doc">📖</span><span class="ressource-text"><span class="ressource-titre">nftables — le successeur d&#x27;iptables</span><span class="ressource-meta">nftables.org</span></span></a><a href="https://www.youtube.com/results?search_query=iptables+pare-feu+linux+cours+fran%C3%A7ais" target="_blank" rel="noopener" class="ressource-item"><span class="ressource-icon ressource-badge-video">▶</span><span class="ressource-text"><span class="ressource-titre">Pare-feu Linux iptables expliqué en français</span><span class="ressource-meta">YouTube · recherche</span></span></a><a href="https://www.pimpmyiptables.com/" target="_blank" rel="noopener" class="ressource-item"><span class="ressource-icon ressource-badge-lien">🔗</span><span class="ressource-text"><span class="ressource-titre">Générateur de règles iptables en ligne</span><span class="ressource-meta">pimpmyiptables.com</span></span></a></div></div>
+<h2>Auto-évaluation</h2>
+<div class="component-auto-eval" data-auto-eval><p>Où en es-tu ?</p><button data-eval="ok">😊 Compris</button><button data-eval="hesitant">🤔 À revoir</button><button data-eval="bloque">😣 Bloqué</button></div>
+      </section>
+    
+      <section id="section-9" data-section-index="9">
+        <h2>
+          <span class="section-badge">9</span>
+          Diagnostic réseau — ping, traceroute, nslookup, ss
+        </h2>
+        
+          <details class="objectifs">
+            <summary>Objectifs de cette section</summary>
+            <ul>
+              <li>Utiliser ping pour tester la connectivité</li><li>Lire la sortie de traceroute pour identifier un blocage</li><li>Résoudre un nom de domaine avec nslookup</li><li>Lister les connexions actives avec ss</li><li>Suivre une méthode de diagnostic par étapes</li>
+            </ul>
+          </details>
+        
+        <h2>Rappel de cours</h2>
+<p>Quand un réseau ne fonctionne pas, il faut diagnostiquer méthodiquement. Les outils Linux suivants couvrent l'essentiel des situations.</p>
+<h3>ping — tester la connectivité</h3>
+<div class="component-code"><pre><code class="language-bash">ping 8.8.8.8           # Envoie des paquets ICMP à 8.8.8.8
+ping -c 4 8.8.8.8      # Envoie exactement 4 paquets puis s&#x27;arrête
+ping -c 4 192.168.1.1  # Tester la passerelle locale
+# Sortie typique :
+# 64 bytes from 8.8.8.8: icmp_seq=1 ttl=118 time=12.5 ms
+# Pas de réponse = timeout → hôte injoignable ou ICMP bloqué</code></pre><button type="button" class="code-copy">Copier</button></div>
+<h3>traceroute — tracer le chemin</h3>
+<div class="component-code"><pre><code class="language-bash">traceroute 8.8.8.8     # Liste chaque routeur traversé
+traceroute -n 8.8.8.8  # Sans résolution DNS (plus rapide)
+# Sortie typique :
+#  1  192.168.1.1     1.2 ms
+#  2  10.20.30.1      8.4 ms
+#  3  * * *           (routeur ne répond pas aux ICMP)
+#  4  8.8.8.8        12.5 ms
+# Un &quot;* * *&quot; signifie que ce nœud filtre les paquets de traceroute</code></pre><button type="button" class="code-copy">Copier</button></div>
+<h3>nslookup — résoudre un nom DNS</h3>
+<div class="component-code"><pre><code class="language-bash">nslookup www.google.com          # Résoudre un nom
+nslookup www.google.com 8.8.8.8  # Utiliser un DNS spécifique
+# Sortie :
+# Server: 192.168.1.1
+# Address: 192.168.1.1#53
+# Name: www.google.com
+# Address: 142.250.74.196</code></pre><button type="button" class="code-copy">Copier</button></div>
+<h3>ss — voir les connexions et ports ouverts</h3>
+<div class="component-code"><pre><code class="language-bash">ss -tuln           # Ports TCP et UDP en écoute (listening)
+ss -tun            # Connexions TCP/UDP actives
+ss -tuln | grep 80 # Vérifier si le port 80 est ouvert
+# Colonnes importantes :
+# State   = LISTEN (en attente) ou ESTABLISHED (connecté)
+# Local   = adresse:port local
+# Peer    = adresse:port distant</code></pre><button type="button" class="code-copy">Copier</button></div>
+<h3>Méthode de diagnostic réseau</h3>
+<p>Quand quelque chose ne marche pas, progresse du plus simple au plus complexe :
+1. <code>ping 127.0.0.1</code> → la pile IP locale fonctionne ?
+2. <code>ping &lt;adresse-ip-locale&gt;</code> → mon adresse IP est correcte ?
+3. <code>ping &lt;passerelle&gt;</code> → je joins mon routeur ?
+4. <code>ping 8.8.8.8</code> → j'ai accès à Internet (IP) ?
+5. <code>nslookup www.google.com</code> → le DNS fonctionne ?
+6. <code>traceroute &lt;destination&gt;</code> → où ça bloque ?</p>
+<h2>Activité 1 — Interpréter un ping</h2>
+<p>Voici la sortie d'une commande <code>ping -c 4 192.168.1.1</code> :</p>
+<pre><code>PING 192.168.1.1: 56 data bytes
+Request timeout for icmp_seq 0
+Request timeout for icmp_seq 1
+Request timeout for icmp_seq 2
+Request timeout for icmp_seq 3
+--- 192.168.1.1 ping statistics ---
+4 packets transmitted, 0 packets received, 100% packet loss
+</code></pre>
+<div class="component-quiz-qcm" data-quiz><p class="quiz-question">Que peut-on conclure de cette sortie ?</p><div class="quiz-choices"><label><input type="radio" name="q-119" data-correct="false"> La passerelle est joignable et fonctionne correctement</label><label><input type="radio" name="q-119" data-correct="true"> La passerelle ne répond pas aux pings (injoignable ou ICMP bloqué)</label><label><input type="radio" name="q-119" data-correct="false"> La connexion Internet est coupée</label><label><input type="radio" name="q-119" data-correct="false"> Le serveur DNS est en panne</label></div><button class="quiz-submit" type="button">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<h2>Activité 2 — Lire un traceroute</h2>
+<pre><code> 1  192.168.1.1     1.5 ms
+ 2  10.0.0.1        8.2 ms
+ 3  * * *
+ 4  * * *
+ 5  142.250.74.196  18.4 ms
+</code></pre>
+<div class="component-quiz-qcm" data-quiz><p class="quiz-question">Que signifient les lignes &quot;* * *&quot; aux sauts 3 et 4 ?</p><div class="quiz-choices"><label><input type="radio" name="q-120" data-correct="false"> La connexion Internet est coupée à ces points</label><label><input type="radio" name="q-120" data-correct="true"> Ces routeurs ne répondent pas aux paquets ICMP du traceroute</label><label><input type="radio" name="q-120" data-correct="false"> Ces adresses sont privées et ne peuvent pas répondre</label><label><input type="radio" name="q-120" data-correct="false"> Le traceroute a atteint sa destination</label></div><button class="quiz-submit" type="button">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<div class="component-quiz-qcm" data-quiz><p class="quiz-question">À partir de cette sortie, peut-on dire que la destination 142.250.74.196 est joignable ?</p><div class="quiz-choices"><label><input type="radio" name="q-121" data-correct="false"> Non, car des sauts ne répondent pas</label><label><input type="radio" name="q-121" data-correct="true"> Oui, la destination répond bien au saut 5</label><label><input type="radio" name="q-121" data-correct="false"> On ne peut pas savoir</label><label><input type="radio" name="q-121" data-correct="false"> Non, le traceroute s&#x27;arrête toujours au 3ème saut</label></div><button class="quiz-submit" type="button">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<h2>Activité 3 — Méthode de diagnostic</h2>
+<p>Un utilisateur signale qu'il ne peut pas accéder à www.entreprise.fr. Il peut pinger 8.8.8.8 sans problème.</p>
+<div class="component-quiz-qcm" data-quiz><p class="quiz-question">Quelle est l&#x27;étape de diagnostic la plus logique à réaliser ensuite ?</p><div class="quiz-choices"><label><input type="radio" name="q-122" data-correct="false"> Redémarrer le serveur web</label><label><input type="radio" name="q-122" data-correct="true"> Faire un nslookup www.entreprise.fr pour tester la résolution DNS</label><label><input type="radio" name="q-122" data-correct="false"> Réinstaller le navigateur</label><label><input type="radio" name="q-122" data-correct="false"> Contacter le fournisseur d&#x27;accès Internet</label></div><button class="quiz-submit" type="button">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<div class="component-quiz-texte" data-reponse="ss -tuln"><p class="quiz-question">Quelle commande liste les ports TCP en écoute sur un serveur Linux ?</p><input type="text" class="quiz-input"><button type="button" class="quiz-submit">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<h2>Aide IA</h2>
+<div class="component-aide-ia"><div class="aide-ia-label">💡 Comment l'IA peut t'aider</div><pre class="aide-ia-prompt">Je suis étudiant en BTS SIO SISR. Un utilisateur me dit que son PC n&#x27;arrive
+pas à aller sur Internet. Je dispose des commandes ping, traceroute, nslookup
+et ss pour diagnostiquer.
+Explique-moi, étape par étape, dans quel ordre je dois utiliser ces outils
+et ce que chaque résultat m&#x27;apprend sur l&#x27;origine du problème.
+Commence par me poser une question sur ce que je saurais tester en premier.</pre><button type="button" class="aide-ia-copy">Copier le prompt</button></div>
+<h2>Solution</h2>
+<details class="component-reveal"><summary>Voir la solution</summary><div class="reveal-content">**Activité 1 :**
+100% de paquets perdus vers la passerelle → soit elle est injoignable
+(câble débranché, mauvaise configuration), soit elle bloque ICMP.
+Prochaine étape : vérifier la configuration réseau du PC.
+**Activité 2 :**
+Les &quot;* * *&quot; ne signifient pas que la route est coupée — certains routeurs
+filtrent simplement les paquets ICMP TTL-exceeded. La destination répond
+au saut 5 donc elle est bien joignable.
+**Activité 3 :**
+- L&#x27;utilisateur peut pinger 8.8.8.8 → connexion IP vers Internet OK.
+- Le problème est probablement DNS : nslookup www.entreprise.fr est l&#x27;étape suivante.
+- Pour lister les ports TCP en écoute : ss -tuln
+  (ou ss -tlnp pour voir aussi le processus qui écoute)</div></details>
+<h2>Ressources</h2>
+<div class="component-ressources"><div class="ressources-label">📚 Pour aller plus loin</div><div class="ressources-list"><a href="https://www.wireshark.org/" target="_blank" rel="noopener" class="ressource-item"><span class="ressource-icon ressource-badge-lien">🔗</span><span class="ressource-text"><span class="ressource-titre">Wireshark — analyseur de trafic réseau (gratuit)</span><span class="ressource-meta">wireshark.org</span></span></a><a href="https://man7.org/linux/man-pages/man8/ping.8.html" target="_blank" rel="noopener" class="ressource-item"><span class="ressource-icon ressource-badge-doc">📖</span><span class="ressource-text"><span class="ressource-titre">ping, traceroute, nslookup — pages de manuel Linux</span><span class="ressource-meta">man7.org</span></span></a><a href="https://www.youtube.com/results?search_query=diagnostic+r%C3%A9seau+linux+ping+traceroute+fran%C3%A7ais" target="_blank" rel="noopener" class="ressource-item"><span class="ressource-icon ressource-badge-video">▶</span><span class="ressource-text"><span class="ressource-titre">Diagnostic réseau Linux en français</span><span class="ressource-meta">YouTube · recherche</span></span></a><a href="https://dnschecker.org/" target="_blank" rel="noopener" class="ressource-item"><span class="ressource-icon ressource-badge-lien">🔗</span><span class="ressource-text"><span class="ressource-titre">DNSChecker — tester la propagation DNS en ligne</span><span class="ressource-meta">dnschecker.org</span></span></a></div></div>
+<h2>Auto-évaluation</h2>
+<div class="component-auto-eval" data-auto-eval><p>Où en es-tu ?</p><button data-eval="ok">😊 Compris</button><button data-eval="hesitant">🤔 À revoir</button><button data-eval="bloque">😣 Bloqué</button></div>
+      </section>
+    
+      <section id="section-10" data-section-index="10">
+        <h2>
+          <span class="section-badge">10</span>
+          Mini-projet — Maquette d&#39;un petit réseau d&#39;entreprise
+        </h2>
+        
+          <details class="objectifs">
+            <summary>Objectifs de cette section</summary>
+            <ul>
+              <li>Concevoir le plan d&#39;adressage d&#39;un réseau d&#39;entreprise simple</li><li>Identifier les services nécessaires (DHCP, DNS, NAT, pare-feu)</li><li>Rédiger les règles de base d&#39;un pare-feu</li><li>Vérifier la cohérence d&#39;une table de routage</li><li>Synthétiser les connaissances des activités précédentes</li>
+            </ul>
+          </details>
+        
+        <h2>Présentation du projet</h2>
+<p>Bravo d'avoir atteint le dernier thème ! Ce mini-projet est une <strong>synthèse</strong> — il mobilise tout ce que tu as travaillé dans les activités précédentes.</p>
+<p>Tu vas concevoir le plan réseau d'une <strong>petite entreprise fictive</strong> : la société "InfoNet SARL". Elle dispose d'un site principal avec 3 zones distinctes.</p>
+<h3>Contexte</h3>
+<p>InfoNet SARL a besoin d'un réseau avec :
+- <strong>Zone LAN</strong> : 30 postes de travail pour les employés
+- <strong>Zone Serveurs</strong> : 5 serveurs (web, fichiers, DNS, DHCP, messagerie)
+- <strong>Zone DMZ</strong> : 2 serveurs accessibles depuis Internet (site web public + mail entrant)
+- <strong>Accès Internet</strong> via une seule adresse IP publique : <code>203.0.113.10</code></p>
+<p>L'administrateur dispose du réseau <code>192.168.0.0/24</code> à découper.</p>
+<h2>Activité 1 — Plan d'adressage</h2>
+<p>Tu dois découper <code>192.168.0.0/24</code> en 3 sous-réseaux pour les 3 zones.</p>
+<p><strong>Contraintes :</strong>
+- Zone LAN : 30 hôtes minimum
+- Zone Serveurs : 5 hôtes minimum (garder de la marge = 10 max)
+- Zone DMZ : 2 hôtes minimum (garder de la marge = 5 max)</p>
+<div class="component-quiz-qcm" data-quiz><p class="quiz-question">Quel masque CIDR est le plus adapté pour la Zone LAN (30 hôtes) ?</p><div class="quiz-choices"><label><input type="radio" name="q-123" data-correct="false"> /28 (14 hôtes max — insuffisant)</label><label><input type="radio" name="q-123" data-correct="true"> /27 (30 hôtes utilisables — juste suffisant)</label><label><input type="radio" name="q-123" data-correct="false"> /26 (62 hôtes — gaspillage possible mais acceptable)</label><label><input type="radio" name="q-123" data-correct="false"> /25 (126 hôtes — trop large)</label></div><button class="quiz-submit" type="button">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<div class="component-quiz-qcm" data-quiz><p class="quiz-question">Quel masque CIDR est le plus adapté pour la Zone Serveurs (5 hôtes, marge jusqu&#x27;à 10) ?</p><div class="quiz-choices"><label><input type="radio" name="q-124" data-correct="false"> /30 (2 hôtes — insuffisant)</label><label><input type="radio" name="q-124" data-correct="false"> /29 (6 hôtes — suffisant mais sans marge)</label><label><input type="radio" name="q-124" data-correct="true"> /28 (14 hôtes — suffit avec marge)</label><label><input type="radio" name="q-124" data-correct="false"> /27 (30 hôtes — gaspillage)</label></div><button class="quiz-submit" type="button">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<div class="component-quiz-texte" data-reponse="192.168.0.31"><p class="quiz-question">Avec un /27 pour le LAN starting à 192.168.0.0, quelle est l&#x27;adresse de broadcast du LAN ? (ex. 192.168.0.31)</p><input type="text" class="quiz-input"><button type="button" class="quiz-submit">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<h2>Activité 2 — Services réseau</h2>
+<div class="component-quiz-qcm" data-quiz><p class="quiz-question">Quel service réseau permet aux 30 postes du LAN de recevoir automatiquement leur adresse IP ?</p><div class="quiz-choices"><label><input type="radio" name="q-125" data-correct="false"> DNS</label><label><input type="radio" name="q-125" data-correct="false"> NAT</label><label><input type="radio" name="q-125" data-correct="true"> DHCP</label><label><input type="radio" name="q-125" data-correct="false"> Routage statique</label></div><button class="quiz-submit" type="button">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<div class="component-quiz-qcm" data-quiz><p class="quiz-question">Pour que les postes du LAN accèdent à Internet avec une seule IP publique (203.0.113.10), quel mécanisme est nécessaire sur le routeur ?</p><div class="quiz-choices"><label><input type="radio" name="q-126" data-correct="false"> DNS</label><label><input type="radio" name="q-126" data-correct="false"> DHCP</label><label><input type="radio" name="q-126" data-correct="true"> NAT</label><label><input type="radio" name="q-126" data-correct="false"> VLAN</label></div><button class="quiz-submit" type="button">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<div class="component-quiz-qcm" data-quiz><p class="quiz-question">Les serveurs de la DMZ doivent être accessibles depuis Internet. Sur quelle chaîne iptables faut-il écrire les règles pour autoriser ce trafic entrant sur le routeur ?</p><div class="quiz-choices"><label><input type="radio" name="q-127" data-correct="false"> OUTPUT</label><label><input type="radio" name="q-127" data-correct="false"> INPUT</label><label><input type="radio" name="q-127" data-correct="true"> FORWARD</label><label><input type="radio" name="q-127" data-correct="false"> PREROUTING uniquement</label></div><button class="quiz-submit" type="button">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<h2>Activité 3 — Table de routage du routeur principal</h2>
+<p>Le routeur principal a 3 interfaces :
+- <code>eth0</code> : reliée à Internet (IP publique 203.0.113.10, passerelle FAI 203.0.113.1)
+- <code>eth1</code> : Zone LAN <code>192.168.0.0/27</code>
+- <code>eth2</code> : Zone Serveurs <code>192.168.0.32/28</code>
+- <code>eth3</code> : Zone DMZ <code>192.168.0.48/29</code></p>
+<div class="component-quiz-qcm" data-quiz><p class="quiz-question">Un paquet arrive du LAN (192.168.0.15) à destination du serveur web interne (192.168.0.35). Par quelle interface sort-il du routeur ?</p><div class="quiz-choices"><label><input type="radio" name="q-128" data-correct="false"> eth0 (Internet)</label><label><input type="radio" name="q-128" data-correct="false"> eth1 (LAN)</label><label><input type="radio" name="q-128" data-correct="true"> eth2 (Serveurs)</label><label><input type="radio" name="q-128" data-correct="false"> eth3 (DMZ)</label></div><button class="quiz-submit" type="button">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<div class="component-quiz-qcm" data-quiz><p class="quiz-question">Pour joindre 8.8.8.8 depuis le LAN, le routeur utilise quelle route ?</p><div class="quiz-choices"><label><input type="radio" name="q-129" data-correct="false"> La route vers 192.168.0.0/27</label><label><input type="radio" name="q-129" data-correct="false"> La route vers 192.168.0.32/28</label><label><input type="radio" name="q-129" data-correct="true"> La route par défaut via 203.0.113.1</label><label><input type="radio" name="q-129" data-correct="false"> La route vers 192.168.0.48/29</label></div><button class="quiz-submit" type="button">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<h2>Activité 4 — Règles de pare-feu</h2>
+<p>Voici les règles de sécurité définies par la DSI :
+- Les postes du LAN peuvent accéder à tout (Internet + Serveurs + DMZ)
+- Les serveurs de la DMZ ne peuvent pas initier de connexions vers le LAN
+- Seuls les ports 80 et 443 sont ouverts depuis Internet vers la DMZ
+- SSH (port 22) n'est autorisé que depuis le LAN vers la Zone Serveurs</p>
+<div class="component-quiz-qcm" data-quiz><p class="quiz-question">Quelle règle iptables autorise correctement l&#x27;accès SSH au serveur depuis le LAN uniquement ?</p><div class="quiz-choices"><label><input type="radio" name="q-130" data-correct="false"> iptables -A FORWARD -p tcp --dport 22 -j ACCEPT</label><label><input type="radio" name="q-130" data-correct="true"> iptables -A FORWARD -p tcp --dport 22 -s 192.168.0.0/27 -d 192.168.0.32/28 -j ACCEPT</label><label><input type="radio" name="q-130" data-correct="false"> iptables -A INPUT -p tcp --dport 22 -s 192.168.0.0/27 -j ACCEPT</label><label><input type="radio" name="q-130" data-correct="false"> iptables -A OUTPUT -p tcp --dport 22 -j ACCEPT</label></div><button class="quiz-submit" type="button">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<h2>Aide IA</h2>
+<div class="component-aide-ia"><div class="aide-ia-label">💡 Comment l'IA peut t'aider</div><pre class="aide-ia-prompt">Je suis étudiant en BTS SIO SISR et je travaille sur un mini-projet réseau.
+Je dois concevoir le plan d&#x27;adressage d&#x27;une entreprise avec 3 zones :
+LAN (30 postes), Serveurs (5 machines), DMZ (2 machines).
+J&#x27;ai le réseau 192.168.0.0/24 à découper.
+Je bloque sur le choix des masques et la numérotation des sous-réseaux.
+Guide-moi étape par étape en me posant des questions, sans me donner
+directement les adresses — aide-moi à raisonner par moi-même.</pre><button type="button" class="aide-ia-copy">Copier le prompt</button></div>
+<h2>Solution</h2>
+<details class="component-reveal"><summary>Voir la solution complète du mini-projet</summary><div class="reveal-content">**Plan d&#x27;adressage proposé :**
+Zone LAN     : 192.168.0.0/27  (30 hôtes utiles, broadcast .31)
+Zone Serveurs: 192.168.0.32/28 (14 hôtes utiles, broadcast .47)
+Zone DMZ     : 192.168.0.48/29 (6 hôtes utiles, broadcast .55)
+Justification des masques :
+- LAN /27 : 2^5 = 32 adresses, 30 utilisables — correspond exactement
+- Serveurs /28 : 2^4 = 16 adresses, 14 utilisables — suffisant avec marge
+- DMZ /29 : 2^3 = 8 adresses, 6 utilisables — suffisant avec marge
+**Services :**
+- DHCP : serveur dans Zone Serveurs, distribue des baux au LAN
+- NAT : sur eth0 du routeur, masque les adresses privées
+- DNS : serveur interne dans Zone Serveurs
+**Table de routage du routeur :**
+192.168.0.0/27   via eth1  (LAN)
+192.168.0.32/28  via eth2  (Serveurs)
+192.168.0.48/29  via eth3  (DMZ)
+0.0.0.0/0        via 203.0.113.1 (route par défaut Internet)
+**Règle iptables SSH depuis LAN vers Serveurs :**
+iptables -A FORWARD -p tcp --dport 22
+  -s 192.168.0.0/27 -d 192.168.0.32/28 -j ACCEPT
+Pourquoi FORWARD ? Car le paquet traverse le routeur — il ne lui est pas
+destiné (INPUT) et il ne vient pas de lui (OUTPUT).</div></details>
+<h2>Ressources</h2>
+<div class="component-ressources"><div class="ressources-label">📚 Pour aller plus loin</div><div class="ressources-list"><a href="https://www.netacad.com/courses/packet-tracer" target="_blank" rel="noopener" class="ressource-item"><span class="ressource-icon ressource-badge-lien">🔗</span><span class="ressource-text"><span class="ressource-titre">Packet Tracer — simulateur réseau Cisco gratuit</span><span class="ressource-meta">Cisco NetAcad</span></span></a><a href="https://app.diagrams.net/" target="_blank" rel="noopener" class="ressource-item"><span class="ressource-icon ressource-badge-lien">🔗</span><span class="ressource-text"><span class="ressource-titre">draw.io — créer des schémas réseau en ligne</span><span class="ressource-meta">diagrams.net</span></span></a><a href="https://www.gns3.com/" target="_blank" rel="noopener" class="ressource-item"><span class="ressource-icon ressource-badge-lien">🔗</span><span class="ressource-text"><span class="ressource-titre">GNS3 — simulateur réseau avancé (gratuit)</span><span class="ressource-meta">GNS3</span></span></a><a href="https://www.youtube.com/results?search_query=maquette+r%C3%A9seau+entreprise+Packet+Tracer+fran%C3%A7ais" target="_blank" rel="noopener" class="ressource-item"><span class="ressource-icon ressource-badge-video">▶</span><span class="ressource-text"><span class="ressource-titre">Maquetter un réseau d&#x27;entreprise — tutoriel en français</span><span class="ressource-meta">YouTube · recherche</span></span></a></div></div>
+<h2>Auto-évaluation</h2>
+<div class="component-auto-eval" data-auto-eval><p>Où en es-tu ?</p><button data-eval="ok">😊 Compris</button><button data-eval="hesitant">🤔 À revoir</button><button data-eval="bloque">😣 Bloqué</button></div>
+      </section>
+    
+      <section id="section-11" data-section-index="11">
+        <h2>
+          <span class="section-badge">11</span>
+          Bilan final — Quiz de synthèse
+        </h2>
+        
+        <h2>Quiz de synthèse — 10 questions</h2>
+<p>Ce quiz couvre l'ensemble des thèmes du cahier. Prends le temps de réfléchir à chaque question avant de répondre — c'est l'occasion de vérifier ce que tu as retenu.</p>
+<div class="component-quiz-qcm" data-quiz><p class="quiz-question">Quelle plage d&#x27;adresses est réservée aux réseaux privés selon la RFC 1918 ?</p><div class="quiz-choices"><label><input type="radio" name="q-131" data-correct="false"> 8.0.0.0/8</label><label><input type="radio" name="q-131" data-correct="true"> 172.16.0.0/12</label><label><input type="radio" name="q-131" data-correct="false"> 200.0.0.0/8</label><label><input type="radio" name="q-131" data-correct="false"> 100.64.0.0/10</label></div><button class="quiz-submit" type="button">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<div class="component-quiz-qcm" data-quiz><p class="quiz-question">Combien d&#x27;hôtes utilisables contient un sous-réseau /27 ?</p><div class="quiz-choices"><label><input type="radio" name="q-132" data-correct="false"> 32</label><label><input type="radio" name="q-132" data-correct="true"> 30</label><label><input type="radio" name="q-132" data-correct="false"> 28</label><label><input type="radio" name="q-132" data-correct="false"> 16</label></div><button class="quiz-submit" type="button">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<div class="component-quiz-qcm" data-quiz><p class="quiz-question">Dans une table de routage, quelle entrée est utilisée si aucune autre route ne correspond à la destination ?</p><div class="quiz-choices"><label><input type="radio" name="q-133" data-correct="false"> La première route de la table</label><label><input type="radio" name="q-133" data-correct="false"> La route avec le masque le plus long</label><label><input type="radio" name="q-133" data-correct="true"> La route par défaut (0.0.0.0/0)</label><label><input type="radio" name="q-133" data-correct="false"> La route vers l&#x27;interface locale</label></div><button class="quiz-submit" type="button">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<div class="component-quiz-qcm" data-quiz><p class="quiz-question">Quelle commande Linux affiche les permissions détaillées d&#x27;un fichier ?</p><div class="quiz-choices"><label><input type="radio" name="q-134" data-correct="true"> ls -l</label><label><input type="radio" name="q-134" data-correct="false"> ps aux</label><label><input type="radio" name="q-134" data-correct="false"> chmod -v</label><label><input type="radio" name="q-134" data-correct="false"> cat /etc/permissions</label></div><button class="quiz-submit" type="button">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<div class="component-quiz-qcm" data-quiz><p class="quiz-question">Quel est le rôle du serveur DHCP ?</p><div class="quiz-choices"><label><input type="radio" name="q-135" data-correct="false"> Traduire les noms de domaine en adresses IP</label><label><input type="radio" name="q-135" data-correct="false"> Filtrer le trafic réseau selon des règles</label><label><input type="radio" name="q-135" data-correct="true"> Attribuer automatiquement une configuration réseau aux hôtes</label><label><input type="radio" name="q-135" data-correct="false"> Faire transiter les paquets entre réseaux</label></div><button class="quiz-submit" type="button">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<div class="component-quiz-qcm" data-quiz><p class="quiz-question">Dans iptables, quelle chaîne filtre le trafic qui traverse la machine (routeur) sans lui être destiné ?</p><div class="quiz-choices"><label><input type="radio" name="q-136" data-correct="false"> INPUT</label><label><input type="radio" name="q-136" data-correct="false"> OUTPUT</label><label><input type="radio" name="q-136" data-correct="true"> FORWARD</label><label><input type="radio" name="q-136" data-correct="false"> TRANSIT</label></div><button class="quiz-submit" type="button">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<div class="component-quiz-qcm" data-quiz><p class="quiz-question">La commande nslookup www.google.com permet de faire quoi ?</p><div class="quiz-choices"><label><input type="radio" name="q-137" data-correct="false"> Envoyer des paquets ICMP à Google</label><label><input type="radio" name="q-137" data-correct="false"> Tracer le chemin vers Google</label><label><input type="radio" name="q-137" data-correct="true"> Résoudre le nom www.google.com en adresse IP</label><label><input type="radio" name="q-137" data-correct="false"> Lister les ports ouverts sur Google</label></div><button class="quiz-submit" type="button">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<div class="component-quiz-qcm" data-quiz><p class="quiz-question">Un administrateur peut pinger 8.8.8.8 sans problème, mais nslookup www.test.fr échoue. Quel est le problème probable ?</p><div class="quiz-choices"><label><input type="radio" name="q-138" data-correct="false"> La connexion Internet est coupée</label><label><input type="radio" name="q-138" data-correct="true"> Le serveur DNS est mal configuré ou injoignable</label><label><input type="radio" name="q-138" data-correct="false"> Le pare-feu bloque ICMP</label><label><input type="radio" name="q-138" data-correct="false"> L&#x27;adresse IP de la machine est incorrecte</label></div><button class="quiz-submit" type="button">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<div class="component-quiz-qcm" data-quiz><p class="quiz-question">Quelle valeur octale correspond aux permissions rw-r--r-- ?</p><div class="quiz-choices"><label><input type="radio" name="q-139" data-correct="false"> 755</label><label><input type="radio" name="q-139" data-correct="false"> 777</label><label><input type="radio" name="q-139" data-correct="true"> 644</label><label><input type="radio" name="q-139" data-correct="false"> 600</label></div><button class="quiz-submit" type="button">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<div class="component-quiz-qcm" data-quiz><p class="quiz-question">Le NAT (Network Address Translation) est principalement utilisé pour quelle raison ?</p><div class="quiz-choices"><label><input type="radio" name="q-140" data-correct="false"> Chiffrer les communications réseau</label><label><input type="radio" name="q-140" data-correct="true"> Permettre à des machines avec adresses privées d&#x27;accéder à Internet via une adresse publique</label><label><input type="radio" name="q-140" data-correct="false"> Distribuer automatiquement des adresses IP</label><label><input type="radio" name="q-140" data-correct="false"> Filtrer les connexions malveillantes</label></div><button class="quiz-submit" type="button">Valider</button><div class="quiz-feedback" aria-live="polite"></div></div>
+<h2>Ton bilan personnel</h2>
+<p>Prends quelques minutes pour noter ce que tu retiens de ce cahier : les thèmes que tu maîtrises mieux, ceux sur lesquels tu veux revenir, les questions que tu voudrais poser à ton enseignant en septembre.</p>
+<div class="component-bilan" data-bilan><p>Mon bilan personnel (sauvegardé en local, exportable)</p><textarea rows="8" placeholder="Ce que j'ai appris, ce qui reste flou…"></textarea><button type="button" class="bilan-export">Exporter en .txt</button></div>
+<h2>Félicitations !</h2>
+<p>Tu as terminé le cahier Info-SISR. Que tu aies répondu juste à toutes les questions ou que certains thèmes restent à consolider, l'important est d'avoir travaillé et d'avoir identifié tes points forts et tes axes de progression.</p>
+<p>En 2ème année de BTS SIO SISR, tu vas approfondir tous ces thèmes : routage dynamique, VLANs, services réseau avancés, sécurité. Les bases que tu viens de retravailler vont te servir de fondation.</p>
+<p><strong>Bon courage pour la rentrée !</strong></p>
+      </section>
+    
+  </main>
+
+</div>
+
+<footer>
+  <p>Cahier de vacances BTS SIO · Travail autonome estival · Bonne continuation !</p>
+</footer>
+
+<script>/* 00-progress.js */
+/* Storage core — shared by quiz, auto-eval, bilan, progress-bar */
+(function () {
+  const KEY_PREFIX = "c2v:";
+
+  function cahierKey() {
+    // derive a stable key from the document title
+    return KEY_PREFIX + (document.title || "default").replace(/\s+/g, "_");
+  }
+
+  function load() {
+    try {
+      return JSON.parse(localStorage.getItem(cahierKey()) || "{}");
+    } catch {
+      return {};
+    }
+  }
+
+  function save(state) {
+    try {
+      localStorage.setItem(cahierKey(), JSON.stringify(state));
+    } catch (e) {
+      console.warn("storage failed", e);
+    }
+  }
+
+  function update(path, value) {
+    const state = load();
+    state[path] = value;
+    save(state);
+    window.dispatchEvent(new CustomEvent("c2v:update"));
+  }
+
+  function get(path) {
+    return load()[path];
+  }
+
+  window.C2V = { load, save, update, get };
+})();
+
+
+/* 10-quiz-qcm.js */
+/* Quiz QCM — single/multi choice with feedback */
+(function () {
+  function init(root) {
+    const submit = root.querySelector(".quiz-submit");
+    const feedback = root.querySelector(".quiz-feedback");
+    if (!submit || !feedback) return;
+
+    submit.addEventListener("click", () => {
+      const inputs = root.querySelectorAll('input[type="radio"], input[type="checkbox"]');
+      let allCorrect = true;
+      let anyChecked = false;
+      inputs.forEach((inp) => {
+        if (inp.checked) {
+          anyChecked = true;
+          if (inp.dataset.correct !== "true") allCorrect = false;
+        } else {
+          if (inp.dataset.correct === "true") allCorrect = false;
+        }
+      });
+      if (!anyChecked) {
+        feedback.textContent = "Choisis au moins une réponse.";
+        feedback.className = "quiz-feedback ko";
+        return;
+      }
+      if (allCorrect) {
+        feedback.textContent = "✅ Correct !";
+        feedback.className = "quiz-feedback ok";
+      } else {
+        feedback.textContent = "❌ Pas tout à fait — réessaie ou consulte le rappel de cours.";
+        feedback.className = "quiz-feedback ko";
+      }
+    });
+  }
+
+  document.addEventListener("DOMContentLoaded", () => {
+    document.querySelectorAll(".component-quiz-qcm").forEach(init);
+  });
+})();
+
+
+/* 11-quiz-texte.js */
+/* Quiz texte — tolerant comparison */
+(function () {
+  function normalise(s) {
+    return s
+      .toLowerCase()
+      .normalize("NFD")
+      .replace(/[̀-ͯ]/g, "")
+      .replace(/\s+/g, " ")
+      .trim();
+  }
+
+  function init(root) {
+    const expected = root.dataset.reponse || "";
+    const input = root.querySelector(".quiz-input");
+    const submit = root.querySelector(".quiz-submit");
+    const feedback = root.querySelector(".quiz-feedback");
+    if (!input || !submit || !feedback) return;
+
+    submit.addEventListener("click", () => {
+      if (normalise(input.value) === normalise(expected)) {
+        feedback.textContent = "✅ Correct !";
+        feedback.className = "quiz-feedback ok";
+      } else {
+        feedback.textContent = "❌ Pas la bonne réponse — réessaie.";
+        feedback.className = "quiz-feedback ko";
+      }
+    });
+  }
+
+  document.addEventListener("DOMContentLoaded", () => {
+    document.querySelectorAll(".component-quiz-texte").forEach(init);
+  });
+})();
+
+
+/* 20-auto-eval.js */
+/* Auto-eval — 3 buttons, saves to storage, drives progress-bar */
+(function () {
+  function init(root) {
+    const section = root.closest("section[data-section-index]");
+    const sectionIdx = section ? section.dataset.sectionIndex : "0";
+    const key = "eval:section-" + sectionIdx;
+
+    const current = window.C2V.get(key);
+    if (current) {
+      const btn = root.querySelector(`button[data-eval="${current}"]`);
+      if (btn) btn.classList.add("selected");
+    }
+
+    root.querySelectorAll("button[data-eval]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        root.querySelectorAll("button").forEach((b) => b.classList.remove("selected"));
+        btn.classList.add("selected");
+        window.C2V.update(key, btn.dataset.eval);
+      });
+    });
+  }
+
+  document.addEventListener("DOMContentLoaded", () => {
+    document.querySelectorAll(".component-auto-eval").forEach(init);
+  });
+})();
+
+
+/* 30-progress-bar.js */
+/* Progress-bar component — now handled by sidebar (50-sidebar-nav.js).
+   This stub keeps the component-progress-bar div harmless. */
+(function () {
+  document.addEventListener("DOMContentLoaded", () => {
+    document.querySelectorAll(".component-progress-bar").forEach((el) => {
+      el.style.display = "none";
+    });
+  });
+})();
+
+
+/* 40-bilan.js */
+/* Bilan — autosave + export .txt */
+(function () {
+  function init(root) {
+    const textarea = root.querySelector("textarea");
+    const exportBtn = root.querySelector(".bilan-export");
+    if (!textarea) return;
+
+    textarea.value = window.C2V.get("bilan") || "";
+    textarea.addEventListener("input", () => {
+      window.C2V.update("bilan", textarea.value);
+    });
+
+    if (exportBtn) {
+      exportBtn.addEventListener("click", () => {
+        const title = document.title.replace(/[^\w-]+/g, "_");
+        const content = "Bilan — " + document.title + "\n\n" + (textarea.value || "");
+        const blob = new Blob([content], { type: "text/plain;charset=utf-8" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = `bilan-${title}.txt`;
+        a.click();
+        URL.revokeObjectURL(url);
+      });
+    }
+  }
+
+  document.addEventListener("DOMContentLoaded", () => {
+    document.querySelectorAll(".component-bilan").forEach(init);
+  });
+})();
+
+
+/* 41-aide-ia.js */
+/* Aide IA — copy prompt to clipboard */
+(function () {
+  function init(root) {
+    const btn = root.querySelector(".aide-ia-copy");
+    const pre = root.querySelector(".aide-ia-prompt");
+    if (!btn || !pre) return;
+
+    btn.addEventListener("click", async () => {
+      try {
+        await navigator.clipboard.writeText(pre.textContent);
+        btn.textContent = "Copié ✓";
+        setTimeout(() => (btn.textContent = "Copier le prompt"), 2000);
+      } catch {
+        btn.textContent = "Sélectionne le texte et copie manuellement";
+      }
+    });
+  }
+
+  document.addEventListener("DOMContentLoaded", () => {
+    document.querySelectorAll(".component-aide-ia").forEach(init);
+  });
+})();
+
+
+/* 42-code-copy.js */
+/* Code-block — copy button */
+(function () {
+  function init(root) {
+    const btn = root.querySelector(".code-copy");
+    const code = root.querySelector("code");
+    if (!btn || !code) return;
+    btn.addEventListener("click", async () => {
+      try {
+        await navigator.clipboard.writeText(code.textContent);
+        btn.textContent = "Copié ✓";
+        setTimeout(() => (btn.textContent = "Copier"), 2000);
+      } catch {
+        btn.textContent = "Sélectionne et copie manuellement";
+      }
+    });
+  }
+  document.addEventListener("DOMContentLoaded", () => {
+    document.querySelectorAll(".component-code").forEach(init);
+  });
+})();
+
+
+/* 50-sidebar-nav.js */
+/* Sidebar nav — active section highlight + progress */
+(function () {
+  const sections = document.querySelectorAll("main section[data-section-index]");
+  const navLinks = document.querySelectorAll("nav.sommaire a[data-nav-index]");
+  const fill     = document.querySelector(".nav-progress-fill");
+  const label    = document.querySelector(".nav-progress-text");
+  const total    = sections.length;
+
+  if (!sections.length || !navLinks.length) return;
+
+  let visited = new Set();
+
+  function updateProgress() {
+    const pct = total > 0 ? Math.round((visited.size / total) * 100) : 0;
+    if (fill)  fill.style.width = pct + "%";
+    if (label) label.textContent = visited.size + " / " + total;
+  }
+
+  const observer = new IntersectionObserver(
+    (entries) => {
+      let topVisible = null;
+      entries.forEach((e) => {
+        if (e.isIntersecting) {
+          const idx = e.target.dataset.sectionIndex;
+          visited.add(idx);
+          if (!topVisible || e.boundingClientRect.top < topVisible.top) {
+            topVisible = { idx, top: e.boundingClientRect.top };
+          }
+        }
+      });
+
+      if (topVisible) {
+        navLinks.forEach((a) => {
+          a.classList.toggle("active", a.dataset.navIndex === topVisible.idx);
+        });
+      }
+
+      updateProgress();
+    },
+    { threshold: 0.15 }
+  );
+
+  sections.forEach((s) => observer.observe(s));
+})();
+</script>
+</body>
+</html>
